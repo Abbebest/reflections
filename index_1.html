@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مُقتبَس — اقتباسات من الأدباء والفلاسفة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#ece8de; --card:#fbf9f3; --ink:#2b2621; --lapis:#275c86;
+    --ochre:#b08842; --muted:#8a8073; --line:#e0d9cb;
+    --c-hikma:#275c86; --c-falsafa:#6a4a73; --c-adab:#b08842; --c-hob:#a85d57; --c-hayat:#5e7a5a;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{ font-family:"Tajawal",system-ui,sans-serif; color:var(--ink); background:var(--paper);
+    line-height:1.6; min-height:100vh; padding:clamp(1.25rem,4vw,3rem); }
+  .wrap{ max-width:1100px; margin:0 auto; }
+
+  header{ text-align:center; margin-bottom:clamp(1.25rem,4vw,2rem); }
+  .brand{ font-family:"Amiri",serif; font-size:clamp(2.6rem,8vw,4rem); font-weight:700; line-height:1.1; }
+  .brand::after{ content:""; display:block; width:56px; height:3px; background:var(--ochre);
+    margin:.9rem auto 0; border-radius:2px; }
+  .tagline{ color:var(--muted); font-size:clamp(.95rem,2.5vw,1.1rem); margin-top:.9rem; }
+
+  /* عدّاد المتصلين */
+  .presence{ display:inline-flex; align-items:center; gap:.45rem; margin-top:1rem;
+    font-size:.85rem; color:var(--muted); background:var(--card); border:1px solid var(--line);
+    border-radius:999px; padding:.35rem .9rem; }
+  .presence .live{ width:8px; height:8px; border-radius:50%; background:#4caf50;
+    box-shadow:0 0 0 0 rgba(76,175,80,.5); animation:pulse 2s infinite; }
+  @keyframes pulse{ 0%{box-shadow:0 0 0 0 rgba(76,175,80,.5)} 70%{box-shadow:0 0 0 7px rgba(76,175,80,0)} 100%{box-shadow:0 0 0 0 rgba(76,175,80,0)} }
+
+  .search{ position:relative; max-width:520px; margin:clamp(1.25rem,4vw,2rem) auto 1.1rem; }
+  .search input{ width:100%; font-family:"Tajawal",sans-serif; font-size:1.05rem; color:var(--ink);
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:.9rem 3rem .9rem 1.1rem; transition:border-color .2s,box-shadow .2s; }
+  .search input::placeholder{ color:#b3aa9c; }
+  .search input:focus{ outline:none; border-color:var(--lapis); box-shadow:0 0 0 3px rgba(39,92,134,.15); }
+  .search .icon{ position:absolute; inset-inline-end:1.1rem; top:50%; transform:translateY(-50%);
+    color:var(--muted); pointer-events:none; }
+
+  .filters{ display:flex; flex-wrap:wrap; gap:.55rem; justify-content:center; margin-bottom:1.5rem; }
+  .chip{ font-family:"Tajawal",sans-serif; font-size:.92rem; font-weight:500; color:var(--ink);
+    background:var(--card); border:1px solid var(--line); border-radius:999px; padding:.45rem 1.15rem;
+    cursor:pointer; transition:background .2s,color .2s,border-color .2s; }
+  .chip:hover{ border-color:var(--lapis); }
+  .chip.active{ background:var(--lapis); color:#fff; border-color:var(--lapis); }
+  .chip:focus-visible{ outline:2px solid var(--lapis); outline-offset:2px; }
+
+  .count{ text-align:center; color:var(--muted); font-size:.9rem; margin-bottom:1.5rem; }
+
+  .grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1.15rem; }
+
+  .qcard{ position:relative; background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:1.5rem 1.4rem 1.1rem; border-inline-start:4px solid var(--cat,var(--lapis));
+    display:flex; flex-direction:column; transition:transform .18s,box-shadow .18s; }
+  .qcard:hover{ transform:translateY(-3px); box-shadow:0 14px 30px rgba(43,38,33,.10); }
+  .qmark{ font-family:"Amiri",serif; font-size:3rem; line-height:.2; color:var(--ochre); opacity:.4;
+    height:1.1rem; user-select:none; }
+  .qtext{ font-family:"Amiri",serif; font-size:1.4rem; line-height:1.7; color:var(--ink);
+    margin:.4rem 0 1.1rem; flex-grow:1; }
+  .qfoot{ display:flex; align-items:center; justify-content:space-between; gap:.75rem;
+    border-top:1px solid var(--line); padding-top:.8rem; }
+  .author{ font-weight:700; font-size:.98rem; }
+  .cat{ display:inline-flex; align-items:center; gap:.4rem; font-size:.8rem; color:var(--muted); white-space:nowrap; }
+  .cat .dot{ width:8px; height:8px; border-radius:50%; background:var(--cat,var(--lapis)); }
+
+  /* شريط الأدوات: إعجاب + مشاركة + نسخ + تعليقات */
+  .actions{ display:flex; align-items:center; gap:.35rem; margin-top:.85rem; flex-wrap:wrap; }
+  .act{ display:inline-flex; align-items:center; gap:.35rem; font-family:"Tajawal",sans-serif;
+    font-size:.82rem; color:var(--muted); background:transparent; border:1px solid var(--line);
+    border-radius:999px; padding:.32rem .7rem; cursor:pointer; transition:all .15s; }
+  .act:hover{ border-color:var(--lapis); color:var(--lapis); }
+  .act.liked{ color:var(--c-hob); border-color:var(--c-hob); }
+  .act svg{ width:15px; height:15px; }
+  .act.fb:hover{ color:#1877f2; border-color:#1877f2; }
+
+  /* قسم التعليقات داخل البطاقة */
+  .comments{ margin-top:.9rem; border-top:1px dashed var(--line); padding-top:.8rem; display:none; }
+  .comments.open{ display:block; }
+  .clist{ display:flex; flex-direction:column; gap:.55rem; margin-bottom:.7rem; max-height:220px; overflow-y:auto; }
+  .citem{ background:var(--paper); border-radius:10px; padding:.5rem .7rem; font-size:.9rem; }
+  .citem .cname{ font-weight:700; font-size:.82rem; color:var(--lapis); }
+  .citem .cbody{ color:var(--ink); }
+  .cempty{ color:var(--muted); font-size:.85rem; text-align:center; padding:.4rem; }
+  .cform{ display:flex; flex-direction:column; gap:.4rem; }
+  .cform input, .cform textarea{ font-family:"Tajawal",sans-serif; font-size:.88rem; color:var(--ink);
+    background:#fff; border:1px solid var(--line); border-radius:8px; padding:.5rem .65rem; resize:vertical; }
+  .cform input:focus, .cform textarea:focus{ outline:none; border-color:var(--lapis); }
+  .cform button{ font-family:"Tajawal",sans-serif; font-size:.85rem; font-weight:500; color:#fff;
+    background:var(--lapis); border:none; border-radius:8px; padding:.5rem; cursor:pointer; }
+  .cform button:hover{ background:#1e4a6d; }
+  .cform button:disabled{ opacity:.5; cursor:default; }
+
+  .empty{ text-align:center; color:var(--muted); padding:3rem 1rem; font-size:1.1rem; grid-column:1/-1; }
+
+  /* بوابة الاقتراحات */
+  .suggest{ max-width:640px; margin:3rem auto 0; background:var(--card); border:1px solid var(--line);
+    border-radius:16px; padding:1.6rem; text-align:center; }
+  .suggest h2{ font-family:"Amiri",serif; font-size:1.7rem; margin-bottom:.3rem; }
+  .suggest p{ color:var(--muted); font-size:.95rem; margin-bottom:1.1rem; }
+  .suggest input, .suggest textarea{ width:100%; font-family:"Tajawal",sans-serif; font-size:.95rem;
+    color:var(--ink); background:#fff; border:1px solid var(--line); border-radius:10px;
+    padding:.7rem .8rem; margin-bottom:.6rem; resize:vertical; }
+  .suggest input:focus, .suggest textarea:focus{ outline:none; border-color:var(--lapis); }
+  .suggest button{ font-family:"Tajawal",sans-serif; font-size:.95rem; font-weight:500; color:#fff;
+    background:var(--ochre); border:none; border-radius:10px; padding:.7rem 1.8rem; cursor:pointer; }
+  .suggest button:hover{ background:#9a763a; }
+  .suggest button:disabled{ opacity:.5; cursor:default; }
+  .suggest .thanks{ color:var(--c-hayat); font-weight:500; margin-top:.5rem; }
+
+  footer{ text-align:center; color:var(--muted); font-size:.85rem; margin-top:3rem; }
+  .toast{ position:fixed; bottom:20px; inset-inline-start:50%; transform:translateX(50%);
+    background:var(--ink); color:#fff; padding:.6rem 1.2rem; border-radius:10px; font-size:.9rem;
+    opacity:0; pointer-events:none; transition:opacity .3s; z-index:50; }
+  .toast.show{ opacity:1; }
+
+  @media (prefers-reduced-motion:reduce){ .qcard{ transition:none; } .presence .live{ animation:none; } }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1 class="brand">مُقتبَس</h1>
+      <p class="tagline">مختاراتٌ من حكمة الأدباء والفلاسفة عبر العصور</p>
+      <div class="presence" id="presence" title="عدد المتصلين الآن">
+        <span class="live"></span><span id="presenceCount">…</span> متصل الآن
+      </div>
+    </header>
+
+    <div class="search">
+      <input id="search" type="text" placeholder="ابحث عن كلمة أو اسم كاتب…" aria-label="بحث">
+      <span class="icon" aria-hidden="true">🔍</span>
+    </div>
+
+    <nav class="filters" id="filters" aria-label="التصنيفات"></nav>
+    <p class="count" id="count"></p>
+    <main class="grid" id="grid"></main>
+
+    <!-- بوابة الاقتراحات -->
+    <section class="suggest">
+      <h2>اقترح اقتباساً</h2>
+      <p>هل لديك اقتباسٌ جميل تودّ أن أضيفه؟ أرسله لي هنا</p>
+      <input id="sgName" type="text" placeholder="اسمك (اختياري)">
+      <textarea id="sgBody" rows="3" placeholder="اكتب اقتراحك أو الاقتباس المقترح…"></textarea>
+      <button id="sgSend">إرسال الاقتراح</button>
+      <div class="thanks" id="sgThanks" style="display:none">شكراً! وصلني اقتراحك 🌿</div>
+    </section>
+
+    <footer>مجموعة مختارة · تُحدَّث بين الحين والآخر</footer>
+  </div>
+  <div class="toast" id="toast"></div>
+
+<!-- مكتبة Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  /* ═══════════════════════════════════════════════════════
+     ①  الصق هنا رابط مشروعك ومفتاحك العام (anon public) فقط
+     ═══════════════════════════════════════════════════════ */
+  const SUPABASE_URL = "https://felzsezfkdtnvvdbqwbr.supabase.co";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZlbHpzZXpma2R0bnZ2ZGJxd2JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUwMDU5NjMsImV4cCI6MjEwMDU4MTk2M30.I3TozJX0HZozrRSw4FqNuwJjG726ZWyJot7fTmYsWf4";
+  /* ═══════════════════════════════════════════════════════ */
+
+  const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  /* ───── الاقتباسات (أضف ما تشاء — أنت فقط) ───── */
+  const quotes = [
+    { id:"q1",  text:"على قدرِ أهلِ العزمِ تأتي العزائمُ، وتأتي على قدرِ الكرامِ المكارمُ.", author:"المتنبي", cat:"حكمة" },
+    { id:"q2",  text:"الخيلُ والليلُ والبيداءُ تعرفني، والسيفُ والرمحُ والقرطاسُ والقلمُ.", author:"المتنبي", cat:"أدب" },
+    { id:"q3",  text:"ذو العقلِ يشقى في النعيمِ بعقلِه، وأخو الجهالةِ في الشقاوةِ ينعمُ.", author:"المتنبي", cat:"حياة" },
+    { id:"q4",  text:"وإذا كانت النفوسُ كباراً، تعبتْ في مرادِها الأجسامُ.", author:"المتنبي", cat:"حكمة" },
+    { id:"q5",  text:"بقدرِ الكدِّ تُكتسبُ المعالي، ومن طلب العلا سهر الليالي.", author:"الإمام الشافعي", cat:"حكمة" },
+    { id:"q6",  text:"قيمةُ كلِّ امرئٍ ما يُحسنُه.", author:"علي بن أبي طالب", cat:"حكمة" },
+    { id:"q7",  text:"الناسُ نيامٌ، فإذا ماتوا انتبهوا.", author:"علي بن أبي طالب", cat:"حياة" },
+    { id:"q8",  text:"الحقيقةُ تحتاجُ إلى رجلين: واحدٍ لينطقَ بها، وآخرَ ليفهمَها.", author:"جبران خليل جبران", cat:"أدب" },
+    { id:"q9",  text:"الحبُّ الذي لا يتجدّدُ كلَّ يومٍ، يصيرُ عادةً ثم يصيرُ عبوديةً.", author:"جبران خليل جبران", cat:"حب" },
+    { id:"q10", text:"الحياةُ التي لا يُتأمَّلُ فيها لا تستحقُّ أن تُعاشَ.", author:"سقراط", cat:"فلسفة" },
+    { id:"q11", text:"الصديقُ روحٌ واحدةٌ تسكنُ جسدين.", author:"أرسطو", cat:"فلسفة" },
+    { id:"q12", text:"الحاجةُ أمُّ الاختراعِ.", author:"أفلاطون", cat:"فلسفة" },
+    { id:"q13", text:"مَن له سببٌ يعيشُ من أجله، يحتملُ أيَّ طريقةٍ للعيشِ تقريباً.", author:"نيتشه", cat:"فلسفة" },
+    { id:"q14", text:"أنا أفكّرُ، إذاً أنا موجودٌ.", author:"ديكارت", cat:"فلسفة" },
+    { id:"q15", text:"الجهلُ يولّدُ الخوف، والخوفُ يولّدُ الكراهية، والكراهيةُ تولّدُ العنف.", author:"ابن رشد", cat:"فلسفة" },
+    { id:"q16", text:"أمرُّ على الديارِ ديارِ ليلى، أُقبّلُ ذا الجدارَ وذا الجدارا.", author:"قيس بن الملوّح", cat:"حب" },
+  ];
+
+  const catColors = { "حكمة":"var(--c-hikma)","فلسفة":"var(--c-falsafa)","أدب":"var(--c-adab)","حب":"var(--c-hob)","حياة":"var(--c-hayat)" };
+
+  function norm(s){ return s.replace(/[\u064B-\u0652\u0670\u0640]/g,"").replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه").trim(); }
+
+  const grid=document.getElementById("grid"), filters=document.getElementById("filters"),
+        countEl=document.getElementById("count"), searchI=document.getElementById("search"),
+        toast=document.getElementById("toast");
+  let activeCat="الكل", term="";
+  let likeCounts={}, likedByMe={}, commentsByQuote={};
+
+  const cats=["الكل",...Object.keys(catColors)];
+  cats.forEach(c=>{ const b=document.createElement("button");
+    b.className="chip"+(c==="الكل"?" active":""); b.textContent=c;
+    b.addEventListener("click",()=>{ activeCat=c;
+      document.querySelectorAll(".chip").forEach(x=>x.classList.remove("active"));
+      b.classList.add("active"); render(); });
+    filters.appendChild(b); });
+
+  function showToast(msg){ toast.textContent=msg; toast.classList.add("show"); setTimeout(()=>toast.classList.remove("show"),1800); }
+  function esc(s){ return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
+
+  function card(q){
+    const color=catColors[q.cat]||"var(--lapis)";
+    const likes=likeCounts[q.id]||0;
+    const liked=likedByMe[q.id]?" liked":"";
+    const shareText=encodeURIComponent(`"${q.text}" — ${q.author}`);
+    const shareUrl=encodeURIComponent(location.href);
+    return `
+    <article class="qcard" style="--cat:${color}">
+      <div class="qmark" aria-hidden="true">&rdquo;</div>
+      <p class="qtext">${esc(q.text)}</p>
+      <div class="qfoot">
+        <span class="author">${esc(q.author)}</span>
+        <span class="cat"><span class="dot"></span>${q.cat}</span>
+      </div>
+      <div class="actions">
+        <button class="act${liked}" onclick="toggleLike('${q.id}')" aria-label="إعجاب">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9.3C.4 8 2 4.5 5.2 4.5c2 0 3.3 1.2 4.1 2.4C10.5 5.7 11.8 4.5 13.8 4.5 17 4.5 18.6 8 17 11.7 14.5 16.4 12 21 12 21z"/></svg>
+          <span id="lc-${q.id}">${likes}</span>
+        </button>
+        <button class="act" onclick="toggleComments('${q.id}')" aria-label="تعليقات">💬 <span id="cc-${q.id}">تعليق</span></button>
+        <a class="act fb" href="https://www.facebook.com/sharer/sharer.php?u=${shareUrl}&quote=${shareText}" target="_blank" rel="noopener" aria-label="مشاركة على فيسبوك">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h2.7l.4-3H13V9c0-.9.3-1.5 1.6-1.5H16V4.8c-.3 0-1.2-.1-2.2-.1-2.2 0-3.8 1.4-3.8 3.9V11H7.5v3H10v8h3z"/></svg>
+        </a>
+        <button class="act" onclick="copyQuote('${q.id}')" aria-label="نسخ">📋 نسخ</button>
+      </div>
+      <div class="comments" id="cm-${q.id}">
+        <div class="clist" id="cl-${q.id}"><div class="cempty">جارِ التحميل…</div></div>
+        <div class="cform">
+          <input id="cn-${q.id}" type="text" placeholder="اسمك" maxlength="40">
+          <textarea id="cb-${q.id}" rows="2" placeholder="اكتب تعليقك…" maxlength="300"></textarea>
+          <button onclick="addComment('${q.id}')">أضف تعليقاً</button>
+        </div>
+      </div>
+    </article>`;
+  }
+
+  function render(){
+    const t=norm(term);
+    const list=quotes.filter(q=>{
+      const mc=activeCat==="الكل"||q.cat===activeCat;
+      const mt=!t||norm(q.text).includes(t)||norm(q.author).includes(t);
+      return mc&&mt;
+    });
+    if(!list.length){ grid.innerHTML='<p class="empty">لا توجد اقتباساتٌ مطابقة… جرّب كلمةً أخرى.</p>'; countEl.textContent=""; return; }
+    grid.innerHTML=list.map(card).join("");
+    countEl.textContent=list.length+" اقتباس";
+  }
+  searchI.addEventListener("input",e=>{ term=e.target.value; render(); });
+
+  /* ───── الإعجابات ───── */
+  async function loadLikes(){
+    try{
+      const {data}=await db.from("likes").select("quote_id,count");
+      (data||[]).forEach(r=>likeCounts[r.quote_id]=r.count);
+      try{ likedByMe=JSON.parse(localStorage.getItem("likedByMe")||"{}"); }catch(e){ likedByMe={}; }
+    }catch(e){ console.warn("likes load:",e); }
+  }
+  async function toggleLike(id){
+    if(likedByMe[id]){ showToast("أعجبك هذا مسبقاً"); return; }
+    likeCounts[id]=(likeCounts[id]||0)+1; likedByMe[id]=true;
+    localStorage.setItem("likedByMe",JSON.stringify(likedByMe));
+    const el=document.getElementById("lc-"+id); if(el) el.textContent=likeCounts[id];
+    const btn=el&&el.closest(".act"); if(btn) btn.classList.add("liked");
+    try{
+      await db.from("likes").upsert({quote_id:id,count:likeCounts[id]},{onConflict:"quote_id"});
+    }catch(e){ console.warn("like save:",e); showToast("تعذّر الحفظ"); }
+  }
+
+  /* ───── التعليقات ───── */
+  async function toggleComments(id){
+    const box=document.getElementById("cm-"+id);
+    box.classList.toggle("open");
+    if(box.classList.contains("open")) loadComments(id);
+  }
+  async function loadComments(id){
+    const list=document.getElementById("cl-"+id);
+    try{
+      const {data,error}=await db.from("comments").select("name,body,created_at").eq("quote_id",id).order("created_at",{ascending:true});
+      if(error) throw error;
+      renderComments(id,data||[]);
+    }catch(e){ console.warn("comments load:",e); list.innerHTML='<div class="cempty">تعذّر تحميل التعليقات</div>'; }
+  }
+  function renderComments(id,rows){
+    const list=document.getElementById("cl-"+id);
+    if(!rows.length){ list.innerHTML='<div class="cempty">لا توجد تعليقات بعد — كن أوّل من يعلّق</div>'; return; }
+    list.innerHTML=rows.map(r=>`<div class="citem"><div class="cname">${esc(r.name||"زائر")}</div><div class="cbody">${esc(r.body)}</div></div>`).join("");
+    const cc=document.getElementById("cc-"+id); if(cc) cc.textContent=rows.length+" تعليق";
+  }
+  async function addComment(id){
+    const nameEl=document.getElementById("cn-"+id), bodyEl=document.getElementById("cb-"+id);
+    const name=(nameEl.value||"").trim()||"زائر", body=(bodyEl.value||"").trim();
+    if(!body){ showToast("اكتب تعليقاً أولاً"); return; }
+    bodyEl.value="";
+    try{
+      await db.from("comments").insert({name,body,quote_id:id});
+      loadComments(id); showToast("تمّ نشر تعليقك ✔");
+    }catch(e){ console.warn("comment save:",e); showToast("تعذّر النشر"); }
+  }
+
+  /* ───── نسخ الاقتباس ───── */
+  function copyQuote(id){
+    const q=quotes.find(x=>x.id===id); if(!q) return;
+    const txt=`"${q.text}" — ${q.author}`;
+    navigator.clipboard.writeText(txt).then(()=>showToast("نُسخ الاقتباس 📋")).catch(()=>showToast("تعذّر النسخ"));
+  }
+
+  /* ───── بوابة الاقتراحات ───── */
+  document.getElementById("sgSend").addEventListener("click",async()=>{
+    const name=document.getElementById("sgName").value.trim();
+    const body=document.getElementById("sgBody").value.trim();
+    if(!body){ showToast("اكتب اقتراحك أولاً"); return; }
+    const btn=document.getElementById("sgSend"); btn.disabled=true;
+    try{
+      await db.from("suggestions").insert({name:name||null,body});
+      document.getElementById("sgBody").value=""; document.getElementById("sgName").value="";
+      document.getElementById("sgThanks").style.display="block";
+    }catch(e){ console.warn("suggestion:",e); showToast("تعذّر الإرسال"); }
+    btn.disabled=false;
+  });
+
+  /* ───── عدّاد المتصلين (Realtime Presence) ───── */
+  function startPresence(){
+    try{
+      const ch=db.channel("online",{config:{presence:{key:Math.random().toString(36).slice(2)}}});
+      ch.on("presence",{event:"sync"},()=>{
+        const n=Object.keys(ch.presenceState()).length;
+        document.getElementById("presenceCount").textContent=n||1;
+      }).subscribe(async(status)=>{
+        if(status==="SUBSCRIBED") await ch.track({t:Date.now()});
+      });
+    }catch(e){ document.getElementById("presence").style.display="none"; }
+  }
+
+  /* ───── الإقلاع ───── */
+  (async function init(){
+    render();
+    if(SUPABASE_URL.startsWith("http")){
+      await loadLikes(); render(); startPresence();
+    }else{
+      document.getElementById("presence").style.display="none";
+      console.warn("⚠️ لم تُدخل رابط ومفتاح Supabase بعد.");
+    }
+  })();
+</script>
+</body>
+</html>

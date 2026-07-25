@@ -47,6 +47,14 @@
   .chip.active{ background:var(--lapis); color:#fff; border-color:var(--lapis); }
   .chip:focus-visible{ outline:2px solid var(--lapis); outline-offset:2px; }
 
+  /* صفّ الموضوعات (أخفّ من التصنيفات) */
+  .topics{ margin-top:-.6rem; margin-bottom:1.5rem; }
+  .topics .tchip{ font-family:"Tajawal",sans-serif; font-size:.82rem; font-weight:400; color:var(--muted);
+    background:transparent; border:1px dashed var(--line); border-radius:999px; padding:.32rem .95rem; cursor:pointer; transition:all .18s; }
+  .topics .tchip:hover{ color:var(--ochre); border-color:var(--ochre); }
+  .topics .tchip.active{ background:var(--ochre); color:#fff; border-color:var(--ochre); border-style:solid; }
+  .topics-label{ width:100%; text-align:center; color:var(--muted); font-size:.78rem; letter-spacing:.15em; margin-bottom:.3rem; }
+
   .count{ text-align:center; color:var(--muted); font-size:.9rem; margin-bottom:1.5rem; }
   .grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1.3rem; }
 
@@ -61,6 +69,9 @@
   .cat .dot{ width:8px; height:8px; border-radius:50%; background:currentColor; }
 
   .qbody{ padding:.95rem 1.1rem 1.1rem; }
+  .qtopics{ display:flex; flex-wrap:wrap; gap:.3rem; margin-bottom:.7rem; }
+  .qtag{ font-size:.74rem; color:var(--ochre); background:rgba(176,136,66,.1); border-radius:999px; padding:.15rem .6rem; cursor:pointer; transition:background .15s; }
+  .qtag:hover{ background:rgba(176,136,66,.25); }
   .actions{ display:flex; align-items:center; gap:.35rem; flex-wrap:wrap; }
   .act{ display:inline-flex; align-items:center; gap:.35rem; font-family:"Tajawal",sans-serif; font-size:.82rem; color:var(--muted); background:transparent; border:1px solid var(--line); border-radius:999px; padding:.32rem .7rem; cursor:pointer; transition:all .15s; text-decoration:none; }
   .act:hover{ border-color:var(--lapis); color:var(--lapis); }
@@ -128,6 +139,7 @@
     </div>
 
     <nav class="filters" id="filters" aria-label="التصنيفات"></nav>
+    <nav class="filters topics" id="topicFilters" aria-label="الموضوعات"></nav>
     <p class="count" id="count"></p>
     <main class="grid" id="grid"></main>
 
@@ -170,22 +182,22 @@
   function wm(file,w){ return "https://commons.wikimedia.org/wiki/Special:FilePath/"+encodeURIComponent(file)+"?width="+(w||1000); }
 
   const quotes = [
-    { id:"q1",  text:"على قدرِ أهلِ العزمِ تأتي العزائمُ، وتأتي على قدرِ الكرامِ المكارمُ.", author:"المتنبي", cat:"حكمة", img:wm("The Palace Guard by Ludwig Deutsch, 1900.jpg") },
-    { id:"q2",  text:"الخيلُ والليلُ والبيداءُ تعرفني، والسيفُ والرمحُ والقرطاسُ والقلمُ.", author:"المتنبي", cat:"أدب", img:wm("Maqama 43 Abu Zayd and al-Harith travelling.jpg") },
-    { id:"q3",  text:"ذو العقلِ يشقى في النعيمِ بعقلِه، وأخو الجهالةِ في الشقاوةِ ينعمُ.", author:"المتنبي", cat:"حياة", img:wm("The Water Seller Ludwig Deutsch.jpg") },
-    { id:"q4",  text:"وإذا كانت النفوسُ كباراً، تعبتْ في مرادِها الأجسامُ.", author:"المتنبي", cat:"حكمة", img:wm("Ludwig Deutsch - The Tribute.jpg") },
-    { id:"q5",  text:"بقدرِ الكدِّ تُكتسبُ المعالي، ومن طلب العلا سهر الليالي.", author:"الإمام الشافعي", cat:"حكمة", img:wm("Maqamat hariri.jpg") },
-    { id:"q6",  text:"قيمةُ كلِّ امرئٍ ما يُحسنُه.", author:"علي بن أبي طالب", cat:"حكمة", img:wm("A Library in Golden Islamic Age.jpg") },
-    { id:"q7",  text:"الناسُ نيامٌ، فإذا ماتوا انتبهوا.", author:"علي بن أبي طالب", cat:"حياة", img:wm("Ludwig Deutsch - Guarding the Palace, 1888.jpg") },
-    { id:"q8",  text:"الحقيقةُ تحتاجُ إلى رجلين: واحدٍ لينطقَ بها، وآخرَ ليفهمَها.", author:"جبران خليل جبران", cat:"أدب", img:wm("Maqama 06 the Governor of Maraghah.jpg") },
-    { id:"q9",  text:"الحبُّ الذي لا يتجدّدُ كلَّ يومٍ، يصيرُ عادةً ثم يصيرُ عبوديةً.", author:"جبران خليل جبران", cat:"حب", img:wm("Ludwig Deutsch - The Sahleb Vendor Cairo, 1886.jpg") },
-    { id:"q10", text:"الحياةُ التي لا يُتأمَّلُ فيها لا تستحقُّ أن تُعاشَ.", author:"سقراط", cat:"فلسفة", img:wm("Maqamat al-Hariri 1237, Turkic Emir portrait.jpg") },
-    { id:"q11", text:"الصديقُ روحٌ واحدةٌ تسكنُ جسدين.", author:"أرسطو", cat:"فلسفة", img:wm("Abu Zaid before the Governor of Rahba. Maqamat of al-Hariri, Baghdad 1237.jpg") },
-    { id:"q12", text:"الحاجةُ أمُّ الاختراعِ.", author:"أفلاطون", cat:"فلسفة", img:wm("Ludwig Deutsch - The Nubian Palace Guard.jpg") },
-    { id:"q13", text:"مَن له سببٌ يعيشُ من أجله، يحتملُ أيَّ طريقةٍ للعيشِ تقريباً.", author:"نيتشه", cat:"فلسفة", img:wm("Ludwig Deutsch- The Palace Guard.jpg") },
-    { id:"q14", text:"أنا أفكّرُ، إذاً أنا موجودٌ.", author:"ديكارت", cat:"فلسفة", img:wm("Maqama 09 Abu Zayd and his wife before the Kadi of Alexandria, Egypt.jpg") },
-    { id:"q15", text:"الجهلُ يولّدُ الخوف، والخوفُ يولّدُ الكراهية، والكراهيةُ تولّدُ العنف.", author:"ابن رشد", cat:"فلسفة", img:wm("Early Morning, Id el-fitr by Ludwig Deutsch, 1902.jpg") },
-    { id:"q16", text:"أمرُّ على الديارِ ديارِ ليلى، أُقبّلُ ذا الجدارَ وذا الجدارا.", author:"قيس بن الملوّح", cat:"حب", img:wm("Slaves Zadib Yemen 13th century BNF Paris.jpg") },
+    { id:"q1",  text:"على قدرِ أهلِ العزمِ تأتي العزائمُ، وتأتي على قدرِ الكرامِ المكارمُ.", author:"المتنبي", cat:"حكمة", img:wm("The Palace Guard by Ludwig Deutsch, 1900.jpg"), topics:["العزيمة","الطموح","النفس"] },
+    { id:"q2",  text:"الخيلُ والليلُ والبيداءُ تعرفني، والسيفُ والرمحُ والقرطاسُ والقلمُ.", author:"المتنبي", cat:"أدب", img:wm("Maqama 43 Abu Zayd and al-Harith travelling.jpg"), topics:["الفخر","الأدب","الشجاعة"] },
+    { id:"q3",  text:"ذو العقلِ يشقى في النعيمِ بعقلِه، وأخو الجهالةِ في الشقاوةِ ينعمُ.", author:"المتنبي", cat:"حياة", img:wm("The Water Seller Ludwig Deutsch.jpg"), topics:["العقل","الحياة","المعرفة"] },
+    { id:"q4",  text:"وإذا كانت النفوسُ كباراً، تعبتْ في مرادِها الأجسامُ.", author:"المتنبي", cat:"حكمة", img:wm("Ludwig Deutsch - The Tribute.jpg"), topics:["النفس","الطموح","الجسد"] },
+    { id:"q5",  text:"بقدرِ الكدِّ تُكتسبُ المعالي، ومن طلب العلا سهر الليالي.", author:"الإمام الشافعي", cat:"حكمة", img:wm("Maqamat hariri.jpg"), topics:["العلم","الاجتهاد","الصبر"] },
+    { id:"q6",  text:"قيمةُ كلِّ امرئٍ ما يُحسنُه.", author:"علي بن أبي طالب", cat:"حكمة", img:wm("A Library in Golden Islamic Age.jpg"), topics:["النفس","العمل","المعرفة"] },
+    { id:"q7",  text:"الناسُ نيامٌ، فإذا ماتوا انتبهوا.", author:"علي بن أبي طالب", cat:"حياة", img:wm("Ludwig Deutsch - Guarding the Palace, 1888.jpg"), topics:["الموت","الحياة","الوعي"] },
+    { id:"q8",  text:"الحقيقةُ تحتاجُ إلى رجلين: واحدٍ لينطقَ بها، وآخرَ ليفهمَها.", author:"جبران خليل جبران", cat:"أدب", img:wm("Maqama 06 the Governor of Maraghah.jpg"), topics:["الحقيقة","المعرفة","الفهم"] },
+    { id:"q9",  text:"الحبُّ الذي لا يتجدّدُ كلَّ يومٍ، يصيرُ عادةً ثم يصيرُ عبوديةً.", author:"جبران خليل جبران", cat:"حب", img:wm("Ludwig Deutsch - The Sahleb Vendor Cairo, 1886.jpg"), topics:["الحب","العادة","الحرية"] },
+    { id:"q10", text:"الحياةُ التي لا يُتأمَّلُ فيها لا تستحقُّ أن تُعاشَ.", author:"سقراط", cat:"فلسفة", img:wm("Maqamat al-Hariri 1237, Turkic Emir portrait.jpg"), topics:["الحياة","التأمّل","النفس"] },
+    { id:"q11", text:"الصديقُ روحٌ واحدةٌ تسكنُ جسدين.", author:"أرسطو", cat:"فلسفة", img:wm("Abu Zaid before the Governor of Rahba. Maqamat of al-Hariri, Baghdad 1237.jpg"), topics:["الصداقة","الحب","النفس"] },
+    { id:"q12", text:"الحاجةُ أمُّ الاختراعِ.", author:"أفلاطون", cat:"فلسفة", img:wm("Ludwig Deutsch - The Nubian Palace Guard.jpg"), topics:["الحاجة","الإبداع","العقل"] },
+    { id:"q13", text:"مَن له سببٌ يعيشُ من أجله، يحتملُ أيَّ طريقةٍ للعيشِ تقريباً.", author:"نيتشه", cat:"فلسفة", img:wm("Ludwig Deutsch- The Palace Guard.jpg"), topics:["المعنى","الحياة","الإرادة"] },
+    { id:"q14", text:"أنا أفكّرُ، إذاً أنا موجودٌ.", author:"ديكارت", cat:"فلسفة", img:wm("Maqama 09 Abu Zayd and his wife before the Kadi of Alexandria, Egypt.jpg"), topics:["العقل","الوجود","المعرفة"] },
+    { id:"q15", text:"الجهلُ يولّدُ الخوف، والخوفُ يولّدُ الكراهية، والكراهيةُ تولّدُ العنف.", author:"ابن رشد", cat:"فلسفة", img:wm("Early Morning, Id el-fitr by Ludwig Deutsch, 1902.jpg"), topics:["الجهل","الخوف","العقل"] },
+    { id:"q16", text:"أمرُّ على الديارِ ديارِ ليلى، أُقبّلُ ذا الجدارَ وذا الجدارا.", author:"قيس بن الملوّح", cat:"حب", img:wm("Slaves Zadib Yemen 13th century BNF Paris.jpg"), topics:["الحب","الحنين","الوفاء"] },
   ];
 
   /* سِيَر موجزة — راجعها وعدّلها كما تشاء */
@@ -212,7 +224,7 @@
 
   const grid=document.getElementById("grid"), filters=document.getElementById("filters"), countEl=document.getElementById("count"),
         searchI=document.getElementById("search"), toast=document.getElementById("toast");
-  let activeCat="الكل", term="", likeCounts={}, likedByMe={};
+  let activeCat="الكل", term="", likeCounts={}, likedByMe={}, activeTopic="";
 
   function showToast(m){ toast.textContent=m; toast.classList.add("show"); setTimeout(()=>toast.classList.remove("show"),1800); }
   function headBg(q){ const hex=catHex[q.cat]||"#275c86";
@@ -235,6 +247,18 @@
     b.addEventListener("click",()=>{ activeCat=c; document.querySelectorAll(".chip").forEach(x=>x.classList.remove("active")); b.classList.add("active"); render(); });
     filters.appendChild(b); });
 
+  /* بناء أزرار الموضوعات (وسوم فريدة من كل الاقتباسات) */
+  const allTopics=[...new Set(quotes.flatMap(q=>q.topics||[]))].sort();
+  const tf=document.getElementById("topicFilters");
+  const tlabel=document.createElement("span"); tlabel.className="topics-label"; tlabel.textContent="تصفية بالموضوع"; tf.appendChild(tlabel);
+  allTopics.forEach(t=>{ const b=document.createElement("button"); b.className="tchip"; b.textContent=t;
+    b.addEventListener("click",()=>{
+      if(activeTopic===t){ activeTopic=""; b.classList.remove("active"); }
+      else{ activeTopic=t; document.querySelectorAll(".tchip").forEach(x=>x.classList.remove("active")); b.classList.add("active"); }
+      render();
+    });
+    tf.appendChild(b); });
+
   function card(q){
     const likes=likeCounts[q.id]||0, liked=likedByMe[q.id]?" liked":"", shareUrl=encodeURIComponent(location.href);
     return `<article class="qcard">
@@ -247,6 +271,7 @@
         </div>
       </div>
       <div class="qbody">
+        <div class="qtopics">${(q.topics||[]).map(t=>`<span class="qtag" onclick="filterTopic('${esc(t)}')">${esc(t)}</span>`).join("")}</div>
         <div class="actions">
           <button class="act${liked}" onclick="toggleLike('${q.id}')" aria-label="إعجاب"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9.3C.4 8 2 4.5 5.2 4.5c2 0 3.3 1.2 4.1 2.4C10.5 5.7 11.8 4.5 13.8 4.5 17 4.5 18.6 8 17 11.7 14.5 16.4 12 21 12 21z"/></svg><span id="lc-${q.id}">${likes}</span></button>
           <button class="act" onclick="toggleComments('${q.id}')">💬 <span id="cc-${q.id}">تعليق</span></button>
@@ -267,7 +292,7 @@
 
   function render(){
     const t=norm(term);
-    const list=quotes.filter(q=>{ const mc=activeCat==="الكل"||q.cat===activeCat; const mt=!t||norm(q.text).includes(t)||norm(q.author).includes(t); return mc&&mt; });
+    const list=quotes.filter(q=>{ const mc=activeCat==="الكل"||q.cat===activeCat; const mt=!t||norm(q.text).includes(t)||norm(q.author).includes(t); const mtopic=!activeTopic||(q.topics||[]).includes(activeTopic); return mc&&mt&&mtopic; });
     if(!list.length){ grid.innerHTML='<p class="empty">لا توجد اقتباساتٌ مطابقة… جرّب كلمةً أخرى.</p>'; countEl.textContent=""; return; }
     grid.innerHTML=list.map(card).join(""); countEl.textContent=list.length+" اقتباس";
   }
@@ -305,6 +330,14 @@
     const name=(nameEl.value||"").trim()||"زائر", body=(bodyEl.value||"").trim(); if(!body){ showToast("اكتب تعليقاً أولاً"); return; } bodyEl.value="";
     try{ await db.from("comments").insert({name,body,quote_id:id}); loadComments(id); showToast("تمّ نشر تعليقك ✔"); }catch(e){ console.warn("comment:",e); showToast("تعذّر النشر"); } }
   function copyQuote(id){ const q=quotes.find(x=>x.id===id); if(!q) return; navigator.clipboard.writeText(`"${q.text}" — ${q.author}`).then(()=>showToast("نُسخ الاقتباس 📋")).catch(()=>showToast("تعذّر النسخ")); }
+
+  /* التصفية عند الضغط على وسم داخل بطاقة */
+  function filterTopic(t){
+    activeTopic=t;
+    document.querySelectorAll(".tchip").forEach(x=>x.classList.toggle("active", x.textContent===t));
+    render();
+    window.scrollTo({top:document.getElementById("topicFilters").offsetTop-80, behavior:"smooth"});
+  }
 
   document.getElementById("sgSend").addEventListener("click",async()=>{ const name=document.getElementById("sgName").value.trim(); const body=document.getElementById("sgBody").value.trim();
     if(!body){ showToast("اكتب اقتراحك أولاً"); return; } const btn=document.getElementById("sgSend"); btn.disabled=true;

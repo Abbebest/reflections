@@ -14,30 +14,35 @@
     --c-hikma:#275c86; --c-falsafa:#6a4a73; --c-adab:#b08842; --c-hob:#a85d57; --c-hayat:#5e7a5a;
   }
   *{ box-sizing:border-box; margin:0; padding:0; }
-  body{ font-family:"Tajawal",system-ui,sans-serif; color:var(--ink); background:var(--paper);
-    line-height:1.6; min-height:100vh; padding:clamp(1.25rem,4vw,3rem); }
+  body{ font-family:"Tajawal",system-ui,sans-serif; color:var(--ink); background:var(--paper); line-height:1.6; min-height:100vh; padding:clamp(1.25rem,4vw,3rem); }
   .wrap{ max-width:1100px; margin:0 auto; }
 
   header{ text-align:center; margin-bottom:clamp(1.25rem,4vw,2rem); }
   .brand{ font-family:"Amiri",serif; font-size:clamp(2.6rem,8vw,4rem); font-weight:700; line-height:1.1; }
   .brand::after{ content:""; display:block; width:56px; height:3px; background:var(--ochre); margin:.9rem auto 0; border-radius:2px; }
   .tagline{ color:var(--muted); font-size:clamp(.95rem,2.5vw,1.1rem); margin-top:.9rem; }
-
-  .presence{ display:inline-flex; align-items:center; gap:.45rem; margin-top:1rem; font-size:.85rem;
-    color:var(--muted); background:var(--card); border:1px solid var(--line); border-radius:999px; padding:.35rem .9rem; }
+  .presence{ display:inline-flex; align-items:center; gap:.45rem; margin-top:1rem; font-size:.85rem; color:var(--muted); background:var(--card); border:1px solid var(--line); border-radius:999px; padding:.35rem .9rem; }
   .presence .live{ width:8px; height:8px; border-radius:50%; background:#4caf50; animation:pulse 2s infinite; }
   @keyframes pulse{ 0%{box-shadow:0 0 0 0 rgba(76,175,80,.5)} 70%{box-shadow:0 0 0 7px rgba(76,175,80,0)} 100%{box-shadow:0 0 0 0 rgba(76,175,80,0)} }
 
-  .search{ position:relative; max-width:520px; margin:clamp(1.25rem,4vw,2rem) auto 1.1rem; }
-  .search input{ width:100%; font-family:"Tajawal",sans-serif; font-size:1.05rem; color:var(--ink);
-    background:var(--card); border:1px solid var(--line); border-radius:14px; padding:.9rem 3rem .9rem 1.1rem; transition:border-color .2s,box-shadow .2s; }
+  /* لافتة اقتباس اليوم */
+  .daily{ position:relative; border-radius:20px; overflow:hidden; margin:0 0 clamp(1.75rem,5vw,2.75rem); min-height:300px;
+    display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;
+    padding:clamp(2rem,6vw,3.5rem) clamp(1.5rem,5vw,3rem); color:#fff; background-size:cover; background-position:center; }
+  .daily .eyebrow{ font-size:.78rem; letter-spacing:.35em; text-transform:uppercase; margin-bottom:1.2rem; position:relative; z-index:2;
+    background:rgba(0,0,0,.35); padding:.4rem 1.1rem; border-radius:999px; }
+  .daily .dtext{ font-family:"Amiri",serif; font-style:italic; font-size:clamp(1.6rem,4.5vw,2.5rem); line-height:1.6; font-weight:500;
+    max-width:24ch; text-shadow:0 2px 14px rgba(0,0,0,.6); position:relative; z-index:2; margin-bottom:1.1rem; }
+  .daily .dauthor{ font-weight:700; font-size:1.1rem; text-shadow:0 1px 8px rgba(0,0,0,.7); position:relative; z-index:2; cursor:pointer; border-bottom:1px dashed rgba(255,255,255,.5); }
+
+  .search{ position:relative; max-width:520px; margin:0 auto 1.1rem; }
+  .search input{ width:100%; font-family:"Tajawal",sans-serif; font-size:1.05rem; color:var(--ink); background:var(--card); border:1px solid var(--line); border-radius:14px; padding:.9rem 3rem .9rem 1.1rem; transition:border-color .2s,box-shadow .2s; }
   .search input::placeholder{ color:#b3aa9c; }
   .search input:focus{ outline:none; border-color:var(--lapis); box-shadow:0 0 0 3px rgba(39,92,134,.15); }
   .search .icon{ position:absolute; inset-inline-end:1.1rem; top:50%; transform:translateY(-50%); color:var(--muted); pointer-events:none; }
 
   .filters{ display:flex; flex-wrap:wrap; gap:.55rem; justify-content:center; margin-bottom:1.5rem; }
-  .chip{ font-family:"Tajawal",sans-serif; font-size:.92rem; font-weight:500; color:var(--ink);
-    background:var(--card); border:1px solid var(--line); border-radius:999px; padding:.45rem 1.15rem; cursor:pointer; transition:background .2s,color .2s,border-color .2s; }
+  .chip{ font-family:"Tajawal",sans-serif; font-size:.92rem; font-weight:500; color:var(--ink); background:var(--card); border:1px solid var(--line); border-radius:999px; padding:.45rem 1.15rem; cursor:pointer; transition:background .2s,color .2s,border-color .2s; }
   .chip:hover{ border-color:var(--lapis); }
   .chip.active{ background:var(--lapis); color:#fff; border-color:var(--lapis); }
   .chip:focus-visible{ outline:2px solid var(--lapis); outline-offset:2px; }
@@ -45,23 +50,19 @@
   .count{ text-align:center; color:var(--muted); font-size:.9rem; margin-bottom:1.5rem; }
   .grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1.3rem; }
 
-  .qcard{ background:var(--card); border:1px solid var(--line); border-radius:16px; overflow:hidden;
-    display:flex; flex-direction:column; box-shadow:0 4px 14px rgba(43,38,33,.05); transition:transform .18s,box-shadow .18s; }
+  .qcard{ background:var(--card); border:1px solid var(--line); border-radius:16px; overflow:hidden; display:flex; flex-direction:column; box-shadow:0 4px 14px rgba(43,38,33,.05); transition:transform .18s,box-shadow .18s; }
   .qcard:hover{ transform:translateY(-3px); box-shadow:0 16px 34px rgba(43,38,33,.13); }
-
-  .qhead{ position:relative; min-height:250px; padding:1.5rem 1.4rem 1.35rem; display:flex; flex-direction:column;
-    justify-content:flex-end; color:#fff; background-size:cover; background-position:center; }
+  .qhead{ position:relative; min-height:250px; padding:1.5rem 1.4rem 1.35rem; display:flex; flex-direction:column; justify-content:flex-end; color:#fff; background-size:cover; background-position:center; }
   .qmark{ font-family:"Amiri",serif; font-size:3.2rem; line-height:.1; color:#fff; opacity:.5; position:absolute; top:1rem; inset-inline-end:1.3rem; user-select:none; }
   .qtext{ font-family:"Amiri",serif; font-size:1.45rem; line-height:1.75; font-weight:500; text-shadow:0 1px 10px rgba(0,0,0,.6); margin-bottom:.9rem; position:relative; z-index:2; }
   .qmeta{ display:flex; align-items:center; justify-content:space-between; gap:.75rem; position:relative; z-index:2; }
-  .author{ font-family:"Tajawal",sans-serif; font-weight:700; font-size:1rem; text-shadow:0 1px 8px rgba(0,0,0,.7); }
+  .author{ font-family:"Tajawal",sans-serif; font-weight:700; font-size:1rem; text-shadow:0 1px 8px rgba(0,0,0,.7); cursor:pointer; border-bottom:1px dashed rgba(255,255,255,.45); }
   .cat{ display:inline-flex; align-items:center; gap:.4rem; font-size:.8rem; color:#fff; background:rgba(0,0,0,.4); border-radius:999px; padding:.2rem .7rem; white-space:nowrap; }
   .cat .dot{ width:8px; height:8px; border-radius:50%; background:currentColor; }
 
   .qbody{ padding:.95rem 1.1rem 1.1rem; }
   .actions{ display:flex; align-items:center; gap:.35rem; flex-wrap:wrap; }
-  .act{ display:inline-flex; align-items:center; gap:.35rem; font-family:"Tajawal",sans-serif; font-size:.82rem;
-    color:var(--muted); background:transparent; border:1px solid var(--line); border-radius:999px; padding:.32rem .7rem; cursor:pointer; transition:all .15s; text-decoration:none; }
+  .act{ display:inline-flex; align-items:center; gap:.35rem; font-family:"Tajawal",sans-serif; font-size:.82rem; color:var(--muted); background:transparent; border:1px solid var(--line); border-radius:999px; padding:.32rem .7rem; cursor:pointer; transition:all .15s; text-decoration:none; }
   .act:hover{ border-color:var(--lapis); color:var(--lapis); }
   .act.liked{ color:var(--c-hob); border-color:var(--c-hob); }
   .act svg{ width:15px; height:15px; }
@@ -91,8 +92,20 @@
 
   footer{ text-align:center; color:var(--muted); font-size:.85rem; margin-top:3rem; }
   footer .credit{ display:block; margin-top:.4rem; font-size:.78rem; }
-  .toast{ position:fixed; bottom:20px; inset-inline-start:50%; transform:translateX(50%); background:var(--ink); color:#fff; padding:.6rem 1.2rem; border-radius:10px; font-size:.9rem; opacity:0; pointer-events:none; transition:opacity .3s; z-index:50; }
+  .toast{ position:fixed; bottom:20px; inset-inline-start:50%; transform:translateX(50%); background:var(--ink); color:#fff; padding:.6rem 1.2rem; border-radius:10px; font-size:.9rem; opacity:0; pointer-events:none; transition:opacity .3s; z-index:60; }
   .toast.show{ opacity:1; }
+
+  /* نافذة الكاتب */
+  .modal{ position:fixed; inset:0; background:rgba(20,14,8,.6); display:none; align-items:center; justify-content:center; padding:1.25rem; z-index:70; }
+  .modal.open{ display:flex; }
+  .modal-box{ background:var(--card); border-radius:18px; max-width:640px; width:100%; max-height:88vh; overflow-y:auto; padding:1.9rem 1.7rem; position:relative; box-shadow:0 30px 70px rgba(0,0,0,.4); }
+  .modal-close{ position:absolute; top:.9rem; inset-inline-start:1.1rem; background:none; border:none; font-size:1.6rem; color:var(--muted); cursor:pointer; line-height:1; }
+  .modal-name{ font-family:"Amiri",serif; font-size:2rem; font-weight:700; margin-bottom:.2rem; }
+  .modal-era{ color:var(--ochre); font-size:.9rem; margin-bottom:1rem; font-weight:500; }
+  .modal-bio{ color:var(--ink); font-size:1rem; line-height:1.9; margin-bottom:1.4rem; padding-bottom:1.2rem; border-bottom:1px solid var(--line); }
+  .modal-sub{ font-weight:700; margin-bottom:.7rem; color:var(--lapis); }
+  .modal-q{ font-family:"Amiri",serif; font-size:1.15rem; line-height:1.8; padding:.7rem .9rem; background:var(--paper); border-radius:10px; margin-bottom:.6rem; border-inline-start:3px solid var(--ochre); }
+
   @media (prefers-reduced-motion:reduce){ .qcard{ transition:none; } .presence .live{ animation:none; } }
 </style>
 </head>
@@ -105,6 +118,9 @@
         <span class="live"></span><span id="presenceCount">…</span> متصل الآن
       </div>
     </header>
+
+    <!-- لافتة اقتباس اليوم -->
+    <section class="daily" id="daily"></section>
 
     <div class="search">
       <input id="search" type="text" placeholder="ابحث عن كلمة أو اسم كاتب…" aria-label="بحث">
@@ -129,20 +145,30 @@
       <span class="credit">اللوحات والمنمنمات من التراث العالمي (ملكية عامة) عبر Wikimedia Commons</span>
     </footer>
   </div>
+
+  <!-- نافذة الكاتب -->
+  <div class="modal" id="authorModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeAuthor()" aria-label="إغلاق">&times;</button>
+      <h2 class="modal-name" id="mName"></h2>
+      <div class="modal-era" id="mEra"></div>
+      <p class="modal-bio" id="mBio"></p>
+      <div class="modal-sub">من أقواله في هذا الموقع:</div>
+      <div id="mQuotes"></div>
+    </div>
+  </div>
+
   <div class="toast" id="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  /* ═══ رابط ومفتاح Supabase ═══ */
+  /* ═══ Supabase ═══ */
   const SUPABASE_URL = "https://felzsezfkdtnvvdbqwbr.supabase.co";
   const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZlbHpzZXpma2R0bnZ2ZGJxd2JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUwMDU5NjMsImV4cCI6MjEwMDU4MTk2M30.I3TozJX0HZozrRSw4FqNuwJjG726ZWyJot7fTmYsWf4";
-  /* ═══════════════════════════ */
   const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  /* صور تراثية (ملكية عامة) من Wikimedia — لوحات استشراقية + منمنمات إسلامية */
-  function wm(file, w){ return "https://commons.wikimedia.org/wiki/Special:FilePath/" + encodeURIComponent(file) + "?width=" + (w||1000); }
+  function wm(file,w){ return "https://commons.wikimedia.org/wiki/Special:FilePath/"+encodeURIComponent(file)+"?width="+(w||1000); }
 
-  /* ───── الاقتباسات — لكل واحد صورة تراثية تناسبه ───── */
   const quotes = [
     { id:"q1",  text:"على قدرِ أهلِ العزمِ تأتي العزائمُ، وتأتي على قدرِ الكرامِ المكارمُ.", author:"المتنبي", cat:"حكمة", img:wm("The Palace Guard by Ludwig Deutsch, 1900.jpg") },
     { id:"q2",  text:"الخيلُ والليلُ والبيداءُ تعرفني، والسيفُ والرمحُ والقرطاسُ والقلمُ.", author:"المتنبي", cat:"أدب", img:wm("Maqama 43 Abu Zayd and al-Harith travelling.jpg") },
@@ -162,60 +188,69 @@
     { id:"q16", text:"أمرُّ على الديارِ ديارِ ليلى، أُقبّلُ ذا الجدارَ وذا الجدارا.", author:"قيس بن الملوّح", cat:"حب", img:wm("Slaves Zadib Yemen 13th century BNF Paris.jpg") },
   ];
 
-  const catColors = { "حكمة":"var(--c-hikma)","فلسفة":"var(--c-falsafa)","أدب":"var(--c-adab)","حب":"var(--c-hob)","حياة":"var(--c-hayat)" };
-  const catHex    = { "حكمة":"#275c86","فلسفة":"#6a4a73","أدب":"#b08842","حب":"#a85d57","حياة":"#5e7a5a" };
+  /* سِيَر موجزة — راجعها وعدّلها كما تشاء */
+  const authors = {
+    "المتنبي":{ era:"شاعر عربي · 915–965م", bio:"أبو الطيب المتنبي، أعظم شعراء العربية وأكثرهم حكمةً وفخراً. وُلد في الكوفة، وتنقّل بين بلاطات الأمراء، ولازم سيف الدولة الحمداني في حلب. اشتهر بحكمته العميقة وعزّة نفسه، وقُتل قرب بغداد. شعره مدرسة في الاعتزاز والفلسفة والحكمة." },
+    "الإمام الشافعي":{ era:"فقيه وشاعر · 767–820م", bio:"محمد بن إدريس الشافعي، مؤسّس المذهب الشافعي وأحد أعظم فقهاء الإسلام. جمع بين الفقه والأدب، وله ديوان شعر مليء بالحكمة والمواعظ في طلب العلم والصبر ومكارم الأخلاق." },
+    "علي بن أبي طالب":{ era:"خليفة وإمام · 601–661م", bio:"رابع الخلفاء الراشدين وابن عمّ النبي، اشتهر بالبلاغة والحكمة. تُنسب إليه أقوال وخطب جُمع كثير منها في «نهج البلاغة»، وتُعدّ من أرفع نصوص الحكمة في التراث العربي." },
+    "جبران خليل جبران":{ era:"أديب ورسّام · 1883–1931م", bio:"أديب وفيلسوف ورسّام لبناني أمريكي، من روّاد المهجر. كتب بالعربية والإنجليزية، وأشهر أعماله «النبي». يمتاز أسلوبه بالتأمّل الروحي والصور الشعرية العميقة عن الحب والحرية والوجود." },
+    "سقراط":{ era:"فيلسوف يوناني · 470–399 ق.م", bio:"أبو الفلسفة الغربية، عاش في أثينا ولم يكتب شيئاً، وعرفناه عبر تلميذه أفلاطون. اشتهر بمنهج السؤال والحوار سعياً للحقيقة ومعرفة النفس. حُكم عليه بالإعدام بتهمة إفساد الشباب، فشرب السمّ ثابتاً على مبادئه." },
+    "أرسطو":{ era:"فيلسوف يوناني · 384–322 ق.م", bio:"تلميذ أفلاطون ومعلّم الإسكندر الأكبر، ومؤسّس المنطق والعلوم الطبيعية. أثّر فكره في الحضارة الإسلامية والأوروبية قروناً، حتى لُقّب عند العرب بـ«المعلّم الأول»." },
+    "أفلاطون":{ era:"فيلسوف يوناني · 428–348 ق.م", bio:"تلميذ سقراط ومعلّم أرسطو، أسّس «الأكاديمية» في أثينا. صاغ فلسفته في محاورات خالدة، وطرح نظرية «المُثُل» ومدينته الفاضلة في كتاب «الجمهورية»." },
+    "نيتشه":{ era:"فيلسوف ألماني · 1844–1900م", bio:"فريدريك نيتشه، من أعمق فلاسفة القرن التاسع عشر وأكثرهم إثارةً للجدل. تناول الأخلاق والقيم وإرادة القوة و«الإنسان الأعلى». أثّر أسلوبه الشعري وأفكاره في الفلسفة والأدب الحديثين." },
+    "ديكارت":{ era:"فيلسوف فرنسي · 1596–1650م", bio:"رينيه ديكارت، أبو الفلسفة الحديثة وعالم رياضيات. بدأ بالشكّ في كل شيء ليصل إلى يقين «أنا أفكّر، إذاً أنا موجود». وضع أسس المنهج العقلي والهندسة التحليلية." },
+    "ابن رشد":{ era:"فيلسوف أندلسي · 1126–1198م", bio:"أبو الوليد ابن رشد، فيلسوف وطبيب وقاضٍ من قرطبة. اشتهر بشروحه لأرسطو التي نقلت الفلسفة إلى أوروبا، ودافع عن التوفيق بين الحكمة والشريعة. يُعدّ من أعظم عقول الأندلس." },
+    "قيس بن الملوّح":{ era:"شاعر عربي · توفي نحو 688م", bio:"المعروف بـ«مجنون ليلى»، شاعر عذريّ من بني عامر. اشتهر بحبّه العفيف لليلى الذي مُنع من الزواج بها، فهام في البادية ينظم أرقّ أشعار الحبّ في التراث العربي." },
+  };
 
-  const PATTERN = "data:image/svg+xml," + encodeURIComponent(
-    "<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><g fill='none' stroke='#ffffff' stroke-opacity='0.18' stroke-width='1.3'><rect x='16' y='16' width='32' height='32'/><rect x='16' y='16' width='32' height='32' transform='rotate(45 32 32)'/><circle cx='32' cy='32' r='3'/></g></svg>");
+  const catColors={ "حكمة":"var(--c-hikma)","فلسفة":"var(--c-falsafa)","أدب":"var(--c-adab)","حب":"var(--c-hob)","حياة":"var(--c-hayat)" };
+  const catHex={ "حكمة":"#275c86","فلسفة":"#6a4a73","أدب":"#b08842","حب":"#a85d57","حياة":"#5e7a5a" };
+  const PATTERN="data:image/svg+xml,"+encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><g fill='none' stroke='#ffffff' stroke-opacity='0.18' stroke-width='1.3'><rect x='16' y='16' width='32' height='32'/><rect x='16' y='16' width='32' height='32' transform='rotate(45 32 32)'/><circle cx='32' cy='32' r='3'/></g></svg>");
 
   function norm(s){ return s.replace(/[\u064B-\u0652\u0670\u0640]/g,"").replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه").trim(); }
+  function esc(s){ return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
 
-  const grid=document.getElementById("grid"), filters=document.getElementById("filters"),
-        countEl=document.getElementById("count"), searchI=document.getElementById("search"), toast=document.getElementById("toast");
-  let activeCat="الكل", term="";
-  let likeCounts={}, likedByMe={};
+  const grid=document.getElementById("grid"), filters=document.getElementById("filters"), countEl=document.getElementById("count"),
+        searchI=document.getElementById("search"), toast=document.getElementById("toast");
+  let activeCat="الكل", term="", likeCounts={}, likedByMe={};
+
+  function showToast(m){ toast.textContent=m; toast.classList.add("show"); setTimeout(()=>toast.classList.remove("show"),1800); }
+  function headBg(q){ const hex=catHex[q.cat]||"#275c86";
+    if(q.img) return "background-color:"+hex+";background-image:linear-gradient(rgba(20,14,8,.30),rgba(20,14,8,.68)),url('"+q.img+"');";
+    return "background-color:"+hex+";background-image:linear-gradient(rgba(20,14,8,.22),rgba(20,14,8,.5)),url(\""+PATTERN+"\");"; }
+
+  /* اقتباس اليوم — يتغيّر يومياً بحسب رقم اليوم */
+  function renderDaily(){
+    const day=Math.floor(Date.now()/86400000);
+    const q=quotes[day%quotes.length];
+    const el=document.getElementById("daily");
+    el.setAttribute("style", headBg(q));
+    el.innerHTML=`<span class="eyebrow">اقتباس اليوم</span>
+      <div class="dtext">${esc(q.text)}</div>
+      <div class="dauthor" onclick="openAuthor('${esc(q.author)}')">${esc(q.author)}</div>`;
+  }
 
   const cats=["الكل",...Object.keys(catColors)];
-  cats.forEach(c=>{ const b=document.createElement("button");
-    b.className="chip"+(c==="الكل"?" active":""); b.textContent=c;
+  cats.forEach(c=>{ const b=document.createElement("button"); b.className="chip"+(c==="الكل"?" active":""); b.textContent=c;
     b.addEventListener("click",()=>{ activeCat=c; document.querySelectorAll(".chip").forEach(x=>x.classList.remove("active")); b.classList.add("active"); render(); });
     filters.appendChild(b); });
 
-  function showToast(msg){ toast.textContent=msg; toast.classList.add("show"); setTimeout(()=>toast.classList.remove("show"),1800); }
-  function esc(s){ return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
-
-  function headBg(q){
-    const hex=catHex[q.cat]||"#275c86";
-    if(q.img){
-      return "background-color:"+hex+";background-image:linear-gradient(rgba(20,14,8,.30),rgba(20,14,8,.68)),url('"+q.img+"');";
-    }
-    return "background-color:"+hex+";background-image:linear-gradient(rgba(20,14,8,.22),rgba(20,14,8,.5)),url(\""+PATTERN+"\");";
-  }
-
   function card(q){
-    const likes=likeCounts[q.id]||0;
-    const liked=likedByMe[q.id]?" liked":"";
-    const shareUrl=encodeURIComponent(location.href);
-    return `
-    <article class="qcard">
+    const likes=likeCounts[q.id]||0, liked=likedByMe[q.id]?" liked":"", shareUrl=encodeURIComponent(location.href);
+    return `<article class="qcard">
       <div class="qhead" style="${headBg(q)}">
         <div class="qmark" aria-hidden="true">&rdquo;</div>
         <p class="qtext">${esc(q.text)}</p>
         <div class="qmeta">
-          <span class="author">${esc(q.author)}</span>
+          <span class="author" onclick="openAuthor('${esc(q.author)}')">${esc(q.author)}</span>
           <span class="cat"><span class="dot"></span>${q.cat}</span>
         </div>
       </div>
       <div class="qbody">
         <div class="actions">
-          <button class="act${liked}" onclick="toggleLike('${q.id}')" aria-label="إعجاب">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9.3C.4 8 2 4.5 5.2 4.5c2 0 3.3 1.2 4.1 2.4C10.5 5.7 11.8 4.5 13.8 4.5 17 4.5 18.6 8 17 11.7 14.5 16.4 12 21 12 21z"/></svg>
-            <span id="lc-${q.id}">${likes}</span>
-          </button>
+          <button class="act${liked}" onclick="toggleLike('${q.id}')" aria-label="إعجاب"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9.3C.4 8 2 4.5 5.2 4.5c2 0 3.3 1.2 4.1 2.4C10.5 5.7 11.8 4.5 13.8 4.5 17 4.5 18.6 8 17 11.7 14.5 16.4 12 21 12 21z"/></svg><span id="lc-${q.id}">${likes}</span></button>
           <button class="act" onclick="toggleComments('${q.id}')">💬 <span id="cc-${q.id}">تعليق</span></button>
-          <a class="act fb" href="https://www.facebook.com/sharer/sharer.php?u=${shareUrl}" target="_blank" rel="noopener" aria-label="فيسبوك">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h2.7l.4-3H13V9c0-.9.3-1.5 1.6-1.5H16V4.8c-.3 0-1.2-.1-2.2-.1-2.2 0-3.8 1.4-3.8 3.9V11H7.5v3H10v8h3z"/></svg>
-          </a>
+          <a class="act fb" href="https://www.facebook.com/sharer/sharer.php?u=${shareUrl}" target="_blank" rel="noopener" aria-label="فيسبوك"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h2.7l.4-3H13V9c0-.9.3-1.5 1.6-1.5H16V4.8c-.3 0-1.2-.1-2.2-.1-2.2 0-3.8 1.4-3.8 3.9V11H7.5v3H10v8h3z"/></svg></a>
           <button class="act" onclick="copyQuote('${q.id}')">📋 نسخ</button>
         </div>
         <div class="comments" id="cm-${q.id}">
@@ -232,75 +267,56 @@
 
   function render(){
     const t=norm(term);
-    const list=quotes.filter(q=>{
-      const mc=activeCat==="الكل"||q.cat===activeCat;
-      const mt=!t||norm(q.text).includes(t)||norm(q.author).includes(t);
-      return mc&&mt;
-    });
+    const list=quotes.filter(q=>{ const mc=activeCat==="الكل"||q.cat===activeCat; const mt=!t||norm(q.text).includes(t)||norm(q.author).includes(t); return mc&&mt; });
     if(!list.length){ grid.innerHTML='<p class="empty">لا توجد اقتباساتٌ مطابقة… جرّب كلمةً أخرى.</p>'; countEl.textContent=""; return; }
-    grid.innerHTML=list.map(card).join("");
-    countEl.textContent=list.length+" اقتباس";
+    grid.innerHTML=list.map(card).join(""); countEl.textContent=list.length+" اقتباس";
   }
   searchI.addEventListener("input",e=>{ term=e.target.value; render(); });
 
-  async function loadLikes(){
-    try{ const {data}=await db.from("likes").select("quote_id,count");
-      (data||[]).forEach(r=>likeCounts[r.quote_id]=r.count);
-      try{ likedByMe=JSON.parse(localStorage.getItem("likedByMe")||"{}"); }catch(e){ likedByMe={}; }
-    }catch(e){ console.warn("likes:",e); }
+  /* نافذة الكاتب */
+  function openAuthor(name){
+    const a=authors[name]; const modal=document.getElementById("authorModal");
+    document.getElementById("mName").textContent=name;
+    document.getElementById("mEra").textContent=a?a.era:"";
+    document.getElementById("mBio").textContent=a?a.bio:"لا تتوفّر سيرة بعد.";
+    const his=quotes.filter(q=>q.author===name);
+    document.getElementById("mQuotes").innerHTML=his.map(q=>`<div class="modal-q">${esc(q.text)}</div>`).join("");
+    modal.classList.add("open");
   }
-  async function toggleLike(id){
-    if(likedByMe[id]){ showToast("أعجبك هذا مسبقاً"); return; }
-    likeCounts[id]=(likeCounts[id]||0)+1; likedByMe[id]=true;
-    localStorage.setItem("likedByMe",JSON.stringify(likedByMe));
-    const el=document.getElementById("lc-"+id); if(el) el.textContent=likeCounts[id];
-    const btn=el&&el.closest(".act"); if(btn) btn.classList.add("liked");
-    try{ await db.from("likes").upsert({quote_id:id,count:likeCounts[id]},{onConflict:"quote_id"}); }
-    catch(e){ console.warn("like:",e); showToast("تعذّر الحفظ"); }
-  }
+  function closeAuthor(){ document.getElementById("authorModal").classList.remove("open"); }
+  document.getElementById("authorModal").addEventListener("click",e=>{ if(e.target.id==="authorModal") closeAuthor(); });
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeAuthor(); });
+
+  async function loadLikes(){ try{ const {data}=await db.from("likes").select("quote_id,count"); (data||[]).forEach(r=>likeCounts[r.quote_id]=r.count);
+    try{ likedByMe=JSON.parse(localStorage.getItem("likedByMe")||"{}"); }catch(e){ likedByMe={}; } }catch(e){ console.warn("likes:",e); } }
+  async function toggleLike(id){ if(likedByMe[id]){ showToast("أعجبك هذا مسبقاً"); return; }
+    likeCounts[id]=(likeCounts[id]||0)+1; likedByMe[id]=true; localStorage.setItem("likedByMe",JSON.stringify(likedByMe));
+    const el=document.getElementById("lc-"+id); if(el) el.textContent=likeCounts[id]; const btn=el&&el.closest(".act"); if(btn) btn.classList.add("liked");
+    try{ await db.from("likes").upsert({quote_id:id,count:likeCounts[id]},{onConflict:"quote_id"}); }catch(e){ console.warn("like:",e); showToast("تعذّر الحفظ"); } }
   async function toggleComments(id){ const box=document.getElementById("cm-"+id); box.classList.toggle("open"); if(box.classList.contains("open")) loadComments(id); }
-  async function loadComments(id){
-    const list=document.getElementById("cl-"+id);
-    try{ const {data,error}=await db.from("comments").select("name,body,created_at").eq("quote_id",id).order("created_at",{ascending:true});
-      if(error) throw error; renderComments(id,data||[]);
-    }catch(e){ console.warn("comments:",e); list.innerHTML='<div class="cempty">تعذّر تحميل التعليقات</div>'; }
-  }
-  function renderComments(id,rows){
-    const list=document.getElementById("cl-"+id);
+  async function loadComments(id){ const list=document.getElementById("cl-"+id);
+    try{ const {data,error}=await db.from("comments").select("name,body,created_at").eq("quote_id",id).order("created_at",{ascending:true}); if(error) throw error; renderComments(id,data||[]); }
+    catch(e){ console.warn("comments:",e); list.innerHTML='<div class="cempty">تعذّر تحميل التعليقات</div>'; } }
+  function renderComments(id,rows){ const list=document.getElementById("cl-"+id);
     if(!rows.length){ list.innerHTML='<div class="cempty">لا توجد تعليقات بعد — كن أوّل من يعلّق</div>'; return; }
     list.innerHTML=rows.map(r=>`<div class="citem"><div class="cname">${esc(r.name||"زائر")}</div><div>${esc(r.body)}</div></div>`).join("");
-    const cc=document.getElementById("cc-"+id); if(cc) cc.textContent=rows.length+" تعليق";
-  }
-  async function addComment(id){
-    const nameEl=document.getElementById("cn-"+id), bodyEl=document.getElementById("cb-"+id);
-    const name=(nameEl.value||"").trim()||"زائر", body=(bodyEl.value||"").trim();
-    if(!body){ showToast("اكتب تعليقاً أولاً"); return; } bodyEl.value="";
-    try{ await db.from("comments").insert({name,body,quote_id:id}); loadComments(id); showToast("تمّ نشر تعليقك ✔"); }
-    catch(e){ console.warn("comment:",e); showToast("تعذّر النشر"); }
-  }
-  function copyQuote(id){ const q=quotes.find(x=>x.id===id); if(!q) return;
-    navigator.clipboard.writeText(`"${q.text}" — ${q.author}`).then(()=>showToast("نُسخ الاقتباس 📋")).catch(()=>showToast("تعذّر النسخ")); }
+    const cc=document.getElementById("cc-"+id); if(cc) cc.textContent=rows.length+" تعليق"; }
+  async function addComment(id){ const nameEl=document.getElementById("cn-"+id), bodyEl=document.getElementById("cb-"+id);
+    const name=(nameEl.value||"").trim()||"زائر", body=(bodyEl.value||"").trim(); if(!body){ showToast("اكتب تعليقاً أولاً"); return; } bodyEl.value="";
+    try{ await db.from("comments").insert({name,body,quote_id:id}); loadComments(id); showToast("تمّ نشر تعليقك ✔"); }catch(e){ console.warn("comment:",e); showToast("تعذّر النشر"); } }
+  function copyQuote(id){ const q=quotes.find(x=>x.id===id); if(!q) return; navigator.clipboard.writeText(`"${q.text}" — ${q.author}`).then(()=>showToast("نُسخ الاقتباس 📋")).catch(()=>showToast("تعذّر النسخ")); }
 
-  document.getElementById("sgSend").addEventListener("click",async()=>{
-    const name=document.getElementById("sgName").value.trim(); const body=document.getElementById("sgBody").value.trim();
-    if(!body){ showToast("اكتب اقتراحك أولاً"); return; }
-    const btn=document.getElementById("sgSend"); btn.disabled=true;
-    try{ await db.from("suggestions").insert({name:name||null,body});
-      document.getElementById("sgBody").value=""; document.getElementById("sgName").value="";
-      document.getElementById("sgThanks").style.display="block";
-    }catch(e){ console.warn("suggestion:",e); showToast("تعذّر الإرسال"); } btn.disabled=false;
-  });
+  document.getElementById("sgSend").addEventListener("click",async()=>{ const name=document.getElementById("sgName").value.trim(); const body=document.getElementById("sgBody").value.trim();
+    if(!body){ showToast("اكتب اقتراحك أولاً"); return; } const btn=document.getElementById("sgSend"); btn.disabled=true;
+    try{ await db.from("suggestions").insert({name:name||null,body}); document.getElementById("sgBody").value=""; document.getElementById("sgName").value=""; document.getElementById("sgThanks").style.display="block"; }
+    catch(e){ console.warn("suggestion:",e); showToast("تعذّر الإرسال"); } btn.disabled=false; });
 
-  function startPresence(){
-    try{ const ch=db.channel("online",{config:{presence:{key:Math.random().toString(36).slice(2)}}});
-      ch.on("presence",{event:"sync"},()=>{ const n=Object.keys(ch.presenceState()).length; document.getElementById("presenceCount").textContent=n||1; })
-        .subscribe(async(status)=>{ if(status==="SUBSCRIBED") await ch.track({t:Date.now()}); });
-    }catch(e){ document.getElementById("presence").style.display="none"; }
-  }
+  function startPresence(){ try{ const ch=db.channel("online",{config:{presence:{key:Math.random().toString(36).slice(2)}}});
+    ch.on("presence",{event:"sync"},()=>{ const n=Object.keys(ch.presenceState()).length; document.getElementById("presenceCount").textContent=n||1; })
+      .subscribe(async(s)=>{ if(s==="SUBSCRIBED") await ch.track({t:Date.now()}); }); }catch(e){ document.getElementById("presence").style.display="none"; } }
 
-  (async function init(){ render();
-    if(SUPABASE_URL.startsWith("http")){ await loadLikes(); render(); startPresence(); }
-    else{ document.getElementById("presence").style.display="none"; }
+  (async function init(){ renderDaily(); render();
+    if(SUPABASE_URL.startsWith("http")){ await loadLikes(); render(); startPresence(); } else { document.getElementById("presence").style.display="none"; }
   })();
 </script>
 </body>

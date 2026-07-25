@@ -1,236 +1,326 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reflections — Wisdom from the Philosophers</title>
+<title>مُقتبَس — اقتباسات من الأدباء والفلاسفة</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:        #0e1428;
-    --ink-lift:   #171f3d;
-    --parchment:  #ece4d3;
-    --brass:      #c8a44d;
-    --muted:      #8b93b0;
+    --paper:  #ece8de;
+    --card:   #fbf9f3;
+    --ink:    #2b2621;
+    --lapis:  #275c86;
+    --ochre:  #b08842;
+    --muted:  #8a8073;
+    --line:   #e0d9cb;
+
+    --c-hikma:   #275c86;
+    --c-falsafa: #6a4a73;
+    --c-adab:    #b08842;
+    --c-hob:     #a85d57;
+    --c-hayat:   #5e7a5a;
   }
 
   *{ box-sizing:border-box; margin:0; padding:0; }
 
-  html,body{ height:100%; }
-
   body{
-    font-family:"Inter", system-ui, sans-serif;
-    color:var(--parchment);
-    background:
-      radial-gradient(1200px 700px at 50% -10%, var(--ink-lift), transparent 60%),
-      radial-gradient(900px 600px at 85% 110%, #1b2447, transparent 55%),
-      var(--ink);
-    min-height:100%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:clamp(1.5rem, 5vw, 4rem);
-    overflow-x:hidden;
+    font-family:"Tajawal", system-ui, sans-serif;
+    color:var(--ink);
+    background:var(--paper);
+    line-height:1.6;
+    min-height:100vh;
+    padding:clamp(1.25rem, 4vw, 3rem);
   }
 
-  /* faint starfield */
-  body::before{
+  .wrap{ max-width:1100px; margin:0 auto; }
+
+  header{ text-align:center; margin-bottom:clamp(1.5rem,4vw,2.5rem); }
+
+  .brand{
+    font-family:"Amiri", serif;
+    font-size:clamp(2.6rem, 8vw, 4rem);
+    font-weight:700;
+    color:var(--ink);
+    line-height:1.1;
+  }
+  .brand::after{
     content:"";
-    position:fixed; inset:0;
-    background-image:
-      radial-gradient(1px 1px at 20% 30%, rgba(236,228,211,.5), transparent),
-      radial-gradient(1px 1px at 70% 20%, rgba(236,228,211,.35), transparent),
-      radial-gradient(1px 1px at 40% 75%, rgba(236,228,211,.4), transparent),
-      radial-gradient(1px 1px at 85% 65%, rgba(236,228,211,.3), transparent),
-      radial-gradient(1px 1px at 10% 85%, rgba(236,228,211,.3), transparent),
-      radial-gradient(1px 1px at 60% 50%, rgba(236,228,211,.25), transparent);
+    display:block;
+    width:56px; height:3px;
+    background:var(--ochre);
+    margin:.9rem auto 0;
+    border-radius:2px;
+  }
+  .tagline{
+    color:var(--muted);
+    font-size:clamp(.95rem,2.5vw,1.1rem);
+    margin-top:.9rem;
+  }
+
+  .search{
+    position:relative;
+    max-width:520px;
+    margin:clamp(1.5rem,4vw,2.25rem) auto 1.25rem;
+  }
+  .search input{
+    width:100%;
+    font-family:"Tajawal", sans-serif;
+    font-size:1.05rem;
+    color:var(--ink);
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:.9rem 3rem .9rem 1.1rem;
+    transition:border-color .2s ease, box-shadow .2s ease;
+  }
+  .search input::placeholder{ color:#b3aa9c; }
+  .search input:focus{
+    outline:none;
+    border-color:var(--lapis);
+    box-shadow:0 0 0 3px rgba(39,92,134,.15);
+  }
+  .search .icon{
+    position:absolute;
+    inset-inline-end:1.1rem;
+    top:50%; transform:translateY(-50%);
+    color:var(--muted);
     pointer-events:none;
   }
 
-  .frame{
-    position:relative;
-    width:min(720px, 100%);
-    border:1px solid rgba(200,164,77,.28);
-    border-radius:4px;
-    padding:clamp(2rem, 6vw, 4.5rem) clamp(1.5rem, 6vw, 4rem);
-    background:linear-gradient(180deg, rgba(23,31,61,.55), rgba(14,20,40,.4));
-    box-shadow:0 30px 80px rgba(0,0,0,.45);
-    text-align:center;
+  .filters{
+    display:flex;
+    flex-wrap:wrap;
+    gap:.55rem;
+    justify-content:center;
+    margin-bottom:1.75rem;
   }
-
-  .eyebrow{
-    font-size:.72rem;
-    letter-spacing:.42em;
-    text-transform:uppercase;
-    color:var(--brass);
-    margin-bottom:clamp(1.5rem, 5vw, 2.75rem);
+  .chip{
+    font-family:"Tajawal", sans-serif;
+    font-size:.92rem;
     font-weight:500;
+    color:var(--ink);
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:.45rem 1.15rem;
+    cursor:pointer;
+    transition:background .2s ease, color .2s ease, border-color .2s ease;
+  }
+  .chip:hover{ border-color:var(--lapis); }
+  .chip.active{
+    background:var(--lapis);
+    color:#fff;
+    border-color:var(--lapis);
+  }
+  .chip:focus-visible{ outline:2px solid var(--lapis); outline-offset:2px; }
+
+  .count{
+    text-align:center;
+    color:var(--muted);
+    font-size:.9rem;
+    margin-bottom:1.5rem;
   }
 
-  .mark{
-    font-family:"Cormorant Garamond", serif;
-    font-size:clamp(5rem, 18vw, 9rem);
-    line-height:.4;
-    color:var(--brass);
-    opacity:.32;
-    height:.35em;
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
+    gap:1.15rem;
+  }
+
+  .qcard{
+    position:relative;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:1.6rem 1.5rem 1.35rem;
+    border-inline-start:4px solid var(--cat, var(--lapis));
+    display:flex;
+    flex-direction:column;
+    transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .qcard:hover{
+    transform:translateY(-3px);
+    box-shadow:0 14px 30px rgba(43,38,33,.10);
+  }
+
+  .qmark{
+    font-family:"Amiri", serif;
+    font-size:3rem;
+    line-height:.2;
+    color:var(--ochre);
+    opacity:.4;
+    height:1.1rem;
     user-select:none;
   }
 
-  blockquote{
-    font-family:"Cormorant Garamond", serif;
-    font-style:italic;
-    font-weight:500;
-    font-size:clamp(1.7rem, 5.5vw, 2.9rem);
-    line-height:1.28;
-    margin:clamp(1rem,3vw,1.75rem) auto clamp(1.75rem,4vw,2.5rem);
-    max-width:26ch;
-    transition:opacity .5s ease, transform .5s ease;
+  .qtext{
+    font-family:"Amiri", serif;
+    font-size:1.4rem;
+    line-height:1.7;
+    color:var(--ink);
+    margin:.4rem 0 1.15rem;
+    flex-grow:1;
   }
 
-  .attribution{
-    transition:opacity .5s ease, transform .5s ease;
-  }
-
-  .name{
-    display:block;
-    font-size:1rem;
-    font-weight:600;
-    letter-spacing:.16em;
-    text-transform:uppercase;
-  }
-
-  .era{
-    display:block;
-    margin-top:.5rem;
-    font-size:.78rem;
-    color:var(--muted);
-    letter-spacing:.05em;
-  }
-
-  /* gold divider under attribution */
-  .attribution::before{
-    content:"";
-    display:block;
-    width:34px; height:1px;
-    background:var(--brass);
-    margin:0 auto 1.25rem;
-    opacity:.7;
-  }
-
-  .fading blockquote,
-  .fading .attribution{
-    opacity:0;
-    transform:translateY(6px);
-  }
-
-  footer{
+  .qfoot{
     display:flex;
     align-items:center;
     justify-content:space-between;
-    gap:1rem;
-    margin-top:clamp(2rem, 6vw, 3.25rem);
-    padding-top:1.5rem;
-    border-top:1px solid rgba(236,228,211,.09);
+    gap:.75rem;
+    border-top:1px solid var(--line);
+    padding-top:.85rem;
   }
-
-  button{
-    font-family:"Inter", sans-serif;
-    font-size:.82rem;
-    letter-spacing:.12em;
-    text-transform:uppercase;
-    font-weight:500;
-    color:var(--ink);
-    background:var(--brass);
-    border:none;
-    border-radius:2px;
-    padding:.85rem 1.6rem;
-    cursor:pointer;
-    transition:background .25s ease, transform .1s ease;
-  }
-  button:hover{ background:#dcb85f; }
-  button:active{ transform:translateY(1px); }
-  button:focus-visible{ outline:2px solid var(--parchment); outline-offset:3px; }
-
-  .progress{
-    font-size:.78rem;
-    letter-spacing:.2em;
+  .author{ font-weight:700; font-size:.98rem; color:var(--ink); }
+  .cat{
+    display:inline-flex;
+    align-items:center;
+    gap:.4rem;
+    font-size:.8rem;
     color:var(--muted);
-    font-variant-numeric:tabular-nums;
+    white-space:nowrap;
+  }
+  .cat .dot{
+    width:8px; height:8px; border-radius:50%;
+    background:var(--cat, var(--lapis));
+  }
+
+  .empty{
+    text-align:center;
+    color:var(--muted);
+    padding:3rem 1rem;
+    font-size:1.1rem;
+    grid-column:1 / -1;
+  }
+
+  footer{
+    text-align:center;
+    color:var(--muted);
+    font-size:.85rem;
+    margin-top:3rem;
   }
 
   @media (prefers-reduced-motion: reduce){
-    blockquote, .attribution{ transition:none; }
+    .qcard{ transition:none; }
   }
 </style>
 </head>
 <body>
-  <main class="frame" id="frame">
-    <p class="eyebrow">Reflections</p>
-    <div class="mark" aria-hidden="true">&ldquo;</div>
-    <blockquote id="quote"></blockquote>
-    <div class="attribution">
-      <span class="name" id="name"></span>
-      <span class="era" id="era"></span>
+  <div class="wrap">
+    <header>
+      <h1 class="brand">مُقتبَس</h1>
+      <p class="tagline">مختاراتٌ من حكمة الأدباء والفلاسفة عبر العصور</p>
+    </header>
+
+    <div class="search">
+      <input id="search" type="text" placeholder="ابحث عن كلمة أو اسم كاتب…" aria-label="بحث">
+      <span class="icon" aria-hidden="true">🔍</span>
     </div>
-    <footer>
-      <button id="next" aria-label="Show the next reflection">Next reflection</button>
-      <span class="progress" id="progress"></span>
-    </footer>
-  </main>
+
+    <nav class="filters" id="filters" aria-label="التصنيفات"></nav>
+
+    <p class="count" id="count"></p>
+
+    <main class="grid" id="grid"></main>
+
+    <footer>مجموعة مختارة · تُحدَّث بين الحين والآخر</footer>
+  </div>
 
 <script>
+  // ——— الاقتباسات (أضف ما تشاء هنا) ———
   const quotes = [
-    { q:"The unexamined life is not worth living.", name:"Socrates", era:"Greek philosopher · 470–399 BC" },
-    { q:"You have power over your mind — not outside events. Realize this, and you will find strength.", name:"Marcus Aurelius", era:"Roman emperor · 121–180 AD" },
-    { q:"We suffer more often in imagination than in reality.", name:"Seneca", era:"Roman Stoic · 4 BC–65 AD" },
-    { q:"It is not what happens to you, but how you react to it that matters.", name:"Epictetus", era:"Greek Stoic · 50–135 AD" },
-    { q:"The journey of a thousand miles begins with a single step.", name:"Lao Tzu", era:"Chinese philosopher · 6th century BC" },
-    { q:"It does not matter how slowly you go, so long as you do not stop.", name:"Confucius", era:"Chinese philosopher · 551–479 BC" },
-    { q:"He who has a why to live can bear almost any how.", name:"Friedrich Nietzsche", era:"German philosopher · 1844–1900" },
-    { q:"No man ever steps in the same river twice.", name:"Heraclitus", era:"Greek philosopher · 535–475 BC" },
-    { q:"Knowing yourself is the beginning of all wisdom.", name:"Aristotle", era:"Greek philosopher · 384–322 BC" },
-    { q:"The measure of a man is what he does with power.", name:"Plato", era:"Greek philosopher · 428–348 BC" },
-    { q:"Man conquers the world by conquering himself.", name:"Zeno of Citium", era:"Greek Stoic · 334–262 BC" },
-    { q:"Science is organized knowledge; wisdom is organized life.", name:"Immanuel Kant", era:"German philosopher · 1724–1804" },
-    { q:"No man is free who cannot command himself.", name:"Pythagoras", era:"Greek philosopher · 570–495 BC" },
-    { q:"The memory of a life well spent is eternal.", name:"Cicero", era:"Roman statesman · 106–43 BC" },
+    { text:"على قدرِ أهلِ العزمِ تأتي العزائمُ، وتأتي على قدرِ الكرامِ المكارمُ.", author:"المتنبي", cat:"حكمة" },
+    { text:"الخيلُ والليلُ والبيداءُ تعرفني، والسيفُ والرمحُ والقرطاسُ والقلمُ.", author:"المتنبي", cat:"أدب" },
+    { text:"ذو العقلِ يشقى في النعيمِ بعقلِه، وأخو الجهالةِ في الشقاوةِ ينعمُ.", author:"المتنبي", cat:"حياة" },
+    { text:"وإذا كانت النفوسُ كباراً، تعبتْ في مرادِها الأجسامُ.", author:"المتنبي", cat:"حكمة" },
+    { text:"بقدرِ الكدِّ تُكتسبُ المعالي، ومن طلب العلا سهر الليالي.", author:"الإمام الشافعي", cat:"حكمة" },
+    { text:"قيمةُ كلِّ امرئٍ ما يُحسنُه.", author:"علي بن أبي طالب", cat:"حكمة" },
+    { text:"الناسُ نيامٌ، فإذا ماتوا انتبهوا.", author:"علي بن أبي طالب", cat:"حياة" },
+    { text:"الحقيقةُ تحتاجُ إلى رجلين: واحدٍ لينطقَ بها، وآخرَ ليفهمَها.", author:"جبران خليل جبران", cat:"أدب" },
+    { text:"الحبُّ الذي لا يتجدّدُ كلَّ يومٍ، يصيرُ عادةً ثم يصيرُ عبوديةً.", author:"جبران خليل جبران", cat:"حب" },
+    { text:"الحياةُ التي لا يُتأمَّلُ فيها لا تستحقُّ أن تُعاشَ.", author:"سقراط", cat:"فلسفة" },
+    { text:"الصديقُ روحٌ واحدةٌ تسكنُ جسدين.", author:"أرسطو", cat:"فلسفة" },
+    { text:"الحاجةُ أمُّ الاختراعِ.", author:"أفلاطون", cat:"فلسفة" },
+    { text:"مَن له سببٌ يعيشُ من أجله، يحتملُ أيَّ طريقةٍ للعيشِ تقريباً.", author:"نيتشه", cat:"فلسفة" },
+    { text:"أنا أفكّرُ، إذاً أنا موجودٌ.", author:"ديكارت", cat:"فلسفة" },
+    { text:"الجهلُ يولّدُ الخوف، والخوفُ يولّدُ الكراهية، والكراهيةُ تولّدُ العنف.", author:"ابن رشد", cat:"فلسفة" },
+    { text:"أمرُّ على الديارِ ديارِ ليلى، أُقبّلُ ذا الجدارَ وذا الجدارا.", author:"قيس بن الملوّح", cat:"حب" },
   ];
 
-  const frame    = document.getElementById("frame");
-  const quoteEl  = document.getElementById("quote");
-  const nameEl   = document.getElementById("name");
-  const eraEl    = document.getElementById("era");
-  const progress = document.getElementById("progress");
-  const nextBtn  = document.getElementById("next");
+  const catColors = {
+    "حكمة":"var(--c-hikma)",
+    "فلسفة":"var(--c-falsafa)",
+    "أدب":"var(--c-adab)",
+    "حب":"var(--c-hob)",
+    "حياة":"var(--c-hayat)",
+  };
 
-  let index = Math.floor(Math.random() * quotes.length);
+  // ——— تطبيع النص للبحث (إزالة التشكيل وتوحيد الحروف) ———
+  function norm(s){
+    return s
+      .replace(/[\u064B-\u0652\u0670\u0640]/g, "")
+      .replace(/[أإآ]/g, "ا")
+      .replace(/ى/g, "ي")
+      .replace(/ة/g, "ه")
+      .trim();
+  }
+
+  const grid    = document.getElementById("grid");
+  const filters = document.getElementById("filters");
+  const countEl = document.getElementById("count");
+  const searchI = document.getElementById("search");
+
+  const cats = ["الكل", ...Object.keys(catColors)];
+  let activeCat = "الكل";
+  let term = "";
+
+  cats.forEach(c => {
+    const b = document.createElement("button");
+    b.className = "chip" + (c === "الكل" ? " active" : "");
+    b.textContent = c;
+    b.addEventListener("click", () => {
+      activeCat = c;
+      document.querySelectorAll(".chip").forEach(x => x.classList.remove("active"));
+      b.classList.add("active");
+      render();
+    });
+    filters.appendChild(b);
+  });
+
+  function card(q){
+    const color = catColors[q.cat] || "var(--lapis)";
+    return `
+      <article class="qcard" style="--cat:${color}">
+        <div class="qmark" aria-hidden="true">&rdquo;</div>
+        <p class="qtext">${q.text}</p>
+        <div class="qfoot">
+          <span class="author">${q.author}</span>
+          <span class="cat"><span class="dot"></span>${q.cat}</span>
+        </div>
+      </article>`;
+  }
 
   function render(){
-    const item = quotes[index];
-    quoteEl.textContent = item.q;
-    nameEl.textContent  = item.name;
-    eraEl.textContent   = item.era;
-    progress.textContent =
-      String(index + 1).padStart(2, "0") + " / " + String(quotes.length).padStart(2, "0");
+    const t = norm(term);
+    const list = quotes.filter(q => {
+      const matchCat  = activeCat === "الكل" || q.cat === activeCat;
+      const matchText = !t || norm(q.text).includes(t) || norm(q.author).includes(t);
+      return matchCat && matchText;
+    });
+
+    if (list.length === 0){
+      grid.innerHTML = '<p class="empty">لا توجد اقتباساتٌ مطابقة… جرّب كلمةً أخرى.</p>';
+      countEl.textContent = "";
+      return;
+    }
+    grid.innerHTML = list.map(card).join("");
+    countEl.textContent = list.length + " اقتباس";
   }
 
-  function next(){
-    frame.classList.add("fading");
-    setTimeout(() => {
-      index = (index + 1) % quotes.length;
-      render();
-      frame.classList.remove("fading");
-    }, 320);
-  }
-
+  searchI.addEventListener("input", e => { term = e.target.value; render(); });
   render();
-  nextBtn.addEventListener("click", next);
-  document.addEventListener("keydown", (e) => {
-    if (e.code === "Space" || e.code === "ArrowRight") { e.preventDefault(); next(); }
-  });
 </script>
 </body>
 </html>

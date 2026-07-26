@@ -24,6 +24,7 @@
   .auth-btn:hover{ background:#1e4a6d; }
   .auth-user{ display:inline-flex; align-items:center; gap:.6rem; font-size:.9rem; color:var(--ink); }
   .auth-user .uname{ font-weight:700; }
+  .admin-badge{ font-size:.7rem; background:var(--c-hob); color:#fff; border-radius:999px; padding:.1rem .5rem; margin-inline-start:.4rem; font-weight:500; }
   .auth-user .avatar{ width:30px; height:30px; border-radius:50%; background:var(--ochre); color:#fff; display:inline-flex;
     align-items:center; justify-content:center; font-weight:700; font-size:.9rem; }
   .auth-logout{ font-family:"Tajawal",sans-serif; font-size:.8rem; color:var(--muted); background:none; border:1px solid var(--line);
@@ -334,6 +335,8 @@
   let activeCat="الكل", term="", likeCounts={}, likedByMe={}, activeTopic="";
   let currentUser=null, currentName="", authMode="login";
   let commentLikeCount={}, commentLikedByMe={};
+  const ADMIN_ID="1a8e242d-5f21-4122-82f5-6a4fa50afdbb";
+  function isAdmin(){ return !!(currentUser && currentUser.id===ADMIN_ID); }
 
   function showToast(m){ toast.textContent=m; toast.classList.add("show"); setTimeout(()=>toast.classList.remove("show"),1800); }
   function headBg(q){ const hex=catHex[q.cat]||"#275c86";
@@ -470,16 +473,17 @@
   function commentNode(qid,c,childrenHtml){
     const likes=commentLikeCount[c.id]||0, liked=commentLikedByMe[c.id]?" liked":"";
     const mine=currentUser&&c.user_id===currentUser.id;
-    const ownerBtns=mine?`
-        <button class="cact" onclick="showEditForm(${c.id})">✎ تعديل</button>
-        <button class="cact cdel" onclick="deleteComment(${c.id},'${qid}')">🗑 حذف</button>`:"";
+    const admin=isAdmin();
+    let ctrl="";
+    if(mine){ ctrl+=`<button class="cact" onclick="showEditForm(${c.id})">✎ تعديل</button>`; }
+    if(mine||admin){ ctrl+=`<button class="cact cdel" onclick="deleteComment(${c.id},'${qid}')">🗑 حذف${admin&&!mine?" (إشراف)":""}</button>`; }
     return `<div class="citem">
       <div class="cname">${esc(c.name||"زائر")}</div>
       <div class="cbody" id="cbody-${c.id}">${esc(c.body)}</div>
       <div class="edit-form" id="ef-${c.id}" data-raw="${esc(c.body)}"></div>
       <div class="cactions">
         <button class="cact${liked}" onclick="toggleCommentLike(${c.id},'${qid}')">♥ <span>${likes}</span></button>
-        <button class="cact" onclick="showReplyForm('${qid}',${c.id})">↩ ردّ</button>${ownerBtns}
+        <button class="cact" onclick="showReplyForm('${qid}',${c.id})">↩ ردّ</button>${ctrl}
       </div>
       <div class="reply-form" id="rf-${c.id}"></div>
       <div class="creplies">${childrenHtml}</div>
@@ -511,7 +515,9 @@
   async function deleteComment(commentId,qid){
     if(!confirm("هل تريد حذف هذا التعليق؟ سيُحذف مع ردوده.")) return;
     try{
-      const {error}=await db.from("comments").delete().eq("id",commentId).eq("user_id",currentUser.id);
+      let q=db.from("comments").delete().eq("id",commentId);
+      if(!isAdmin()) q=q.eq("user_id",currentUser.id);  // العضو العادي: تعليقه فقط
+      const {error}=await q;
       if(error) throw error;
       showToast("حُذف التعليق 🗑"); loadComments(qid);
     }catch(e){ console.warn("delete:",e); showToast("تعذّر الحذف"); }
@@ -699,8 +705,9 @@
     const bar=document.getElementById("authbar");
     if(currentUser){
       const initial=(currentName||"?").trim().charAt(0);
+      const adminBadge=isAdmin()?`<span class="admin-badge">مشرف</span>`:"";
       bar.innerHTML=`<span class="auth-user"><span class="avatar">${esc(initial)}</span>
-        <span>مرحباً، <span class="uname">${esc(currentName)}</span></span>
+        <span>مرحباً، <span class="uname">${esc(currentName)}</span>${adminBadge}</span>
         <button class="auth-fav" onclick="openProfile()">👤 ملفّي</button>
         <button class="auth-fav" onclick="openFavs()">🔖 مفضّلتي</button>
         <button class="auth-logout" onclick="signOut()">خروج</button></span>`;

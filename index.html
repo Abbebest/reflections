@@ -17,6 +17,35 @@
   body{ font-family:"Tajawal",system-ui,sans-serif; color:var(--ink); background:var(--paper); line-height:1.6; min-height:100vh; padding:clamp(1.25rem,4vw,3rem); }
   .wrap{ max-width:1100px; margin:0 auto; }
 
+  /* شريط الحساب */
+  .authbar{ display:flex; justify-content:flex-start; margin-bottom:.5rem; min-height:38px; align-items:center; }
+  .auth-btn{ font-family:"Tajawal",sans-serif; font-size:.85rem; font-weight:500; color:#fff; background:var(--lapis);
+    border:none; border-radius:999px; padding:.45rem 1.15rem; cursor:pointer; transition:background .2s; }
+  .auth-btn:hover{ background:#1e4a6d; }
+  .auth-user{ display:inline-flex; align-items:center; gap:.6rem; font-size:.9rem; color:var(--ink); }
+  .auth-user .uname{ font-weight:700; }
+  .auth-user .avatar{ width:30px; height:30px; border-radius:50%; background:var(--ochre); color:#fff; display:inline-flex;
+    align-items:center; justify-content:center; font-weight:700; font-size:.9rem; }
+  .auth-logout{ font-family:"Tajawal",sans-serif; font-size:.8rem; color:var(--muted); background:none; border:1px solid var(--line);
+    border-radius:999px; padding:.3rem .8rem; cursor:pointer; }
+  .auth-logout:hover{ border-color:var(--c-hob); color:var(--c-hob); }
+
+  .authform{ display:flex; flex-direction:column; gap:.65rem; margin-top:.5rem; }
+  .authform input{ font-family:"Tajawal",sans-serif; font-size:.95rem; color:var(--ink); background:#fff;
+    border:1px solid var(--line); border-radius:10px; padding:.7rem .85rem; }
+  .authform input:focus{ outline:none; border-color:var(--lapis); }
+  .authform button{ font-family:"Tajawal",sans-serif; font-size:.95rem; font-weight:500; color:#fff; background:var(--lapis);
+    border:none; border-radius:10px; padding:.75rem; cursor:pointer; }
+  .authform button:hover{ background:#1e4a6d; }
+  .authform button:disabled{ opacity:.5; cursor:default; }
+  .auth-msg{ font-size:.85rem; text-align:center; min-height:1.2em; }
+  .auth-msg.err{ color:var(--c-hob); }
+  .auth-msg.ok{ color:var(--c-hayat); }
+  .auth-switch{ text-align:center; font-size:.85rem; color:var(--muted); margin-top:.3rem; }
+  .auth-switch a{ color:var(--lapis); text-decoration:none; font-weight:500; }
+  .comment-gate{ text-align:center; color:var(--muted); font-size:.85rem; padding:.6rem; }
+  .comment-gate a{ color:var(--lapis); cursor:pointer; font-weight:500; }
+
   header{ text-align:center; margin-bottom:clamp(1.25rem,4vw,2rem); }
   .brand{ font-family:"Amiri",serif; font-size:clamp(2.6rem,8vw,4rem); font-weight:700; line-height:1.1; }
   .brand::after{ content:""; display:block; width:56px; height:3px; background:var(--ochre); margin:.9rem auto 0; border-radius:2px; }
@@ -122,6 +151,9 @@
 </head>
 <body>
   <div class="wrap">
+    <div class="authbar" id="authbar">
+      <button class="auth-btn" id="authOpenBtn" onclick="openAuth()">دخول / تسجيل</button>
+    </div>
     <header>
       <h1 class="brand">مُقتبَس</h1>
       <p class="tagline">مختاراتٌ من حكمة الأدباء والفلاسفة عبر العصور</p>
@@ -167,6 +199,26 @@
       <p class="modal-bio" id="mBio"></p>
       <div class="modal-sub">من أقواله في هذا الموقع:</div>
       <div id="mQuotes"></div>
+    </div>
+  </div>
+
+  <!-- نافذة تسجيل الدخول / إنشاء حساب -->
+  <div class="modal" id="authModal">
+    <div class="modal-box" style="max-width:420px">
+      <button class="modal-close" onclick="closeAuth()" aria-label="إغلاق">&times;</button>
+      <h2 class="modal-name" id="authTitle">تسجيل الدخول</h2>
+      <div class="modal-era" id="authSwitchHint"></div>
+      <div class="authform">
+        <input id="afName" type="text" placeholder="الاسم الظاهر" maxlength="40" style="display:none">
+        <input id="afEmail" type="email" placeholder="البريد الإلكتروني" autocomplete="email">
+        <input id="afPass" type="password" placeholder="كلمة المرور (٦ أحرف فأكثر)" autocomplete="current-password">
+        <button id="afSubmit" onclick="submitAuth()">دخول</button>
+        <div class="auth-msg" id="authMsg"></div>
+        <div class="auth-switch">
+          <span id="switchText">ليس لديك حساب؟</span>
+          <a href="#" id="switchLink" onclick="toggleAuthMode(event)">أنشئ حساباً</a>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -225,6 +277,7 @@
   const grid=document.getElementById("grid"), filters=document.getElementById("filters"), countEl=document.getElementById("count"),
         searchI=document.getElementById("search"), toast=document.getElementById("toast");
   let activeCat="الكل", term="", likeCounts={}, likedByMe={}, activeTopic="";
+  let currentUser=null, currentName="", authMode="login";
 
   function showToast(m){ toast.textContent=m; toast.classList.add("show"); setTimeout(()=>toast.classList.remove("show"),1800); }
   function headBg(q){ const hex=catHex[q.cat]||"#275c86";
@@ -280,11 +333,7 @@
         </div>
         <div class="comments" id="cm-${q.id}">
           <div class="clist" id="cl-${q.id}"><div class="cempty">جارِ التحميل…</div></div>
-          <div class="cform">
-            <input id="cn-${q.id}" type="text" placeholder="اسمك" maxlength="40">
-            <textarea id="cb-${q.id}" rows="2" placeholder="اكتب تعليقك…" maxlength="300"></textarea>
-            <button onclick="addComment('${q.id}')">أضف تعليقاً</button>
-          </div>
+          <div class="cform-wrap" id="cw-${q.id}"></div>
         </div>
       </div>
     </article>`;
@@ -312,13 +361,41 @@
   document.getElementById("authorModal").addEventListener("click",e=>{ if(e.target.id==="authorModal") closeAuthor(); });
   document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeAuthor(); });
 
-  async function loadLikes(){ try{ const {data}=await db.from("likes").select("quote_id,count"); (data||[]).forEach(r=>likeCounts[r.quote_id]=r.count);
-    try{ likedByMe=JSON.parse(localStorage.getItem("likedByMe")||"{}"); }catch(e){ likedByMe={}; } }catch(e){ console.warn("likes:",e); } }
-  async function toggleLike(id){ if(likedByMe[id]){ showToast("أعجبك هذا مسبقاً"); return; }
-    likeCounts[id]=(likeCounts[id]||0)+1; likedByMe[id]=true; localStorage.setItem("likedByMe",JSON.stringify(likedByMe));
-    const el=document.getElementById("lc-"+id); if(el) el.textContent=likeCounts[id]; const btn=el&&el.closest(".act"); if(btn) btn.classList.add("liked");
-    try{ await db.from("likes").upsert({quote_id:id,count:likeCounts[id]},{onConflict:"quote_id"}); }catch(e){ console.warn("like:",e); showToast("تعذّر الحفظ"); } }
-  async function toggleComments(id){ const box=document.getElementById("cm-"+id); box.classList.toggle("open"); if(box.classList.contains("open")) loadComments(id); }
+  async function loadLikes(){
+    likeCounts={}; likedByMe={};
+    try{
+      const {data}=await db.from("user_likes").select("quote_id,user_id");
+      (data||[]).forEach(r=>{ likeCounts[r.quote_id]=(likeCounts[r.quote_id]||0)+1; if(currentUser&&r.user_id===currentUser.id) likedByMe[r.quote_id]=true; });
+    }catch(e){ console.warn("likes:",e); }
+  }
+  async function toggleLike(id){
+    if(!currentUser){ showToast("سجّل الدخول للإعجاب"); openAuth(); return; }
+    const already=likedByMe[id];
+    try{
+      if(already){
+        await db.from("user_likes").delete().eq("user_id",currentUser.id).eq("quote_id",id);
+        likedByMe[id]=false; likeCounts[id]=Math.max(0,(likeCounts[id]||1)-1);
+      } else {
+        await db.from("user_likes").insert({user_id:currentUser.id,quote_id:id});
+        likedByMe[id]=true; likeCounts[id]=(likeCounts[id]||0)+1;
+      }
+      const el=document.getElementById("lc-"+id); if(el) el.textContent=likeCounts[id];
+      const btn=el&&el.closest(".act"); if(btn) btn.classList.toggle("liked",likedByMe[id]);
+    }catch(e){ console.warn("like:",e); showToast("تعذّر الحفظ"); }
+  }
+  async function toggleComments(id){ const box=document.getElementById("cm-"+id); box.classList.toggle("open");
+    if(box.classList.contains("open")){ renderCommentForm(id); loadComments(id); } }
+
+  function renderCommentForm(id){
+    const w=document.getElementById("cw-"+id); if(!w) return;
+    if(currentUser){
+      w.innerHTML=`<div class="cform">
+        <textarea id="cb-${id}" rows="2" placeholder="اكتب تعليقك باسم ${esc(currentName)}…" maxlength="300"></textarea>
+        <button onclick="addComment('${id}')">أضف تعليقاً</button></div>`;
+    } else {
+      w.innerHTML=`<div class="comment-gate"><a onclick="openAuth()">سجّل الدخول</a> لتتمكّن من التعليق</div>`;
+    }
+  }
   async function loadComments(id){ const list=document.getElementById("cl-"+id);
     try{ const {data,error}=await db.from("comments").select("name,body,created_at").eq("quote_id",id).order("created_at",{ascending:true}); if(error) throw error; renderComments(id,data||[]); }
     catch(e){ console.warn("comments:",e); list.innerHTML='<div class="cempty">تعذّر تحميل التعليقات</div>'; } }
@@ -326,9 +403,13 @@
     if(!rows.length){ list.innerHTML='<div class="cempty">لا توجد تعليقات بعد — كن أوّل من يعلّق</div>'; return; }
     list.innerHTML=rows.map(r=>`<div class="citem"><div class="cname">${esc(r.name||"زائر")}</div><div>${esc(r.body)}</div></div>`).join("");
     const cc=document.getElementById("cc-"+id); if(cc) cc.textContent=rows.length+" تعليق"; }
-  async function addComment(id){ const nameEl=document.getElementById("cn-"+id), bodyEl=document.getElementById("cb-"+id);
-    const name=(nameEl.value||"").trim()||"زائر", body=(bodyEl.value||"").trim(); if(!body){ showToast("اكتب تعليقاً أولاً"); return; } bodyEl.value="";
-    try{ await db.from("comments").insert({name,body,quote_id:id}); loadComments(id); showToast("تمّ نشر تعليقك ✔"); }catch(e){ console.warn("comment:",e); showToast("تعذّر النشر"); } }
+  async function addComment(id){
+    if(!currentUser){ showToast("سجّل الدخول للتعليق"); openAuth(); return; }
+    const bodyEl=document.getElementById("cb-"+id); const body=(bodyEl.value||"").trim();
+    if(!body){ showToast("اكتب تعليقاً أولاً"); return; } bodyEl.value="";
+    try{ await db.from("comments").insert({name:currentName,body,quote_id:id,user_id:currentUser.id}); loadComments(id); showToast("تمّ نشر تعليقك ✔"); }
+    catch(e){ console.warn("comment:",e); showToast("تعذّر النشر"); }
+  }
   function copyQuote(id){ const q=quotes.find(x=>x.id===id); if(!q) return; navigator.clipboard.writeText(`"${q.text}" — ${q.author}`).then(()=>showToast("نُسخ الاقتباس 📋")).catch(()=>showToast("تعذّر النسخ")); }
 
   /* التصفية عند الضغط على وسم داخل بطاقة */
@@ -348,8 +429,88 @@
     ch.on("presence",{event:"sync"},()=>{ const n=Object.keys(ch.presenceState()).length; document.getElementById("presenceCount").textContent=n||1; })
       .subscribe(async(s)=>{ if(s==="SUBSCRIBED") await ch.track({t:Date.now()}); }); }catch(e){ document.getElementById("presence").style.display="none"; } }
 
+  /* ═══════════ نظام الحسابات (Authentication) ═══════════ */
+  function openAuth(){ document.getElementById("authModal").classList.add("open"); document.getElementById("authMsg").textContent=""; }
+  function closeAuth(){ document.getElementById("authModal").classList.remove("open"); }
+  document.getElementById("authModal").addEventListener("click",e=>{ if(e.target.id==="authModal") closeAuth(); });
+
+  function toggleAuthMode(ev){ if(ev) ev.preventDefault();
+    authMode = authMode==="login" ? "signup" : "login";
+    const isSignup=authMode==="signup";
+    document.getElementById("authTitle").textContent=isSignup?"إنشاء حساب":"تسجيل الدخول";
+    document.getElementById("afName").style.display=isSignup?"block":"none";
+    document.getElementById("afSubmit").textContent=isSignup?"إنشاء الحساب":"دخول";
+    document.getElementById("switchText").textContent=isSignup?"لديك حساب بالفعل؟":"ليس لديك حساب؟";
+    document.getElementById("switchLink").textContent=isSignup?"سجّل الدخول":"أنشئ حساباً";
+    document.getElementById("authMsg").textContent="";
+  }
+
+  function setAuthMsg(txt,type){ const m=document.getElementById("authMsg"); m.textContent=txt; m.className="auth-msg"+(type?" "+type:""); }
+
+  async function submitAuth(){
+    const email=document.getElementById("afEmail").value.trim();
+    const pass=document.getElementById("afPass").value;
+    const name=document.getElementById("afName").value.trim();
+    if(!email||!pass){ setAuthMsg("أدخل البريد وكلمة المرور","err"); return; }
+    const btn=document.getElementById("afSubmit"); btn.disabled=true;
+    try{
+      if(authMode==="signup"){
+        if(!name){ setAuthMsg("أدخل اسمك الظاهر","err"); btn.disabled=false; return; }
+        const {data,error}=await db.auth.signUp({email,password:pass});
+        if(error) throw error;
+        if(data.user){
+          try{ await db.from("profiles").upsert({id:data.user.id,display_name:name}); }catch(e){ console.warn("profile:",e); }
+        }
+        if(data.session){ setAuthMsg("تمّ إنشاء حسابك ✔","ok"); await afterLogin(); }
+        else{ setAuthMsg("تحقّق من بريدك لتأكيد الحساب ثم سجّل الدخول 📧","ok"); }
+      } else {
+        const {error}=await db.auth.signInWithPassword({email,password:pass});
+        if(error) throw error;
+        setAuthMsg("مرحباً بعودتك ✔","ok"); await afterLogin();
+      }
+    }catch(e){
+      const msg=(e&&e.message)||"حدث خطأ";
+      setAuthMsg(/invalid/i.test(msg)?"بيانات الدخول غير صحيحة":/registered|exists/i.test(msg)?"هذا البريد مسجّل مسبقاً":msg,"err");
+    }
+    btn.disabled=false;
+  }
+
+  async function afterLogin(){ await loadSession(); await loadLikes(); render(); setTimeout(closeAuth,700); }
+
+  async function signOut(){ await db.auth.signOut(); currentUser=null; currentName=""; updateAuthUI(); await loadLikes(); render(); showToast("سُجّل خروجك"); }
+
+  async function loadSession(){
+    try{
+      const {data}=await db.auth.getUser();
+      currentUser=data&&data.user?data.user:null;
+      if(currentUser){
+        currentName=currentUser.email;
+        try{ const {data:p}=await db.from("profiles").select("display_name").eq("id",currentUser.id).single();
+          if(p&&p.display_name) currentName=p.display_name; }catch(e){}
+      }
+    }catch(e){ currentUser=null; }
+    updateAuthUI();
+  }
+
+  function updateAuthUI(){
+    const bar=document.getElementById("authbar");
+    if(currentUser){
+      const initial=(currentName||"?").trim().charAt(0);
+      bar.innerHTML=`<span class="auth-user"><span class="avatar">${esc(initial)}</span>
+        <span>مرحباً، <span class="uname">${esc(currentName)}</span></span>
+        <button class="auth-logout" onclick="signOut()">خروج</button></span>`;
+    } else {
+      bar.innerHTML=`<button class="auth-btn" onclick="openAuth()">دخول / تسجيل</button>`;
+    }
+  }
+
+  /* ═══════════ الإقلاع ═══════════ */
   (async function init(){ renderDaily(); render();
-    if(SUPABASE_URL.startsWith("http")){ await loadLikes(); render(); startPresence(); } else { document.getElementById("presence").style.display="none"; }
+    if(SUPABASE_URL.startsWith("http")){
+      await loadSession();
+      await loadLikes(); render();
+      startPresence();
+    } else { document.getElementById("presence").style.display="none"; }
   })();
 </script>
 </body>

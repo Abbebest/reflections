@@ -25,6 +25,13 @@
   .auth-user{ display:inline-flex; align-items:center; gap:.6rem; font-size:.9rem; color:var(--ink); }
   .auth-user .uname{ font-weight:700; }
   .admin-badge{ font-size:.7rem; background:var(--c-hob); color:#fff; border-radius:999px; padding:.1rem .5rem; margin-inline-start:.4rem; font-weight:500; }
+  .rules-body{ line-height:1.9; font-size:.98rem; }
+  .rules-body p{ margin:.7rem 0 .3rem; }
+  .rules-body ul{ margin:0 1.2rem .6rem; padding:0; }
+  .rules-body li{ margin-bottom:.25rem; }
+  .rules-body .rgood{ color:var(--c-hayat); font-weight:700; }
+  .rules-body .rbad{ color:var(--c-hob); font-weight:700; }
+  .rules-body .rnote{ background:var(--paper); border-radius:10px; padding:.8rem 1rem; margin-top:1rem; }
   .auth-user .avatar{ width:30px; height:30px; border-radius:50%; background:var(--ochre); color:#fff; display:inline-flex;
     align-items:center; justify-content:center; font-weight:700; font-size:.9rem; }
   .auth-logout{ font-family:"Tajawal",sans-serif; font-size:.8rem; color:var(--muted); background:none; border:1px solid var(--line);
@@ -213,8 +220,36 @@
 
     <footer>
       مجموعة مختارة · تُحدَّث بين الحين والآخر
-      <span class="credit">اللوحات والمنمنمات من التراث العالمي (ملكية عامة) عبر Wikimedia Commons</span>
+      <span class="credit"><a href="#" onclick="openRules(event)" style="color:var(--lapis)">قواعد المجتمع</a> · اللوحات والمنمنمات من التراث العالمي (ملكية عامة) عبر Wikimedia Commons</span>
     </footer>
+  </div>
+
+  <!-- نافذة قواعد المجتمع -->
+  <div class="modal" id="rulesModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeRules()" aria-label="إغلاق">&times;</button>
+      <h2 class="modal-name">📜 قواعد المجتمع</h2>
+      <div class="modal-era">مبادئ بسيطة تحفظ لنا مساحةً راقيةً للنقاش</div>
+      <div class="rules-body">
+        <p><strong>هذا فضاءٌ للتأمّل في حكمة الأدباء والفلاسفة، ونحبّ أن يبقى راقياً ومحترماً.</strong></p>
+        <p class="rgood">✅ ما نشجّعه:</p>
+        <ul>
+          <li>النقاش المحترم وتبادل الأفكار بأدب.</li>
+          <li>مشاركة تأمّلاتك ومعاني الاقتباسات.</li>
+          <li>احترام آراء الآخرين حتى عند الاختلاف.</li>
+        </ul>
+        <p class="rbad">🚫 ما هو ممنوع:</p>
+        <ul>
+          <li>الإساءة أو الشتائم أو التنمّر على أي شخص.</li>
+          <li>خطاب الكراهية أو التمييز بأي شكل.</li>
+          <li>السبام أو الإعلانات أو الروابط المشبوهة.</li>
+          <li>المحتوى غير اللائق أو المخلّ بالآداب.</li>
+          <li>انتحال شخصيات الآخرين.</li>
+        </ul>
+        <p class="rnote">قد يُحذف أي محتوى مخالف، وقد يُمنع صاحبه من المشاركة. يمكنك الإبلاغ عن أي تعليق مسيء عبر زرّ 🚩. شكراً لمساهمتك في مجتمعٍ جميل. 🌿</p>
+        <p class="rnote" style="font-size:.8rem;opacity:.8">ملاحظة: هذه قواعد مجتمعية استرشادية، وليست وثيقة قانونية شاملة.</p>
+      </div>
+    </div>
   </div>
 
   <!-- نافذة الكاتب -->
@@ -477,6 +512,7 @@
     let ctrl="";
     if(mine){ ctrl+=`<button class="cact" onclick="showEditForm(${c.id})">✎ تعديل</button>`; }
     if(mine||admin){ ctrl+=`<button class="cact cdel" onclick="deleteComment(${c.id},'${qid}')">🗑 حذف${admin&&!mine?" (إشراف)":""}</button>`; }
+    if(currentUser&&!mine){ ctrl+=`<button class="cact" onclick="reportComment(${c.id})">🚩 إبلاغ</button>`; }
     return `<div class="citem">
       <div class="cname">${esc(c.name||"زائر")}</div>
       <div class="cbody" id="cbody-${c.id}">${esc(c.body)}</div>
@@ -523,6 +559,16 @@
     }catch(e){ console.warn("delete:",e); showToast("تعذّر الحذف"); }
   }
   function findQuoteOfOpenComments(){ const open=document.querySelector(".comments.open"); return open?open.id.replace("cm-",""):null; }
+  async function reportComment(commentId){
+    if(!currentUser){ showToast("سجّل الدخول للإبلاغ"); openAuth(); return; }
+    const reason=prompt("سبب الإبلاغ (اختياري): إساءة، سبام، محتوى غير لائق…");
+    if(reason===null) return; // ألغى المستخدم
+    try{
+      const {error}=await db.from("reports").insert({comment_id:commentId,reporter_id:currentUser.id,reason:reason||null});
+      if(error) throw error;
+      showToast("شكراً، وصل بلاغك للمشرف 🚩");
+    }catch(e){ console.warn("report:",e); showToast("تعذّر إرسال البلاغ"); }
+  }
   function renderComments(id,rows){ const list=document.getElementById("cl-"+id);
     if(!rows.length){ list.innerHTML='<div class="cempty">لا توجد تعليقات بعد — كن أوّل من يعلّق</div>'; const cc0=document.getElementById("cc-"+id); if(cc0) cc0.textContent="تعليق"; return; }
     const byParent={}; rows.forEach(r=>{ const p=r.parent_id||0; (byParent[p]=byParent[p]||[]).push(r); });
@@ -539,12 +585,24 @@
       <textarea id="rb-${parentId}" rows="2" placeholder="ردّك باسم ${esc(currentName)}…" maxlength="300"></textarea>
       <button onclick="addReply('${qid}',${parentId})">إرسال الردّ</button></div>`;
   }
+  let lastPostAt=0;
+  function throttleOk(){
+    const now=Date.now();
+    if(now-lastPostAt < 5000){ showToast("تمهّل قليلاً بين التعليقات ⏳"); return false; }
+    lastPostAt=now; return true;
+  }
+  function postError(e){
+    const m=(e&&e.message)||"";
+    if(/تجاوزت الحدّ|rate|limit/i.test(m)) showToast("تجاوزت الحدّ المسموح — انتظر دقيقة ⏳");
+    else showToast("تعذّر النشر");
+  }
   async function addReply(qid,parentId){
     if(!currentUser){ showToast("سجّل الدخول"); openAuth(); return; }
     const el=document.getElementById("rb-"+parentId); const body=(el.value||"").trim();
     if(!body){ showToast("اكتب ردّك أولاً"); return; }
-    try{ await db.from("comments").insert({name:currentName,body,quote_id:qid,user_id:currentUser.id,parent_id:parentId}); loadComments(qid); showToast("تمّ نشر ردّك ✔"); }
-    catch(e){ console.warn("reply:",e); showToast("تعذّر النشر"); }
+    if(!throttleOk()) return;
+    try{ const {error}=await db.from("comments").insert({name:currentName,body,quote_id:qid,user_id:currentUser.id,parent_id:parentId}); if(error) throw error; loadComments(qid); showToast("تمّ نشر ردّك ✔"); }
+    catch(e){ console.warn("reply:",e); postError(e); }
   }
   async function toggleCommentLike(commentId,quoteId){
     if(!currentUser){ showToast("سجّل الدخول للإعجاب"); openAuth(); return; }
@@ -557,9 +615,11 @@
   async function addComment(id){
     if(!currentUser){ showToast("سجّل الدخول للتعليق"); openAuth(); return; }
     const bodyEl=document.getElementById("cb-"+id); const body=(bodyEl.value||"").trim();
-    if(!body){ showToast("اكتب تعليقاً أولاً"); return; } bodyEl.value="";
-    try{ await db.from("comments").insert({name:currentName,body,quote_id:id,user_id:currentUser.id,parent_id:null}); loadComments(id); showToast("تمّ نشر تعليقك ✔"); }
-    catch(e){ console.warn("comment:",e); showToast("تعذّر النشر"); }
+    if(!body){ showToast("اكتب تعليقاً أولاً"); return; }
+    if(!throttleOk()) return;
+    bodyEl.value="";
+    try{ const {error}=await db.from("comments").insert({name:currentName,body,quote_id:id,user_id:currentUser.id,parent_id:null}); if(error) throw error; loadComments(id); showToast("تمّ نشر تعليقك ✔"); }
+    catch(e){ console.warn("comment:",e); postError(e); bodyEl.value=body; }
   }
   function copyQuote(id){ const q=quotes.find(x=>x.id===id); if(!q) return; navigator.clipboard.writeText(`"${q.text}" — ${q.author}`).then(()=>showToast("نُسخ الاقتباس 📋")).catch(()=>showToast("تعذّر النسخ")); }
 
@@ -579,6 +639,11 @@
   function startPresence(){ try{ const ch=db.channel("online",{config:{presence:{key:Math.random().toString(36).slice(2)}}});
     ch.on("presence",{event:"sync"},()=>{ const n=Object.keys(ch.presenceState()).length; document.getElementById("presenceCount").textContent=n||1; })
       .subscribe(async(s)=>{ if(s==="SUBSCRIBED") await ch.track({t:Date.now()}); }); }catch(e){ document.getElementById("presence").style.display="none"; } }
+
+  /* ═══════════ قواعد المجتمع ═══════════ */
+  function openRules(ev){ if(ev) ev.preventDefault(); document.getElementById("rulesModal").classList.add("open"); }
+  function closeRules(){ document.getElementById("rulesModal").classList.remove("open"); }
+  document.getElementById("rulesModal").addEventListener("click",e=>{ if(e.target.id==="rulesModal") closeRules(); });
 
   /* ═══════════ الملف الشخصي ═══════════ */
   async function openProfile(){

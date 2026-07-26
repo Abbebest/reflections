@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>مُقتبَس — اقتباسات من الأدباء والفلاسفة</title>
+<title>حِكَم وأشعار — من الأدباء والفلاسفة</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
@@ -102,6 +102,9 @@
   .search input::placeholder{ color:#b3aa9c; }
   .search input:focus{ outline:none; border-color:var(--lapis); box-shadow:0 0 0 3px rgba(39,92,134,.15); }
   .search .icon{ position:absolute; inset-inline-end:1.1rem; top:50%; transform:translateY(-50%); color:var(--muted); pointer-events:none; }
+  .discover-btn{ font-family:"Tajawal",sans-serif; font-size:.9rem; font-weight:500; color:var(--ochre); background:transparent;
+    border:1px solid var(--ochre); border-radius:999px; padding:.5rem 1.4rem; cursor:pointer; transition:all .2s; }
+  .discover-btn:hover{ background:var(--ochre); color:#fff; transform:translateY(-1px); }
 
   .filters{ display:flex; flex-wrap:wrap; gap:.55rem; justify-content:center; margin-bottom:1.5rem; }
   .chip{ font-family:"Tajawal",sans-serif; font-size:.92rem; font-weight:500; color:var(--ink); background:var(--card); border:1px solid var(--line); border-radius:999px; padding:.45rem 1.15rem; cursor:pointer; transition:background .2s,color .2s,border-color .2s; }
@@ -121,8 +124,13 @@
   .grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1.3rem; }
 
   .qcard{ background:var(--card); border:1px solid var(--line); border-radius:16px; overflow:hidden; display:flex; flex-direction:column; box-shadow:0 4px 14px rgba(43,38,33,.05); transition:transform .18s,box-shadow .18s; }
+  .qcard{ background:var(--card); border:1px solid var(--line); border-radius:16px; overflow:hidden; display:flex; flex-direction:column; box-shadow:0 4px 14px rgba(43,38,33,.05); transition:transform .18s,box-shadow .18s; animation:cardIn .5s ease both; }
   .qcard:hover{ transform:translateY(-3px); box-shadow:0 16px 34px rgba(43,38,33,.13); }
-  .qhead{ position:relative; min-height:250px; padding:1.5rem 1.4rem 1.35rem; display:flex; flex-direction:column; justify-content:flex-end; color:#fff; background-size:cover; background-position:center; }
+  @keyframes cardIn{ from{ opacity:0; transform:translateY(16px); } to{ opacity:1; transform:none; } }
+  .qhead{ position:relative; min-height:250px; padding:1.5rem 1.4rem 1.35rem; display:flex; flex-direction:column; justify-content:flex-end; color:#fff; background-size:cover; background-position:center; transition:transform .5s ease; }
+  .qcard:hover .qhead{ transform:scale(1.04); }
+  .qcard.pulse{ animation:pulseHi 1.4s ease; }
+  @keyframes pulseHi{ 0%{ box-shadow:0 0 0 0 rgba(176,136,66,.6); } 60%{ box-shadow:0 0 0 14px rgba(176,136,66,0); } 100%{ box-shadow:0 16px 34px rgba(43,38,33,.13); } }
   .qmark{ font-family:"Amiri",serif; font-size:3.2rem; line-height:.1; color:#fff; opacity:.5; position:absolute; top:1rem; inset-inline-end:1.3rem; user-select:none; }
   .qtext{ font-family:"Amiri",serif; font-size:1.45rem; line-height:1.75; font-weight:500; text-shadow:0 1px 10px rgba(0,0,0,.6); margin-bottom:.9rem; position:relative; z-index:2; }
   .qmeta{ display:flex; align-items:center; justify-content:space-between; gap:.75rem; position:relative; z-index:2; }
@@ -140,6 +148,11 @@
   .act.liked{ color:var(--c-hob); border-color:var(--c-hob); }
   .act svg{ width:15px; height:15px; }
   .act.fb:hover{ color:#1877f2; border-color:#1877f2; }
+  .act.ctx{ color:var(--ochre); border-color:var(--ochre); }
+  .act.ctx:hover{ background:var(--ochre); color:#fff; }
+  .ctx-quote{ font-family:"Amiri",serif; font-size:1.5rem; line-height:1.8; color:var(--ink); text-align:center; margin-bottom:.5rem; }
+  .ctx-author{ text-align:center; color:var(--ochre); font-weight:700; margin-bottom:1.3rem; padding-bottom:1.2rem; border-bottom:1px solid var(--line); }
+  .ctx-text{ font-size:1.02rem; line-height:2; color:var(--ink); }
   .share-wrap{ position:relative; display:inline-block; }
   .share-menu{ position:absolute; bottom:calc(100% + 6px); inset-inline-start:0; background:var(--card); border:1px solid var(--line);
     border-radius:12px; box-shadow:0 12px 30px rgba(43,38,33,.18); padding:.35rem; min-width:130px; display:none; z-index:20; }
@@ -196,7 +209,7 @@
   .modal-sub{ font-weight:700; margin-bottom:.7rem; color:var(--lapis); }
   .modal-q{ font-family:"Amiri",serif; font-size:1.15rem; line-height:1.8; padding:.7rem .9rem; background:var(--paper); border-radius:10px; margin-bottom:.6rem; border-inline-start:3px solid var(--ochre); }
 
-  @media (prefers-reduced-motion:reduce){ .qcard{ transition:none; } .presence .live{ animation:none; } }
+  @media (prefers-reduced-motion:reduce){ .qcard{ transition:none; animation:none; } .qcard:hover .qhead{ transform:none; } .presence .live{ animation:none; } }
 </style>
 </head>
 <body>
@@ -205,7 +218,7 @@
       <button class="auth-btn" id="authOpenBtn" onclick="openAuth()">دخول / تسجيل</button>
     </div>
     <header>
-      <h1 class="brand">مُقتبَس</h1>
+      <h1 class="brand">حِكَم وأشعار</h1>
       <p class="tagline">مختاراتٌ من حكمة الأدباء والفلاسفة عبر العصور</p>
       <div class="presence" id="presence" title="عدد المتصلين الآن">
         <span class="live"></span><span id="presenceCount">…</span> متصل الآن
@@ -218,6 +231,9 @@
     <div class="search">
       <input id="search" type="text" placeholder="ابحث عن كلمة أو اسم كاتب…" aria-label="بحث">
       <span class="icon" aria-hidden="true">🔍</span>
+    </div>
+    <div style="text-align:center;margin-bottom:1.2rem">
+      <button class="discover-btn" onclick="randomQuote()">🎲 اكتشف اقتباساً</button>
     </div>
 
     <nav class="filters" id="filters" aria-label="التصنيفات"></nav>
@@ -310,6 +326,17 @@
       <p class="modal-bio" id="mBio"></p>
       <div class="modal-sub">من أقواله في هذا الموقع:</div>
       <div id="mQuotes"></div>
+    </div>
+  </div>
+
+  <!-- نافذة القصة والسياق -->
+  <div class="modal" id="contextModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeContext()" aria-label="إغلاق">&times;</button>
+      <div class="ctx-quote" id="ctxQuote"></div>
+      <div class="ctx-author" id="ctxAuthor"></div>
+      <div class="modal-sub">📖 القصة والسياق</div>
+      <p class="ctx-text" id="ctxText"></p>
     </div>
   </div>
 
@@ -407,6 +434,26 @@
     "قيس بن الملوّح":{ era:"شاعر عربي · توفي نحو 688م", bio:"المعروف بـ«مجنون ليلى»، شاعر عذريّ من بني عامر. اشتهر بحبّه العفيف لليلى الذي مُنع من الزواج بها، فهام في البادية ينظم أرقّ أشعار الحبّ في التراث العربي." },
   };
 
+  /* ═══ القصة والسياق لكل اقتباس — راجعها وصحّحها كما تشاء ═══ */
+  const context = {
+    "q1":"من أشهر أبيات المتنبي، ومطلعُ قصيدةٍ في مدح سيف الدولة الحمداني أمير حلب. يقرّر المتنبي قانوناً في الحياة: أن الأعمال تأتي بقدر همّة أصحابها؛ فأصحاب العزائم الكبيرة تأتيهم عزائمُ كبيرة، وأصحاب النفوس الكريمة تصدر عنهم المكارم. البيت تلخيصٌ لفلسفة المتنبي في الطموح وعلوّ الهمّة، وقد صار مثلاً يُضرب في الحثّ على الجدّ.",
+    "q2":"بيتٌ يفخر فيه المتنبي بنفسه، فيجمع بين صفتَي الفروسية والأدب. فالخيلُ والليلُ والصحراء تشهد له بالشجاعة والإقدام في الحرب، والسيفُ والرمح كذلك؛ بينما القرطاسُ (الورق) والقلم يشهدان له بالبراعة في الشعر والكتابة. أراد أن يقول: أنا فارسٌ وشاعرٌ معاً، معروفٌ في ميدان القتال كما في ميدان الكلمة.",
+    "q3":"تأمّلٌ عميق في عبء الوعي. يرى المتنبي أن صاحب العقل الرشيد قد يشقى حتى في النعيم، لأن عقله يُبصر العواقب والنقائص فلا يهنأ؛ بينما الجاهل قد ينعم حتى في الشقاء لأنه لا يدرك سوء حاله. بيتٌ فلسفيّ يوازن بين راحة الغفلة ومعاناة الإدراك.",
+    "q4":"يعبّر المتنبي عن العلاقة بين علوّ الهمّة وتعب الجسد. فالنفوس الكبيرة الطموحة تُرهق أجسادها في السعي وراء غاياتها العظيمة، لأن الطموح لا يعرف الراحة. البيت وثيقُ الصلة بفلسفته في العزم التي عبّر عنها في «على قدر أهل العزم».",
+    "q5":"من ديوان الإمام الشافعي، فقيهِ الإسلام وشاعره. يقرّر مبدأً في طلب العلم والمجد: أن المعالي لا تُنال إلا بقدر الجهد والتعب، وأن من أراد المراتب العليا فعليه أن يسهر ويكدح. بيتٌ صار شعاراً لطلاب العلم عبر القرون.",
+    "q6":"حكمةٌ تُنسب إلى الإمام علي بن أبي طالب. معناها أن قيمة الإنسان الحقيقية ليست في نسبه أو ماله، بل في ما يُتقنه ويُحسن عمله. فالمرء يُقاس بإنجازه وإتقانه لا بمظهره. من أجمع كلمات الحكمة في تقدير الإنسان.",
+    "q7":"من الأقوال المأثورة التي تُنسب إلى الإمام علي، وأحبّها المتصوّفة. تصوّر الحياة الدنيا كحال نومٍ وغفلة، والموت كلحظة يقظةٍ تنكشف فيها الحقائق. دعوةٌ إلى الانتباه والتأمّل في معنى الوجود قبل فوات الأوان.",
+    "q8":"من حِكَم جبران خليل جبران في كتابه «رمل وزبد». يقول إن الحقيقة لا تكفيها كلمةٌ تُقال، بل تحتاج إلى طرفين: قائلٍ يملك الشجاعة للنطق بها، وسامعٍ يملك البصيرة لفهمها. تأمّلٌ في أن المعرفة فعلٌ مشترك بين المُرسِل والمتلقّي.",
+    "q9":"من أشهر أقوال جبران عن الحبّ في «رمل وزبد». يحذّر من أن الحبّ كائنٌ حيّ يحتاج تجديداً يومياً؛ فإن أهمله صاحبه تحوّل إلى عادةٍ باردة، ثم إلى قيدٍ ثقيل. دعوةٌ لإبقاء الحبّ حيّاً بالاهتمام المتجدّد.",
+    "q10":"قالها سقراط في محاكمته بأثينا، كما نقلها تلميذه أفلاطون في «الدفاع». حين خُيّر بين التخلّي عن الفلسفة أو الموت، رفض حياةً بلا تفكيرٍ وتأمّل، معلناً أن الحياة التي لا يفحص فيها الإنسان نفسه ومبادئه لا تستحقّ أن تُعاش. ثم اختار الموت ثابتاً على قناعته.",
+    "q11":"تُنسب إلى أرسطو، ونقلها المؤرّخ ديوجينس اللائرتي. تعبيرٌ بديع عن الصداقة الحقّة: أن يبلغ الصديقان من التوافق حدّاً تصير معه روحاهما روحاً واحدة تسكن جسدين. من أجمل ما قيل في المحبّة الخالصة.",
+    "q12":"مثلٌ فلسفيّ قديم يُنسب إلى أفلاطون (ويرِد معناه في «الجمهورية»)، وإن اختُلف في نسبته الحرفية. معناه أن الاختراعات والحلول تولد من رحم الحاجة؛ فحين يضطرّ الإنسان، يبدع. تلخيصٌ لدافع التقدّم البشري. (النسبة الدقيقة محلّ نقاش، فراجعها.)",
+    "q13":"من كتاب نيتشه «أفول الأصنام». يقرّر أن امتلاك معنىً وغايةٍ للحياة يمنح الإنسان قدرةً على تحمّل أقسى الظروف؛ فمن عرف «لماذا» يعيش، هان عليه «كيف» يعيش. اشتهرت هذه الفكرة لاحقاً حين بنى عليها الطبيب فيكتور فرانكل تجربته في معسكرات الاعتقال.",
+    "q14":"العبارة المؤسّسة للفلسفة الحديثة، صاغها ديكارت في «مقال عن المنهج». بعد أن شكّ في كل شيء بحثاً عن يقين، أدرك أن شكّه نفسه دليلٌ على وجوده كذاتٍ مفكّرة: ما دمتُ أفكّر، فأنا موجودٌ حتماً. صارت نقطة الانطلاق للعقلانية الحديثة.",
+    "q15":"سلسلةٌ سببية تُنسب شهرتها إلى ابن رشد الفيلسوف الأندلسي: الجهل يورث الخوف من المجهول، والخوف يورث كراهية ما نجهله، والكراهية تقود إلى العنف. علاجها في أوّلها: المعرفة. (ملاحظة: نسبة هذه الصياغة الحرفية إلى ابن رشد شائعة لكنها غير موثّقة بدقّة، فاعتبرها منسوبةً إليه.)",
+    "q16":"من روائع الشعر العذريّ لقيس بن الملوّح «مجنون ليلى». يصوّر عشقه العفيف: يمرّ على منازل ليلى فيُقبّل جدرانها، ثم يوضّح أن حبّه ليس للجدران في ذاتها، بل لمن سكنت تلك الديار. من أصدق تعابير الحنين والوفاء في الشعر العربي.",
+  };
+
   const catColors={ "حكمة":"var(--c-hikma)","فلسفة":"var(--c-falsafa)","أدب":"var(--c-adab)","حب":"var(--c-hob)","حياة":"var(--c-hayat)" };
   let extraQuotes=[]; // اقتباسات الأعضاء المعتمدة (من قاعدة البيانات)
   function allQuotes(){ return quotes.concat(extraQuotes); }
@@ -457,11 +504,12 @@
     });
     tf.appendChild(b); });
 
-  function card(q){
+  function card(q,i){
     const likes=likeCounts[q.id]||0, liked=likedByMe[q.id]?" liked":"", shareUrl=encodeURIComponent(location.href);
     const shareTextEnc=encodeURIComponent(`"${q.text}" — ${q.author}`);
     const shareTextUrl=encodeURIComponent(`"${q.text}" — ${q.author}\n${location.href}`);
-    return `<article class="qcard">
+    const delay=Math.min((i||0)*45,450);
+    return `<article class="qcard" id="card-${q.id}" style="animation-delay:${delay}ms">
       <div class="qhead" style="${headBg(q)}">
         <div class="qmark" aria-hidden="true">&rdquo;</div>
         <p class="qtext">${esc(q.text)}</p>
@@ -486,6 +534,7 @@
           </div>
           <button class="act" onclick="copyQuote('${q.id}')">📋 نسخ</button>
           <button class="act" onclick="downloadCard('${q.id}')">🖼️ صورة</button>
+          ${context[q.id]?`<button class="act ctx" onclick="openContext('${q.id}')">📖 القصة والسياق</button>`:""}
         </div>
         <div class="comments" id="cm-${q.id}">
           <div class="clist" id="cl-${q.id}"><div class="cempty">جارِ التحميل…</div></div>
@@ -499,7 +548,7 @@
     const t=norm(term);
     const list=allQuotes().filter(q=>{ const mc=activeCat==="الكل"||q.cat===activeCat; const mt=!t||norm(q.text).includes(t)||norm(q.author).includes(t); const mtopic=!activeTopic||(q.topics||[]).includes(activeTopic); return mc&&mt&&mtopic; });
     if(!list.length){ grid.innerHTML='<p class="empty">لا توجد اقتباساتٌ مطابقة… جرّب كلمةً أخرى.</p>'; countEl.textContent=""; return; }
-    grid.innerHTML=list.map(card).join(""); countEl.textContent=list.length+" اقتباس";
+    grid.innerHTML=list.map((q,i)=>card(q,i)).join(""); countEl.textContent=list.length+" اقتباس";
   }
   searchI.addEventListener("input",e=>{ term=e.target.value; render(); });
 
@@ -685,6 +734,31 @@
   }
   function copyQuote(id){ const q=allQuotes().find(x=>x.id===id); if(!q) return; navigator.clipboard.writeText(`"${q.text}" — ${q.author}`).then(()=>showToast("نُسخ الاقتباس 📋")).catch(()=>showToast("تعذّر النسخ")); }
 
+  /* ═══════════ القصة والسياق ═══════════ */
+  function openContext(id){
+    const q=allQuotes().find(x=>x.id===id); if(!q) return;
+    document.getElementById("ctxQuote").textContent="\u201C"+q.text+"\u201D";
+    document.getElementById("ctxAuthor").textContent="— "+q.author;
+    document.getElementById("ctxText").textContent=context[id]||"لا يتوفّر شرح بعد.";
+    document.getElementById("contextModal").classList.add("open");
+  }
+  function closeContext(){ document.getElementById("contextModal").classList.remove("open"); }
+  document.getElementById("contextModal").addEventListener("click",e=>{ if(e.target.id==="contextModal") closeContext(); });
+
+  /* ═══════════ اكتشف اقتباساً عشوائياً ═══════════ */
+  function randomQuote(){
+    activeCat="الكل"; activeTopic=""; term=""; searchI.value="";
+    document.querySelectorAll(".chip").forEach(x=>x.classList.toggle("active", x.textContent==="الكل"));
+    document.querySelectorAll(".tchip").forEach(x=>x.classList.remove("active"));
+    render();
+    const all=allQuotes(); if(!all.length) return;
+    const q=all[Math.floor(Math.random()*all.length)];
+    setTimeout(()=>{
+      const el=document.getElementById("card-"+q.id);
+      if(el){ el.scrollIntoView({behavior:"smooth",block:"center"}); el.classList.remove("pulse"); void el.offsetWidth; el.classList.add("pulse"); }
+    },120);
+  }
+
   /* ═══════════ قائمة المشاركة ═══════════ */
   function toggleShare(ev,id){
     ev.stopPropagation();
@@ -742,7 +816,7 @@
     ctx.fillStyle="#c8a44d"; ctx.font="700 46px Tajawal"; ctx.fillText(q.author,W/2,y+80);
     // اسم الموقع
     ctx.fillStyle="rgba(243,236,221,.6)"; ctx.font="400 34px Tajawal";
-    ctx.fillText("مُقتبَس · "+location.host,W/2,H-95);
+    ctx.fillText("حِكَم وأشعار · "+location.host,W/2,H-95);
     // تنزيل
     try{
       const url=canvas.toDataURL("image/png");

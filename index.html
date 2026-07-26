@@ -240,6 +240,7 @@
     <nav class="filters topics" id="topicFilters" aria-label="الموضوعات"></nav>
     <p class="count" id="count"></p>
     <main class="grid" id="grid"></main>
+    <div id="loadMoreBox" style="text-align:center;margin-top:1.5rem"></div>
 
     <section class="suggest">
       <h2>اقترح اقتباساً</h2>
@@ -417,6 +418,32 @@
     { id:"q14", text:"أنا أفكّرُ، إذاً أنا موجودٌ.", author:"ديكارت", cat:"فلسفة", img:wm("Maqama 09 Abu Zayd and his wife before the Kadi of Alexandria, Egypt.jpg"), topics:["العقل","الوجود","المعرفة"] },
     { id:"q15", text:"الجهلُ يولّدُ الخوف، والخوفُ يولّدُ الكراهية، والكراهيةُ تولّدُ العنف.", author:"ابن رشد", cat:"فلسفة", img:wm("Early Morning, Id el-fitr by Ludwig Deutsch, 1902.jpg"), topics:["الجهل","الخوف","العقل"] },
     { id:"q16", text:"أمرُّ على الديارِ ديارِ ليلى، أُقبّلُ ذا الجدارَ وذا الجدارا.", author:"قيس بن الملوّح", cat:"حب", img:wm("Slaves Zadib Yemen 13th century BNF Paris.jpg"), topics:["الحب","الحنين","الوفاء"] },
+
+    /* ═══ دفعة تراثية (ملكية عامة) — أضف المزيد على هذا النسق ═══ */
+    { id:"q17", text:"السيفُ أصدقُ أنباءً من الكتبِ، في حدِّه الحدُّ بين الجِدِّ واللعبِ.", author:"أبو تمّام", cat:"أدب", topics:["الشجاعة","الحكمة","الجدّ"] },
+    { id:"q18", text:"إذا غامرتَ في شرفٍ مرومٍ، فلا تقنعْ بما دونَ النجومِ.", author:"المتنبي", cat:"حكمة", topics:["الطموح","العزيمة","المجد"] },
+    { id:"q19", text:"ومن يكُ ذا فمٍ مُرٍّ مريضٍ، يجدْ مُرّاً به الماءَ الزُّلالا.", author:"المتنبي", cat:"حكمة", topics:["النفس","الإدراك","الحياة"] },
+    { id:"q20", text:"ومن يجعلِ المعروفَ من دونِ عِرضِه يَفِرْه، ومن لا يتّقِ الشتمَ يُشتَمِ.", author:"زهير بن أبي سُلمى", cat:"حكمة", topics:["الأخلاق","الكرامة","الحكمة"] },
+    { id:"q21", text:"ومن هابَ أسبابَ المنايا ينلْنَه، ولو رامَ أسبابَ السماءِ بسُلّمِ.", author:"زهير بن أبي سُلمى", cat:"حياة", topics:["الموت","القدر","الشجاعة"] },
+    { id:"q22", text:"ستُبدي لك الأيامُ ما كنتَ جاهلاً، ويأتيكَ بالأخبارِ من لم تُزوّدِ.", author:"طرفة بن العبد", cat:"حكمة", topics:["الزمن","التجربة","المعرفة"] },
+    { id:"q23", text:"وإني وإن كنتُ الأخيرَ زمانُه، لآتٍ بما لم تستطعْه الأوائلُ.", author:"أبو العلاء المعرّي", cat:"أدب", topics:["الطموح","الاعتزاز","الأدب"] },
+    { id:"q24", text:"دعِ الأيامَ تفعلُ ما تشاءُ، وطِبْ نفساً إذا حكمَ القضاءُ.", author:"الإمام الشافعي", cat:"حياة", topics:["الرضا","القدر","الصبر"] },
+    { id:"q25", text:"ما حكَّ جلدَك مثلُ ظفرِك، فتولَّ أنتَ جميعَ أمرِك.", author:"الإمام الشافعي", cat:"حكمة", topics:["الاعتماد على النفس","العمل","الحكمة"] },
+    { id:"q26", text:"العلمُ خيرٌ من المالِ؛ العلمُ يحرسُك وأنتَ تحرسُ المالَ.", author:"علي بن أبي طالب", cat:"حكمة", topics:["العلم","المعرفة","الحياة"] },
+    { id:"q27", text:"لا تكنْ عبدَ غيرِك وقد جعلَك اللهُ حُرّاً.", author:"علي بن أبي طالب", cat:"حكمة", topics:["الحرية","الكرامة","النفس"] },
+    { id:"q28", text:"نستطيعُ أن نسامحَ الطفلَ الذي يخافُ الظلام؛ لكنّ مأساةَ الحياةِ أن يخافَ الرجالُ النور.", author:"أفلاطون", cat:"فلسفة", topics:["المعرفة","الخوف","الحقيقة"] },
+    { id:"q29", text:"الطبيعةُ لا تصنعُ شيئاً عبثاً.", author:"أرسطو", cat:"فلسفة", topics:["الطبيعة","الحكمة","الوجود"] },
+    { id:"q30", text:"ليس لدينا وقتٌ قصير، بل نحن نُضيّعُ كثيراً منه.", author:"سينيكا", cat:"حياة", topics:["الزمن","الحياة","الحكمة"] },
+    { id:"q31", text:"ما دمتَ حيّاً، فتعلّمْ كيف تعيش.", author:"سينيكا", cat:"حياة", topics:["الحياة","التعلّم","النفس"] },
+    { id:"q32", text:"لكَ سلطانٌ على عقلِك، لا على الأحداثِ الخارجية؛ أدرِكْ هذا تجدِ القوّة.", author:"ماركوس أوريليوس", cat:"فلسفة", topics:["النفس","القوة","الرواقية"] },
+    { id:"q33", text:"ليس ما يحدثُ لك، بل كيف تتعاملُ معه، هو ما يصنعُ الفرق.", author:"إبكتيتوس", cat:"فلسفة", topics:["النفس","الحكمة","الرواقية"] },
+    { id:"q34", text:"لا يعبُرُ الإنسانُ النهرَ نفسَه مرّتين، فالماءُ يجري وهو يتغيّر.", author:"هيراقليطس", cat:"فلسفة", topics:["الزمن","التغيّر","الوجود"] },
+    { id:"q35", text:"لا يهمُّ كم تسيرُ ببطءٍ، ما دمتَ لا تتوقّف.", author:"كونفوشيوس", cat:"حكمة", topics:["المثابرة","الصبر","الطموح"] },
+    { id:"q36", text:"رحلةُ الألفِ ميلٍ تبدأُ بخطوةٍ واحدة.", author:"لاو تزو", cat:"حكمة", topics:["البداية","المثابرة","الحكمة"] },
+    { id:"q37", text:"من لا يعرفُ إلى أيِّ مرفأٍ يتّجه، لا تُواتيهِ أيُّ ريح.", author:"سينيكا", cat:"حكمة", topics:["الهدف","الحياة","الحكمة"] },
+    { id:"q38", text:"الصبرُ مفتاحُ الفرَج.", author:"مثلٌ عربيّ", cat:"حكمة", topics:["الصبر","الأمل","الحكمة"] },
+    { id:"q39", text:"في التأنّي السلامةُ، وفي العَجَلةِ الندامةُ.", author:"مثلٌ عربيّ", cat:"حكمة", topics:["التأنّي","الحكمة","الحياة"] },
+    { id:"q40", text:"اطلبوا العلمَ من المهدِ إلى اللحدِ.", author:"حكمةٌ مأثورة", cat:"حكمة", topics:["العلم","المعرفة","الحياة"] },
   ];
 
   /* سِيَر موجزة — راجعها وعدّلها كما تشاء */
@@ -432,6 +459,16 @@
     "ديكارت":{ era:"فيلسوف فرنسي · 1596–1650م", bio:"رينيه ديكارت، أبو الفلسفة الحديثة وعالم رياضيات. بدأ بالشكّ في كل شيء ليصل إلى يقين «أنا أفكّر، إذاً أنا موجود». وضع أسس المنهج العقلي والهندسة التحليلية." },
     "ابن رشد":{ era:"فيلسوف أندلسي · 1126–1198م", bio:"أبو الوليد ابن رشد، فيلسوف وطبيب وقاضٍ من قرطبة. اشتهر بشروحه لأرسطو التي نقلت الفلسفة إلى أوروبا، ودافع عن التوفيق بين الحكمة والشريعة. يُعدّ من أعظم عقول الأندلس." },
     "قيس بن الملوّح":{ era:"شاعر عربي · توفي نحو 688م", bio:"المعروف بـ«مجنون ليلى»، شاعر عذريّ من بني عامر. اشتهر بحبّه العفيف لليلى الذي مُنع من الزواج بها، فهام في البادية ينظم أرقّ أشعار الحبّ في التراث العربي." },
+    "أبو تمّام":{ era:"شاعر عباسي · 803–845م", bio:"حبيب بن أوس الطائي، من كبار شعراء العصر العباسي وصاحب «الحماسة». اشتهر بحكمته وبديعه وقوّة معانيه." },
+    "زهير بن أبي سُلمى":{ era:"شاعر جاهلي · نحو 520–609م", bio:"من أصحاب المعلّقات ومن حكماء شعراء الجاهلية. تميّز شعره بالحكمة ومكارم الأخلاق ومدح السلام." },
+    "طرفة بن العبد":{ era:"شاعر جاهلي · نحو 543–569م", bio:"من أصحاب المعلّقات، عاش قصيراً ومات شابّاً. اشتهرت معلّقته بحكمها العميقة رغم صغر سنّه." },
+    "أبو العلاء المعرّي":{ era:"شاعر وفيلسوف · 973–1057م", bio:"فيلسوف الشعراء وشاعر الفلاسفة، وُلد في معرّة النعمان وفقد بصره صغيراً. اشتهر بعمق فكره وتشاؤمه الفلسفي في «اللزوميات»." },
+    "سينيكا":{ era:"فيلسوف روماني · 4 ق.م–65م", bio:"لوكيوس سينيكا، فيلسوف رواقي وكاتب ومستشار، من أبرز حكماء روما. كتب في الأخلاق وقِصَر الحياة والتعامل مع القدر." },
+    "ماركوس أوريليوس":{ era:"إمبراطور وفيلسوف · 121–180م", bio:"إمبراطور روماني وفيلسوف رواقي، عُرف بـ«الإمبراطور الفيلسوف». دوّن تأمّلاته في كتاب «التأمّلات» الذي صار من كلاسيكيات الحكمة." },
+    "إبكتيتوس":{ era:"فيلسوف رواقي · 50–135م", bio:"فيلسوف يوناني وُلد عبداً ثم تحرّر. من أعمدة الرواقية، علّم أن الحرية الحقيقية في ضبط ما نملكه: أفكارنا وردود أفعالنا." },
+    "هيراقليطس":{ era:"فيلسوف يوناني · نحو 535–475 ق.م", bio:"فيلسوف ما قبل سقراط، اشتهر بفكرة التغيّر الدائم: «كل شيء يجري». من أعمق فلاسفة الوجود والصيرورة." },
+    "كونفوشيوس":{ era:"حكيم صيني · 551–479 ق.م", bio:"أعظم حكماء الصين ومعلّمها الأول. تدور فلسفته حول الأخلاق والعلاقات الاجتماعية والفضيلة، وأثّرت في الحضارة الصينية آلاف السنين." },
+    "لاو تزو":{ era:"فيلسوف صيني · القرن السادس ق.م", bio:"مؤسّس الطاوية وصاحب كتاب «التاو تي تشينغ». تدعو فلسفته إلى الانسجام مع طبيعة الأشياء والبساطة والتأمّل." },
   };
 
   /* ═══ القصة والسياق لكل اقتباس — راجعها وصحّحها كما تشاء ═══ */
@@ -489,7 +526,7 @@
 
   const cats=["الكل",...Object.keys(catColors)];
   cats.forEach(c=>{ const b=document.createElement("button"); b.className="chip"+(c==="الكل"?" active":""); b.textContent=c;
-    b.addEventListener("click",()=>{ activeCat=c; document.querySelectorAll(".chip").forEach(x=>x.classList.remove("active")); b.classList.add("active"); render(); });
+    b.addEventListener("click",()=>{ activeCat=c; document.querySelectorAll(".chip").forEach(x=>x.classList.remove("active")); b.classList.add("active"); resetPage(); render(); });
     filters.appendChild(b); });
 
   /* بناء أزرار الموضوعات (وسوم فريدة من كل الاقتباسات) */
@@ -500,7 +537,7 @@
     b.addEventListener("click",()=>{
       if(activeTopic===t){ activeTopic=""; b.classList.remove("active"); }
       else{ activeTopic=t; document.querySelectorAll(".tchip").forEach(x=>x.classList.remove("active")); b.classList.add("active"); }
-      render();
+      resetPage(); render();
     });
     tf.appendChild(b); });
 
@@ -544,13 +581,20 @@
     </article>`;
   }
 
+  const PAGE=12; let shown=PAGE;
   function render(){
     const t=norm(term);
-    const list=allQuotes().filter(q=>{ const mc=activeCat==="الكل"||q.cat===activeCat; const mt=!t||norm(q.text).includes(t)||norm(q.author).includes(t); const mtopic=!activeTopic||(q.topics||[]).includes(activeTopic); return mc&&mt&&mtopic; });
-    if(!list.length){ grid.innerHTML='<p class="empty">لا توجد اقتباساتٌ مطابقة… جرّب كلمةً أخرى.</p>'; countEl.textContent=""; return; }
-    grid.innerHTML=list.map((q,i)=>card(q,i)).join(""); countEl.textContent=list.length+" اقتباس";
+    const list=allQuotes().filter(q=>{ const mc=activeCat==="الكل"||q.cat===activeCat; const mt=!t||norm(q.text).includes(t)||norm(q.author).includes(t)||(q.topics||[]).some(tp=>norm(tp).includes(t)); const mtopic=!activeTopic||(q.topics||[]).includes(activeTopic); return mc&&mt&&mtopic; });
+    const btnBox=document.getElementById("loadMoreBox");
+    if(!list.length){ grid.innerHTML='<p class="empty">لا توجد اقتباساتٌ مطابقة… جرّب كلمةً أخرى.</p>'; countEl.textContent=""; if(btnBox) btnBox.innerHTML=""; return; }
+    const slice=list.slice(0,shown);
+    grid.innerHTML=slice.map((q,i)=>card(q,i)).join("");
+    countEl.textContent="عرض "+slice.length+" من "+list.length+" اقتباس";
+    if(btnBox){ btnBox.innerHTML = list.length>shown ? '<button class="discover-btn" onclick="loadMore()">تحميل المزيد ↓</button>' : ""; }
   }
-  searchI.addEventListener("input",e=>{ term=e.target.value; render(); });
+  function loadMore(){ shown+=PAGE; render(); }
+  function resetPage(){ shown=PAGE; }
+  searchI.addEventListener("input",e=>{ term=e.target.value; resetPage(); render(); });
 
   /* نافذة الكاتب */
   function openAuthor(name){
@@ -747,7 +791,7 @@
 
   /* ═══════════ اكتشف اقتباساً عشوائياً ═══════════ */
   function randomQuote(){
-    activeCat="الكل"; activeTopic=""; term=""; searchI.value="";
+    activeCat="الكل"; activeTopic=""; term=""; searchI.value=""; resetPage();
     document.querySelectorAll(".chip").forEach(x=>x.classList.toggle("active", x.textContent==="الكل"));
     document.querySelectorAll(".tchip").forEach(x=>x.classList.remove("active"));
     render();
@@ -827,7 +871,7 @@
 
   /* التصفية عند الضغط على وسم داخل بطاقة */
   function filterTopic(t){
-    activeTopic=t;
+    activeTopic=t; resetPage();
     document.querySelectorAll(".tchip").forEach(x=>x.classList.toggle("active", x.textContent===t));
     render();
     window.scrollTo({top:document.getElementById("topicFilters").offsetTop-80, behavior:"smooth"});

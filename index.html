@@ -32,6 +32,15 @@
   .rules-body .rgood{ color:var(--c-hayat); font-weight:700; }
   .rules-body .rbad{ color:var(--c-hob); font-weight:700; }
   .rules-body .rnote{ background:var(--paper); border-radius:10px; padding:.8rem 1rem; margin-top:1rem; }
+  .copyright-note{ background:#fdf3e3; border:1px solid var(--ochre); border-radius:10px; padding:.7rem .9rem; font-size:.85rem; line-height:1.7; margin:.5rem 0 1rem; }
+  .authform select{ font-family:"Tajawal",sans-serif; font-size:.95rem; color:var(--ink); background:#fff; border:1px solid var(--line); border-radius:10px; padding:.7rem .85rem; }
+  .review-item{ background:var(--paper); border-radius:12px; padding:1rem; margin-bottom:.8rem; border-inline-start:3px solid var(--ochre); }
+  .review-item .rq{ font-family:"Amiri",serif; font-size:1.2rem; line-height:1.8; }
+  .review-item .rmeta{ font-size:.82rem; color:var(--muted); margin:.4rem 0 .7rem; }
+  .review-item .rbtns{ display:flex; gap:.5rem; }
+  .review-item .rbtns button{ font-family:"Tajawal",sans-serif; font-size:.85rem; font-weight:500; color:#fff; border:none; border-radius:8px; padding:.45rem 1.1rem; cursor:pointer; }
+  .btn-approve{ background:var(--c-hayat); }
+  .btn-reject{ background:var(--c-hob); }
   .auth-user .avatar{ width:30px; height:30px; border-radius:50%; background:var(--ochre); color:#fff; display:inline-flex;
     align-items:center; justify-content:center; font-weight:700; font-size:.9rem; }
   .auth-logout{ font-family:"Tajawal",sans-serif; font-size:.8rem; color:var(--muted); background:none; border:1px solid var(--line);
@@ -224,6 +233,39 @@
     </footer>
   </div>
 
+  <!-- نافذة إضافة اقتباس (للأعضاء) -->
+  <div class="modal" id="submitModal">
+    <div class="modal-box" style="max-width:480px">
+      <button class="modal-close" onclick="closeSubmit()" aria-label="إغلاق">&times;</button>
+      <h2 class="modal-name">✍️ أضف اقتباساً</h2>
+      <div class="modal-era">سيُراجعه المشرف قبل نشره</div>
+      <div class="copyright-note">⚠️ أضف فقط اقتباسات من <strong>التراث القديم</strong> أو <strong>الملكية العامة</strong>. تجنّب نصوص الشعراء والكتّاب المعاصرين المحميّة بحقوق النشر.</div>
+      <div class="authform">
+        <textarea id="subText" rows="3" placeholder="نصّ الاقتباس…" maxlength="400"></textarea>
+        <input id="subAuthor" type="text" placeholder="اسم الكاتب/الفيلسوف" maxlength="60">
+        <select id="subCat">
+          <option value="حكمة">حكمة</option>
+          <option value="فلسفة">فلسفة</option>
+          <option value="أدب">أدب</option>
+          <option value="حب">حب</option>
+          <option value="حياة">حياة</option>
+        </select>
+        <button id="subSend" onclick="submitQuote()">إرسال للمراجعة</button>
+        <div class="auth-msg" id="subMsg"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- نافذة مراجعة المشرف -->
+  <div class="modal" id="reviewModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeReview()" aria-label="إغلاق">&times;</button>
+      <h2 class="modal-name">🛠 مراجعة الاقتباسات</h2>
+      <div class="modal-era" id="reviewCount">بانتظار الموافقة</div>
+      <div id="reviewList" style="margin-top:1rem"></div>
+    </div>
+  </div>
+
   <!-- نافذة قواعد المجتمع -->
   <div class="modal" id="rulesModal">
     <div class="modal-box">
@@ -359,6 +401,8 @@
   };
 
   const catColors={ "حكمة":"var(--c-hikma)","فلسفة":"var(--c-falsafa)","أدب":"var(--c-adab)","حب":"var(--c-hob)","حياة":"var(--c-hayat)" };
+  let extraQuotes=[]; // اقتباسات الأعضاء المعتمدة (من قاعدة البيانات)
+  function allQuotes(){ return quotes.concat(extraQuotes); }
   const catHex={ "حكمة":"#275c86","فلسفة":"#6a4a73","أدب":"#b08842","حب":"#a85d57","حياة":"#5e7a5a" };
   const PATTERN="data:image/svg+xml,"+encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><g fill='none' stroke='#ffffff' stroke-opacity='0.18' stroke-width='1.3'><rect x='16' y='16' width='32' height='32'/><rect x='16' y='16' width='32' height='32' transform='rotate(45 32 32)'/><circle cx='32' cy='32' r='3'/></g></svg>");
 
@@ -418,12 +462,13 @@
         </div>
       </div>
       <div class="qbody">
-        <div class="qtopics">${(q.topics||[]).map(t=>`<span class="qtag" onclick="filterTopic('${esc(t)}')">${esc(t)}</span>`).join("")}</div>
+        <div class="qtopics">${q.community?`<span class="qtag" style="color:var(--c-hayat);background:rgba(94,122,90,.12)">مساهمة مجتمع</span>`:""}${(q.topics||[]).map(t=>`<span class="qtag" onclick="filterTopic('${esc(t)}')">${esc(t)}</span>`).join("")}</div>
         <div class="actions">
           <button class="act${liked}" onclick="toggleLike('${q.id}')" aria-label="إعجاب"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9.3C.4 8 2 4.5 5.2 4.5c2 0 3.3 1.2 4.1 2.4C10.5 5.7 11.8 4.5 13.8 4.5 17 4.5 18.6 8 17 11.7 14.5 16.4 12 21 12 21z"/></svg><span id="lc-${q.id}">${likes}</span></button>
           <button class="act" onclick="toggleComments('${q.id}')">💬 <span id="cc-${q.id}">تعليق</span></button>
           <a class="act fb" href="https://www.facebook.com/sharer/sharer.php?u=${shareUrl}" target="_blank" rel="noopener" aria-label="فيسبوك"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h2.7l.4-3H13V9c0-.9.3-1.5 1.6-1.5H16V4.8c-.3 0-1.2-.1-2.2-.1-2.2 0-3.8 1.4-3.8 3.9V11H7.5v3H10v8h3z"/></svg></a>
           <button class="act" onclick="copyQuote('${q.id}')">📋 نسخ</button>
+          <button class="act" onclick="downloadCard('${q.id}')">🖼️ صورة</button>
         </div>
         <div class="comments" id="cm-${q.id}">
           <div class="clist" id="cl-${q.id}"><div class="cempty">جارِ التحميل…</div></div>
@@ -435,7 +480,7 @@
 
   function render(){
     const t=norm(term);
-    const list=quotes.filter(q=>{ const mc=activeCat==="الكل"||q.cat===activeCat; const mt=!t||norm(q.text).includes(t)||norm(q.author).includes(t); const mtopic=!activeTopic||(q.topics||[]).includes(activeTopic); return mc&&mt&&mtopic; });
+    const list=allQuotes().filter(q=>{ const mc=activeCat==="الكل"||q.cat===activeCat; const mt=!t||norm(q.text).includes(t)||norm(q.author).includes(t); const mtopic=!activeTopic||(q.topics||[]).includes(activeTopic); return mc&&mt&&mtopic; });
     if(!list.length){ grid.innerHTML='<p class="empty">لا توجد اقتباساتٌ مطابقة… جرّب كلمةً أخرى.</p>'; countEl.textContent=""; return; }
     grid.innerHTML=list.map(card).join(""); countEl.textContent=list.length+" اقتباس";
   }
@@ -447,7 +492,7 @@
     document.getElementById("mName").textContent=name;
     document.getElementById("mEra").textContent=a?a.era:"";
     document.getElementById("mBio").textContent=a?a.bio:"لا تتوفّر سيرة بعد.";
-    const his=quotes.filter(q=>q.author===name);
+    const his=allQuotes().filter(q=>q.author===name);
     document.getElementById("mQuotes").innerHTML=his.map(q=>`<div class="modal-q">${esc(q.text)}</div>`).join("");
     modal.classList.add("open");
   }
@@ -621,7 +666,64 @@
     try{ const {error}=await db.from("comments").insert({name:currentName,body,quote_id:id,user_id:currentUser.id,parent_id:null}); if(error) throw error; loadComments(id); showToast("تمّ نشر تعليقك ✔"); }
     catch(e){ console.warn("comment:",e); postError(e); bodyEl.value=body; }
   }
-  function copyQuote(id){ const q=quotes.find(x=>x.id===id); if(!q) return; navigator.clipboard.writeText(`"${q.text}" — ${q.author}`).then(()=>showToast("نُسخ الاقتباس 📋")).catch(()=>showToast("تعذّر النسخ")); }
+  function copyQuote(id){ const q=allQuotes().find(x=>x.id===id); if(!q) return; navigator.clipboard.writeText(`"${q.text}" — ${q.author}`).then(()=>showToast("نُسخ الاقتباس 📋")).catch(()=>showToast("تعذّر النسخ")); }
+
+  /* ═══════════ بطاقة اقتباس قابلة للتنزيل كصورة ═══════════ */
+  function shade(hex,amt){
+    let n=parseInt(hex.slice(1),16), r=(n>>16)+amt, g=((n>>8)&255)+amt, b=(n&255)+amt;
+    r=Math.max(0,Math.min(255,r)); g=Math.max(0,Math.min(255,g)); b=Math.max(0,Math.min(255,b));
+    return "rgb("+r+","+g+","+b+")";
+  }
+  function wrapText(ctx,text,font,maxWidth){
+    ctx.font=font; const words=text.split(/\s+/); const lines=[]; let line="";
+    words.forEach(w=>{ const test=line?line+" "+w:w;
+      if(ctx.measureText(test).width>maxWidth && line){ lines.push(line); line=w; } else line=test; });
+    if(line) lines.push(line); return lines;
+  }
+  function drawPattern(ctx,W,H){
+    ctx.save(); ctx.strokeStyle="rgba(255,255,255,0.05)"; ctx.lineWidth=2;
+    for(let x=0;x<W;x+=90){ for(let y=0;y<H;y+=90){
+      ctx.save(); ctx.translate(x+45,y+45);
+      ctx.strokeRect(-22,-22,44,44); ctx.rotate(Math.PI/4); ctx.strokeRect(-22,-22,44,44);
+      ctx.restore();
+    }} ctx.restore();
+  }
+  async function downloadCard(id){
+    const q=allQuotes().find(x=>x.id===id); if(!q) return;
+    showToast("جارٍ إنشاء الصورة… 🖼️");
+    try{ await document.fonts.load("700 64px Amiri"); await document.fonts.load("500 58px Amiri"); await document.fonts.load("700 44px Tajawal"); await document.fonts.ready; }catch(e){}
+    const W=1080,H=1350, hex=catHex[q.cat]||"#275c86";
+    const canvas=document.createElement("canvas"); canvas.width=W; canvas.height=H;
+    const ctx=canvas.getContext("2d");
+    // خلفية متدرّجة
+    const g=ctx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,"#14100a"); g.addColorStop(.5,shade(hex,-35)); g.addColorStop(1,"#14100a");
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    drawPattern(ctx,W,H);
+    // إطار ذهبي
+    ctx.strokeStyle="rgba(200,164,77,.55)"; ctx.lineWidth=3; ctx.strokeRect(48,48,W-96,H-96);
+    ctx.direction="rtl"; ctx.textAlign="center";
+    // علامة اقتباس
+    ctx.fillStyle="rgba(200,164,77,.55)"; ctx.font="700 190px Amiri"; ctx.fillText("\u201D",W/2,300);
+    // نصّ الاقتباس
+    const lines=wrapText(ctx,q.text,"500 58px Amiri",W-260);
+    ctx.fillStyle="#f3ecdd"; ctx.font="500 58px Amiri";
+    let y=H/2-(lines.length*90)/2+30;
+    lines.forEach(l=>{ ctx.fillText(l,W/2,y); y+=90; });
+    // فاصل
+    ctx.strokeStyle="rgba(200,164,77,.7)"; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(W/2-45,y+8); ctx.lineTo(W/2+45,y+8); ctx.stroke();
+    // الكاتب
+    ctx.fillStyle="#c8a44d"; ctx.font="700 46px Tajawal"; ctx.fillText(q.author,W/2,y+80);
+    // اسم الموقع
+    ctx.fillStyle="rgba(243,236,221,.6)"; ctx.font="400 34px Tajawal";
+    ctx.fillText("مُقتبَس · "+location.host,W/2,H-95);
+    // تنزيل
+    try{
+      const url=canvas.toDataURL("image/png");
+      const a=document.createElement("a"); a.href=url; a.download="moqtabas-"+id+".png"; document.body.appendChild(a); a.click(); a.remove();
+      showToast("نُزّلت الصورة ✔ جاهزة للنشر");
+    }catch(e){ console.warn("card:",e); showToast("تعذّر إنشاء الصورة"); }
+  }
 
   /* التصفية عند الضغط على وسم داخل بطاقة */
   function filterTopic(t){
@@ -640,6 +742,69 @@
     ch.on("presence",{event:"sync"},()=>{ const n=Object.keys(ch.presenceState()).length; document.getElementById("presenceCount").textContent=n||1; })
       .subscribe(async(s)=>{ if(s==="SUBSCRIBED") await ch.track({t:Date.now()}); }); }catch(e){ document.getElementById("presence").style.display="none"; } }
 
+  /* ═══════════ إضافة اقتباسات الأعضاء ومراجعتها ═══════════ */
+  function openSubmit(){ if(!currentUser){ openAuth(); return; } document.getElementById("subMsg").textContent=""; document.getElementById("submitModal").classList.add("open"); }
+  function closeSubmit(){ document.getElementById("submitModal").classList.remove("open"); }
+  document.getElementById("submitModal").addEventListener("click",e=>{ if(e.target.id==="submitModal") closeSubmit(); });
+
+  async function submitQuote(){
+    if(!currentUser){ openAuth(); return; }
+    const text=document.getElementById("subText").value.trim();
+    const author=document.getElementById("subAuthor").value.trim();
+    const cat=document.getElementById("subCat").value;
+    const msg=document.getElementById("subMsg");
+    if(!text||!author){ msg.className="auth-msg err"; msg.textContent="أدخل النصّ واسم الكاتب"; return; }
+    const btn=document.getElementById("subSend"); btn.disabled=true;
+    try{
+      const {error}=await db.from("submissions").insert({text,author,cat,submitted_by:currentUser.id,submitter_name:currentName});
+      if(error) throw error;
+      msg.className="auth-msg ok"; msg.textContent="شكراً! أُرسل اقتباسك للمراجعة ✔";
+      document.getElementById("subText").value=""; document.getElementById("subAuthor").value="";
+    }catch(e){ console.warn("submit:",e); msg.className="auth-msg err"; msg.textContent="تعذّر الإرسال"; }
+    btn.disabled=false;
+  }
+
+  async function openReview(){
+    if(!isAdmin()) return;
+    const modal=document.getElementById("reviewModal"); const list=document.getElementById("reviewList");
+    list.innerHTML='<div class="fav-empty">جارِ التحميل…</div>'; modal.classList.add("open");
+    try{
+      const {data}=await db.from("submissions").select("*").eq("status","pending").order("created_at",{ascending:true});
+      const rows=data||[];
+      document.getElementById("reviewCount").textContent=rows.length? rows.length+" اقتباس بانتظار الموافقة" : "لا شيء بانتظار المراجعة";
+      if(!rows.length){ list.innerHTML='<div class="fav-empty">لا اقتباسات معلّقة حالياً 🌿</div>'; return; }
+      list.innerHTML=rows.map(r=>`<div class="review-item" id="rev-${r.id}">
+        <div class="rq">${esc(r.text)}</div>
+        <div class="rmeta">— ${esc(r.author)} · ${esc(r.cat)} · اقترحه ${esc(r.submitter_name||"عضو")}</div>
+        <div class="rbtns">
+          <button class="btn-approve" onclick="approveSubmission(${r.id})">✔ موافقة</button>
+          <button class="btn-reject" onclick="rejectSubmission(${r.id})">✕ رفض</button>
+        </div></div>`).join("");
+    }catch(e){ console.warn("review:",e); list.innerHTML='<div class="fav-empty">تعذّر التحميل</div>'; }
+  }
+  function closeReview(){ document.getElementById("reviewModal").classList.remove("open"); }
+  document.getElementById("reviewModal").addEventListener("click",e=>{ if(e.target.id==="reviewModal") closeReview(); });
+
+  async function approveSubmission(id){
+    try{ const {error}=await db.from("submissions").update({status:"approved"}).eq("id",id); if(error) throw error;
+      const el=document.getElementById("rev-"+id); if(el) el.remove();
+      showToast("تمّت الموافقة ✔"); await loadApproved(); render();
+    }catch(e){ console.warn("approve:",e); showToast("تعذّر"); }
+  }
+  async function rejectSubmission(id){
+    if(!confirm("رفض وحذف هذا الاقتباس؟")) return;
+    try{ const {error}=await db.from("submissions").delete().eq("id",id); if(error) throw error;
+      const el=document.getElementById("rev-"+id); if(el) el.remove(); showToast("رُفض الاقتباس ✕");
+    }catch(e){ console.warn("reject:",e); showToast("تعذّر"); }
+  }
+
+  async function loadApproved(){
+    try{
+      const {data}=await db.from("submissions").select("id,text,author,cat").eq("status","approved").order("created_at",{ascending:false});
+      extraQuotes=(data||[]).map(r=>({ id:"s"+r.id, text:r.text, author:r.author, cat:r.cat, topics:[], img:null, community:true }));
+    }catch(e){ console.warn("approved:",e); extraQuotes=[]; }
+  }
+
   /* ═══════════ قواعد المجتمع ═══════════ */
   function openRules(ev){ if(ev) ev.preventDefault(); document.getElementById("rulesModal").classList.add("open"); }
   function closeRules(){ document.getElementById("rulesModal").classList.remove("open"); }
@@ -655,7 +820,7 @@
 
     // المفضّلة
     const favIds=Object.keys(likedByMe).filter(k=>likedByMe[k]);
-    const favs=quotes.filter(q=>favIds.includes(q.id));
+    const favs=allQuotes().filter(q=>favIds.includes(q.id));
     document.getElementById("pfFavs").innerHTML = favs.length
       ? favs.map(q=>`<div class="fav-item">${esc(q.text)}<span class="fa">— ${esc(q.author)}</span></div>`).join("")
       : `<div class="fav-empty" style="padding:1rem">لا مفضّلة بعد.</div>`;
@@ -676,7 +841,7 @@
     if(!myComments.length){ cbox.innerHTML=`<div class="fav-empty" style="padding:1rem">لم تكتب تعليقات بعد.</div>`; }
     else{
       cbox.innerHTML=myComments.map(c=>{
-        const q=quotes.find(x=>x.id===c.quote_id);
+        const q=allQuotes().find(x=>x.id===c.quote_id);
         const on=q?`على اقتباس ${esc(q.author)}`:"";
         return `<div class="pf-comment"><div class="pq">${on}</div>${esc(c.body)}</div>`;
       }).join("");
@@ -690,7 +855,7 @@
   function openFavs(){
     const modal=document.getElementById("favModal");
     const favIds=Object.keys(likedByMe).filter(k=>likedByMe[k]);
-    const favs=quotes.filter(q=>favIds.includes(q.id));
+    const favs=allQuotes().filter(q=>favIds.includes(q.id));
     document.getElementById("favCount").textContent=favs.length? favs.length+" اقتباس محفوظ" : "";
     const list=document.getElementById("favList");
     if(!favs.length){
@@ -773,6 +938,8 @@
       const adminBadge=isAdmin()?`<span class="admin-badge">مشرف</span>`:"";
       bar.innerHTML=`<span class="auth-user"><span class="avatar">${esc(initial)}</span>
         <span>مرحباً، <span class="uname">${esc(currentName)}</span>${adminBadge}</span>
+        <button class="auth-fav" onclick="openSubmit()">✍️ أضف اقتباساً</button>
+        ${isAdmin()?`<button class="auth-fav" style="border-color:var(--c-hob);color:var(--c-hob)" onclick="openReview()">🛠 مراجعة</button>`:""}
         <button class="auth-fav" onclick="openProfile()">👤 ملفّي</button>
         <button class="auth-fav" onclick="openFavs()">🔖 مفضّلتي</button>
         <button class="auth-logout" onclick="signOut()">خروج</button></span>`;
@@ -785,6 +952,7 @@
   (async function init(){ renderDaily(); render();
     if(SUPABASE_URL.startsWith("http")){
       await loadSession();
+      await loadApproved();
       await loadLikes(); render();
       startPresence();
     } else { document.getElementById("presence").style.display="none"; }

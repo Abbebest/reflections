@@ -29,6 +29,22 @@
   .auth-logout{ font-family:"Tajawal",sans-serif; font-size:.8rem; color:var(--muted); background:none; border:1px solid var(--line);
     border-radius:999px; padding:.3rem .8rem; cursor:pointer; }
   .auth-logout:hover{ border-color:var(--c-hob); color:var(--c-hob); }
+  .auth-fav{ font-family:"Tajawal",sans-serif; font-size:.8rem; color:var(--ochre); background:none; border:1px solid var(--ochre);
+    border-radius:999px; padding:.3rem .8rem; cursor:pointer; }
+  .auth-fav:hover{ background:var(--ochre); color:#fff; }
+  .fav-item{ font-family:"Amiri",serif; font-size:1.1rem; line-height:1.8; padding:.8rem 1rem; background:var(--paper);
+    border-radius:10px; margin-bottom:.65rem; border-inline-start:3px solid var(--ochre); }
+  .fav-item .fa{ display:block; font-family:"Tajawal",sans-serif; font-size:.82rem; color:var(--muted); margin-top:.4rem; }
+  .fav-empty{ text-align:center; color:var(--muted); padding:2rem 1rem; }
+  .profile-head{ display:flex; align-items:center; gap:1rem; margin-bottom:1.3rem; }
+  .profile-avatar{ width:56px; height:56px; border-radius:50%; background:var(--ochre); color:#fff; display:inline-flex;
+    align-items:center; justify-content:center; font-weight:700; font-size:1.6rem; font-family:"Amiri",serif; flex-shrink:0; }
+  .profile-stats{ display:flex; gap:1rem; margin-bottom:1.5rem; padding-bottom:1.2rem; border-bottom:1px solid var(--line); }
+  .pstat{ flex:1; text-align:center; background:var(--paper); border-radius:12px; padding:.8rem; }
+  .pstat .num{ font-size:1.7rem; font-weight:700; color:var(--lapis); font-family:"Tajawal",sans-serif; }
+  .pstat .lbl{ font-size:.8rem; color:var(--muted); }
+  .pf-comment{ background:var(--paper); border-radius:10px; padding:.6rem .8rem; margin-bottom:.55rem; font-size:.92rem; }
+  .pf-comment .pq{ font-size:.76rem; color:var(--muted); margin-bottom:.25rem; }
 
   .authform{ display:flex; flex-direction:column; gap:.65rem; margin-top:.5rem; }
   .authform input{ font-family:"Tajawal",sans-serif; font-size:.95rem; color:var(--ink); background:#fff;
@@ -113,6 +129,16 @@
   .clist{ display:flex; flex-direction:column; gap:.55rem; margin-bottom:.7rem; max-height:220px; overflow-y:auto; }
   .citem{ background:var(--paper); border-radius:10px; padding:.5rem .7rem; font-size:.9rem; }
   .citem .cname{ font-weight:700; font-size:.82rem; color:var(--lapis); }
+  .citem .cbody{ margin:.15rem 0 .35rem; }
+  .cactions{ display:flex; gap:.5rem; }
+  .cact{ font-family:"Tajawal",sans-serif; font-size:.75rem; color:var(--muted); background:none; border:none; cursor:pointer; padding:.1rem .3rem; border-radius:6px; transition:color .15s; }
+  .cact:hover{ color:var(--lapis); }
+  .cact.liked{ color:var(--c-hob); font-weight:700; }
+  .cact.cdel:hover{ color:#c0392b; }
+  .edit-form{ margin:.2rem 0; }
+  .reply-form{ margin-top:.4rem; }
+  .creplies{ margin-top:.5rem; padding-inline-start:.9rem; border-inline-start:2px solid var(--line); display:flex; flex-direction:column; gap:.5rem; }
+  .creplies:empty{ margin:0; padding:0; border:none; }
   .cempty{ color:var(--muted); font-size:.85rem; text-align:center; padding:.4rem; }
   .cform{ display:flex; flex-direction:column; gap:.4rem; }
   .cform input, .cform textarea{ font-family:"Tajawal",sans-serif; font-size:.88rem; color:var(--ink); background:#fff; border:1px solid var(--line); border-radius:8px; padding:.5rem .65rem; resize:vertical; }
@@ -202,6 +228,35 @@
     </div>
   </div>
 
+  <!-- نافذة الملف الشخصي -->
+  <div class="modal" id="profileModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeProfile()" aria-label="إغلاق">&times;</button>
+      <div class="profile-head">
+        <span class="profile-avatar" id="pfAvatar"></span>
+        <div>
+          <h2 class="modal-name" id="pfName" style="margin:0"></h2>
+          <div class="modal-era" id="pfEmail"></div>
+        </div>
+      </div>
+      <div class="profile-stats" id="pfStats"></div>
+      <div class="modal-sub">اقتباساتي المفضّلة</div>
+      <div id="pfFavs" style="margin-bottom:1.3rem"></div>
+      <div class="modal-sub">آخر تعليقاتي</div>
+      <div id="pfComments"></div>
+    </div>
+  </div>
+
+  <!-- نافذة مفضّلتي -->
+  <div class="modal" id="favModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeFavs()" aria-label="إغلاق">&times;</button>
+      <h2 class="modal-name">🔖 مفضّلتي</h2>
+      <div class="modal-era" id="favCount"></div>
+      <div id="favList" style="margin-top:1rem"></div>
+    </div>
+  </div>
+
   <!-- نافذة تسجيل الدخول / إنشاء حساب -->
   <div class="modal" id="authModal">
     <div class="modal-box" style="max-width:420px">
@@ -278,6 +333,7 @@
         searchI=document.getElementById("search"), toast=document.getElementById("toast");
   let activeCat="الكل", term="", likeCounts={}, likedByMe={}, activeTopic="";
   let currentUser=null, currentName="", authMode="login";
+  let commentLikeCount={}, commentLikedByMe={};
 
   function showToast(m){ toast.textContent=m; toast.classList.add("show"); setTimeout(()=>toast.classList.remove("show"),1800); }
   function headBg(q){ const hex=catHex[q.cat]||"#275c86";
@@ -397,17 +453,106 @@
     }
   }
   async function loadComments(id){ const list=document.getElementById("cl-"+id);
-    try{ const {data,error}=await db.from("comments").select("name,body,created_at").eq("quote_id",id).order("created_at",{ascending:true}); if(error) throw error; renderComments(id,data||[]); }
-    catch(e){ console.warn("comments:",e); list.innerHTML='<div class="cempty">تعذّر تحميل التعليقات</div>'; } }
+    try{
+      const {data,error}=await db.from("comments").select("id,name,body,created_at,parent_id,user_id").eq("quote_id",id).order("created_at",{ascending:true});
+      if(error) throw error;
+      const rows=data||[];
+      commentLikeCount={}; commentLikedByMe={};
+      const ids=rows.map(r=>r.id);
+      if(ids.length){
+        try{ const {data:cl}=await db.from("comment_likes").select("comment_id,user_id").in("comment_id",ids);
+          (cl||[]).forEach(r=>{ commentLikeCount[r.comment_id]=(commentLikeCount[r.comment_id]||0)+1; if(currentUser&&r.user_id===currentUser.id) commentLikedByMe[r.comment_id]=true; }); }
+        catch(e){ console.warn("clikes:",e); }
+      }
+      renderComments(id,rows);
+    }catch(e){ console.warn("comments:",e); list.innerHTML='<div class="cempty">تعذّر تحميل التعليقات</div>'; }
+  }
+  function commentNode(qid,c,childrenHtml){
+    const likes=commentLikeCount[c.id]||0, liked=commentLikedByMe[c.id]?" liked":"";
+    const mine=currentUser&&c.user_id===currentUser.id;
+    const ownerBtns=mine?`
+        <button class="cact" onclick="showEditForm(${c.id})">✎ تعديل</button>
+        <button class="cact cdel" onclick="deleteComment(${c.id},'${qid}')">🗑 حذف</button>`:"";
+    return `<div class="citem">
+      <div class="cname">${esc(c.name||"زائر")}</div>
+      <div class="cbody" id="cbody-${c.id}">${esc(c.body)}</div>
+      <div class="edit-form" id="ef-${c.id}" data-raw="${esc(c.body)}"></div>
+      <div class="cactions">
+        <button class="cact${liked}" onclick="toggleCommentLike(${c.id},'${qid}')">♥ <span>${likes}</span></button>
+        <button class="cact" onclick="showReplyForm('${qid}',${c.id})">↩ ردّ</button>${ownerBtns}
+      </div>
+      <div class="reply-form" id="rf-${c.id}"></div>
+      <div class="creplies">${childrenHtml}</div>
+    </div>`;
+  }
+  function showEditForm(commentId){
+    const box=document.getElementById("ef-"+commentId); if(!box) return;
+    const bodyEl=document.getElementById("cbody-"+commentId);
+    if(box.dataset.open==="1"){ box.innerHTML=""; box.dataset.open=""; bodyEl.style.display=""; return; }
+    box.dataset.open="1"; bodyEl.style.display="none";
+    const raw=box.getAttribute("data-raw")||"";
+    box.innerHTML=`<div class="cform">
+      <textarea id="eb-${commentId}" rows="2" maxlength="300">${raw}</textarea>
+      <div style="display:flex;gap:.4rem">
+        <button onclick="saveEdit(${commentId})">حفظ</button>
+        <button style="background:var(--muted)" onclick="showEditForm(${commentId})">إلغاء</button>
+      </div></div>`;
+  }
+  async function saveEdit(commentId){
+    const el=document.getElementById("eb-"+commentId); const body=(el.value||"").trim();
+    if(!body){ showToast("لا يمكن ترك التعليق فارغاً"); return; }
+    try{
+      const {error}=await db.from("comments").update({body}).eq("id",commentId).eq("user_id",currentUser.id);
+      if(error) throw error;
+      const qid=findQuoteOfOpenComments(); showToast("تمّ التعديل ✔");
+      if(qid) loadComments(qid);
+    }catch(e){ console.warn("edit:",e); showToast("تعذّر التعديل"); }
+  }
+  async function deleteComment(commentId,qid){
+    if(!confirm("هل تريد حذف هذا التعليق؟ سيُحذف مع ردوده.")) return;
+    try{
+      const {error}=await db.from("comments").delete().eq("id",commentId).eq("user_id",currentUser.id);
+      if(error) throw error;
+      showToast("حُذف التعليق 🗑"); loadComments(qid);
+    }catch(e){ console.warn("delete:",e); showToast("تعذّر الحذف"); }
+  }
+  function findQuoteOfOpenComments(){ const open=document.querySelector(".comments.open"); return open?open.id.replace("cm-",""):null; }
   function renderComments(id,rows){ const list=document.getElementById("cl-"+id);
-    if(!rows.length){ list.innerHTML='<div class="cempty">لا توجد تعليقات بعد — كن أوّل من يعلّق</div>'; return; }
-    list.innerHTML=rows.map(r=>`<div class="citem"><div class="cname">${esc(r.name||"زائر")}</div><div>${esc(r.body)}</div></div>`).join("");
-    const cc=document.getElementById("cc-"+id); if(cc) cc.textContent=rows.length+" تعليق"; }
+    if(!rows.length){ list.innerHTML='<div class="cempty">لا توجد تعليقات بعد — كن أوّل من يعلّق</div>'; const cc0=document.getElementById("cc-"+id); if(cc0) cc0.textContent="تعليق"; return; }
+    const byParent={}; rows.forEach(r=>{ const p=r.parent_id||0; (byParent[p]=byParent[p]||[]).push(r); });
+    function build(parent){ return (byParent[parent]||[]).map(c=>commentNode(id,c,build(c.id))).join(""); }
+    list.innerHTML=build(0);
+    const cc=document.getElementById("cc-"+id); if(cc) cc.textContent=rows.length+" تعليق";
+  }
+  function showReplyForm(qid,parentId){
+    if(!currentUser){ showToast("سجّل الدخول للردّ"); openAuth(); return; }
+    const box=document.getElementById("rf-"+parentId); if(!box) return;
+    if(box.dataset.open==="1"){ box.innerHTML=""; box.dataset.open=""; return; }
+    box.dataset.open="1";
+    box.innerHTML=`<div class="cform">
+      <textarea id="rb-${parentId}" rows="2" placeholder="ردّك باسم ${esc(currentName)}…" maxlength="300"></textarea>
+      <button onclick="addReply('${qid}',${parentId})">إرسال الردّ</button></div>`;
+  }
+  async function addReply(qid,parentId){
+    if(!currentUser){ showToast("سجّل الدخول"); openAuth(); return; }
+    const el=document.getElementById("rb-"+parentId); const body=(el.value||"").trim();
+    if(!body){ showToast("اكتب ردّك أولاً"); return; }
+    try{ await db.from("comments").insert({name:currentName,body,quote_id:qid,user_id:currentUser.id,parent_id:parentId}); loadComments(qid); showToast("تمّ نشر ردّك ✔"); }
+    catch(e){ console.warn("reply:",e); showToast("تعذّر النشر"); }
+  }
+  async function toggleCommentLike(commentId,quoteId){
+    if(!currentUser){ showToast("سجّل الدخول للإعجاب"); openAuth(); return; }
+    try{
+      if(commentLikedByMe[commentId]){ await db.from("comment_likes").delete().eq("user_id",currentUser.id).eq("comment_id",commentId); }
+      else { await db.from("comment_likes").insert({user_id:currentUser.id,comment_id:commentId}); }
+      loadComments(quoteId);
+    }catch(e){ console.warn("clike:",e); showToast("تعذّر الحفظ"); }
+  }
   async function addComment(id){
     if(!currentUser){ showToast("سجّل الدخول للتعليق"); openAuth(); return; }
     const bodyEl=document.getElementById("cb-"+id); const body=(bodyEl.value||"").trim();
     if(!body){ showToast("اكتب تعليقاً أولاً"); return; } bodyEl.value="";
-    try{ await db.from("comments").insert({name:currentName,body,quote_id:id,user_id:currentUser.id}); loadComments(id); showToast("تمّ نشر تعليقك ✔"); }
+    try{ await db.from("comments").insert({name:currentName,body,quote_id:id,user_id:currentUser.id,parent_id:null}); loadComments(id); showToast("تمّ نشر تعليقك ✔"); }
     catch(e){ console.warn("comment:",e); showToast("تعذّر النشر"); }
   }
   function copyQuote(id){ const q=quotes.find(x=>x.id===id); if(!q) return; navigator.clipboard.writeText(`"${q.text}" — ${q.author}`).then(()=>showToast("نُسخ الاقتباس 📋")).catch(()=>showToast("تعذّر النسخ")); }
@@ -428,6 +573,64 @@
   function startPresence(){ try{ const ch=db.channel("online",{config:{presence:{key:Math.random().toString(36).slice(2)}}});
     ch.on("presence",{event:"sync"},()=>{ const n=Object.keys(ch.presenceState()).length; document.getElementById("presenceCount").textContent=n||1; })
       .subscribe(async(s)=>{ if(s==="SUBSCRIBED") await ch.track({t:Date.now()}); }); }catch(e){ document.getElementById("presence").style.display="none"; } }
+
+  /* ═══════════ الملف الشخصي ═══════════ */
+  async function openProfile(){
+    if(!currentUser){ openAuth(); return; }
+    const modal=document.getElementById("profileModal");
+    document.getElementById("pfAvatar").textContent=(currentName||"?").trim().charAt(0);
+    document.getElementById("pfName").textContent=currentName;
+    document.getElementById("pfEmail").textContent=currentUser.email||"";
+
+    // المفضّلة
+    const favIds=Object.keys(likedByMe).filter(k=>likedByMe[k]);
+    const favs=quotes.filter(q=>favIds.includes(q.id));
+    document.getElementById("pfFavs").innerHTML = favs.length
+      ? favs.map(q=>`<div class="fav-item">${esc(q.text)}<span class="fa">— ${esc(q.author)}</span></div>`).join("")
+      : `<div class="fav-empty" style="padding:1rem">لا مفضّلة بعد.</div>`;
+
+    // آخر تعليقاتي (جلب من قاعدة البيانات)
+    const cbox=document.getElementById("pfComments");
+    cbox.innerHTML=`<div class="fav-empty" style="padding:1rem">جارِ التحميل…</div>`;
+    let myComments=[];
+    try{
+      const {data}=await db.from("comments").select("body,quote_id,created_at").eq("user_id",currentUser.id).order("created_at",{ascending:false}).limit(10);
+      myComments=data||[];
+    }catch(e){ console.warn("profile comments:",e); }
+
+    document.getElementById("pfStats").innerHTML=`
+      <div class="pstat"><div class="num">${favs.length}</div><div class="lbl">مفضّلة</div></div>
+      <div class="pstat"><div class="num">${myComments.length}</div><div class="lbl">تعليق</div></div>`;
+
+    if(!myComments.length){ cbox.innerHTML=`<div class="fav-empty" style="padding:1rem">لم تكتب تعليقات بعد.</div>`; }
+    else{
+      cbox.innerHTML=myComments.map(c=>{
+        const q=quotes.find(x=>x.id===c.quote_id);
+        const on=q?`على اقتباس ${esc(q.author)}`:"";
+        return `<div class="pf-comment"><div class="pq">${on}</div>${esc(c.body)}</div>`;
+      }).join("");
+    }
+    modal.classList.add("open");
+  }
+  function closeProfile(){ document.getElementById("profileModal").classList.remove("open"); }
+  document.getElementById("profileModal").addEventListener("click",e=>{ if(e.target.id==="profileModal") closeProfile(); });
+
+  /* ═══════════ مفضّلتي ═══════════ */
+  function openFavs(){
+    const modal=document.getElementById("favModal");
+    const favIds=Object.keys(likedByMe).filter(k=>likedByMe[k]);
+    const favs=quotes.filter(q=>favIds.includes(q.id));
+    document.getElementById("favCount").textContent=favs.length? favs.length+" اقتباس محفوظ" : "";
+    const list=document.getElementById("favList");
+    if(!favs.length){
+      list.innerHTML=`<div class="fav-empty">لم تحفظ أي اقتباس بعد.<br>اضغط ♥ على أي اقتباس ليُضاف إلى مفضّلتك.</div>`;
+    } else {
+      list.innerHTML=favs.map(q=>`<div class="fav-item">${esc(q.text)}<span class="fa">— ${esc(q.author)} · ${q.cat}</span></div>`).join("");
+    }
+    modal.classList.add("open");
+  }
+  function closeFavs(){ document.getElementById("favModal").classList.remove("open"); }
+  document.getElementById("favModal").addEventListener("click",e=>{ if(e.target.id==="favModal") closeFavs(); });
 
   /* ═══════════ نظام الحسابات (Authentication) ═══════════ */
   function openAuth(){ document.getElementById("authModal").classList.add("open"); document.getElementById("authMsg").textContent=""; }
@@ -498,6 +701,8 @@
       const initial=(currentName||"?").trim().charAt(0);
       bar.innerHTML=`<span class="auth-user"><span class="avatar">${esc(initial)}</span>
         <span>مرحباً، <span class="uname">${esc(currentName)}</span></span>
+        <button class="auth-fav" onclick="openProfile()">👤 ملفّي</button>
+        <button class="auth-fav" onclick="openFavs()">🔖 مفضّلتي</button>
         <button class="auth-logout" onclick="signOut()">خروج</button></span>`;
     } else {
       bar.innerHTML=`<button class="auth-btn" onclick="openAuth()">دخول / تسجيل</button>`;

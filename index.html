@@ -25,7 +25,7 @@
   .wrap{ max-width:1100px; margin:0 auto; position:relative; z-index:1; }
 
   /* شريط الحساب */
-  .authbar{ display:flex; justify-content:flex-start; margin-bottom:.5rem; min-height:38px; align-items:center; flex-wrap:wrap; gap:.5rem; }
+  .authbar{ display:flex; justify-content:flex-start; margin-bottom:2rem; min-height:38px; align-items:center; flex-wrap:wrap; gap:.5rem; }
   .auth-btn{ font-family:"Tajawal",sans-serif; font-size:.85rem; font-weight:500; color:#fff; background:var(--lapis);
     border:none; border-radius:999px; padding:.45rem 1.15rem; cursor:pointer; transition:background .2s; }
   .auth-btn:hover{ background:#1e4a6d; }
@@ -86,7 +86,7 @@
   .comment-gate{ text-align:center; color:var(--muted); font-size:.85rem; padding:.6rem; }
   .comment-gate a{ color:var(--lapis); cursor:pointer; font-weight:500; }
 
-  header{ text-align:center; margin-top:.25rem; margin-bottom:clamp(1.25rem,4vw,2rem); }
+  header{ text-align:center; margin-top:1.5rem; margin-bottom:clamp(1.25rem,4vw,2rem); }
   .brand{ font-family:"Amiri",serif; font-size:clamp(2.6rem,8vw,4rem); font-weight:700; line-height:1.1; color:var(--ochre); letter-spacing:.02em; }
   .brand::after{ content:""; display:block; width:56px; height:3px; background:var(--ochre); margin:.9rem auto 0; border-radius:2px; }
   .tagline{ color:var(--muted); font-size:clamp(.95rem,2.5vw,1.1rem); margin-top:.9rem; }
@@ -128,33 +128,35 @@
   .topics-label{ width:100%; text-align:center; color:var(--muted); font-size:.78rem; letter-spacing:.15em; margin-bottom:.3rem; }
 
   .count{ text-align:center; color:var(--muted); font-size:.9rem; margin-bottom:1.5rem; }
-  .grid{ display:flex; flex-direction:column; gap:1.4rem; max-width:700px; margin:0 auto; }
+  .grid{ display:flex; flex-direction:column; gap:1.5rem; max-width:680px; margin:0 auto; }
 
   .qcard{ background:var(--card); border:1px solid var(--line); border-radius:16px; overflow:hidden; display:flex; flex-direction:column; box-shadow:0 6px 20px rgba(0,0,0,.35); transition:transform .25s cubic-bezier(.2,.7,.2,1),box-shadow .25s; animation:cardIn .6s cubic-bezier(.2,.7,.2,1) both; }
   .qcard:hover{ transform:translateY(-4px); box-shadow:0 20px 46px rgba(0,0,0,.55), 0 0 0 1px var(--ochre); }
   @keyframes cardIn{ from{ opacity:0; transform:translateY(20px); } to{ opacity:1; transform:none; } }
-  .qhead{ position:relative; min-height:220px; padding:1.8rem 1.6rem 1.4rem; display:flex; flex-direction:column; justify-content:center; text-align:center; color:#fff; background-size:cover; background-position:center; }
-  .qcard.pulse{ animation:pulseHi 1.4s ease; }
-  @keyframes pulseHi{ 0%{ box-shadow:0 0 0 0 rgba(212,175,55,.6); } 60%{ box-shadow:0 0 0 16px rgba(212,175,55,0); } 100%{ box-shadow:0 20px 46px rgba(0,0,0,.55); } }
-  .qmark{ font-family:"Amiri",serif; font-size:3rem; line-height:.1; color:var(--ochre); opacity:.55; margin-bottom:.6rem; user-select:none; }
-  .qtext{ font-family:"Amiri",serif; font-size:1.6rem; line-height:1.85; font-weight:500; text-shadow:0 2px 14px rgba(0,0,0,.75); margin-bottom:1.1rem; position:relative; z-index:2; }
-  .qmeta{ display:flex; align-items:center; justify-content:center; gap:.75rem; position:relative; z-index:2; }
-  .author{ font-family:"Tajawal",sans-serif; font-weight:700; font-size:1rem; color:var(--ochre); text-shadow:0 1px 8px rgba(0,0,0,.8); cursor:pointer; }
-  .author:hover{ text-decoration:underline; }
-  .cat{ display:inline-flex; align-items:center; gap:.4rem; font-size:.78rem; color:#fff; background:rgba(0,0,0,.45); border-radius:999px; padding:.2rem .7rem; white-space:nowrap; }
-  .cat .dot{ width:8px; height:8px; border-radius:50%; background:currentColor; }
-
-  .qbody{ padding:.9rem 1.1rem 1.1rem; }
-  .qtopics{ display:flex; flex-wrap:wrap; gap:.3rem; margin-bottom:.7rem; }
-  .qtag{ font-size:.74rem; color:var(--ochre); background:rgba(212,175,55,.1); border-radius:999px; padding:.15rem .6rem; cursor:pointer; transition:background .15s; }
+  /* منشور بنمط تويتر */
+  .post{ padding:1.3rem 1.4rem 1.1rem; }
+  .qcard.pulse{ animation:pulseHi 1.5s ease; }
+  @keyframes pulseHi{ 0%{ box-shadow:0 0 0 0 rgba(212,175,55,.6); } 60%{ box-shadow:0 0 0 16px rgba(212,175,55,0); } 100%{ box-shadow:0 6px 20px rgba(0,0,0,.35); } }
+  .post-head{ display:flex; align-items:center; gap:.7rem; margin-bottom:.9rem; }
+  .pavatar{ width:46px; height:46px; border-radius:50%; flex-shrink:0; background-size:cover; background-position:center;
+    border:2px solid var(--ochre); cursor:pointer; display:inline-flex; align-items:center; justify-content:center; }
+  .pavatar-mono{ font-family:"Amiri",serif; font-weight:700; font-size:1.4rem; color:#0f1322; }
+  .post-id{ display:flex; flex-direction:column; gap:.15rem; }
+  .post-author{ font-family:"Tajawal",sans-serif; font-weight:700; font-size:1.02rem; color:var(--ink); cursor:pointer; }
+  .post-author:hover{ color:var(--ochre); }
+  .post-cat{ display:inline-flex; align-items:center; gap:.4rem; font-size:.8rem; color:var(--muted); }
+  .post-cat .dot{ width:8px; height:8px; border-radius:50%; }
+  .post-text{ font-family:"Amiri",serif; font-size:1.5rem; line-height:1.9; color:var(--ink); margin-bottom:.9rem; }
+  .qtopics{ display:flex; flex-wrap:wrap; gap:.4rem; margin-bottom:.9rem; }
+  .qtag{ font-size:.78rem; color:var(--ochre); background:rgba(212,175,55,.1); border-radius:999px; padding:.15rem .7rem; cursor:pointer; transition:background .15s; }
   .qtag:hover{ background:rgba(212,175,55,.25); }
-  .actions{ display:flex; align-items:center; gap:.35rem; flex-wrap:wrap; }
-  .act{ display:inline-flex; align-items:center; gap:.35rem; font-family:"Tajawal",sans-serif; font-size:.82rem; color:var(--muted); background:transparent; border:1px solid var(--line); border-radius:999px; padding:.32rem .7rem; cursor:pointer; transition:all .15s; text-decoration:none; }
-  .act:hover{ border-color:var(--ochre); color:var(--ochre); }
-  .act.liked{ color:var(--c-hob); border-color:var(--c-hob); }
-  .act svg{ width:15px; height:15px; }
-  .act.fb:hover{ color:#1877f2; border-color:#1877f2; }
-  .act.ctx{ color:var(--ochre); border-color:var(--ochre); }
+  .post-actions{ display:flex; align-items:center; gap:.4rem; flex-wrap:wrap; padding-top:.8rem; border-top:1px solid var(--line); }
+  .act{ display:inline-flex; align-items:center; gap:.35rem; font-family:"Tajawal",sans-serif; font-size:.85rem; color:var(--muted); background:transparent; border:1px solid transparent; border-radius:999px; padding:.35rem .7rem; cursor:pointer; transition:all .15s; text-decoration:none; }
+  .act:hover{ background:rgba(212,175,55,.12); color:var(--ochre); }
+  .act.liked{ color:var(--c-hob); }
+  .act svg{ width:16px; height:16px; }
+  .act.fb:hover{ color:#1877f2; }
+  .act.ctx{ color:var(--ochre); }
   .act.ctx:hover{ background:var(--ochre); color:#fff; }
   .ctx-quote{ font-family:"Amiri",serif; font-size:1.5rem; line-height:1.8; color:var(--ink); text-align:center; margin-bottom:.5rem; }
   .ctx-author{ text-align:center; color:var(--ochre); font-weight:700; margin-bottom:1.3rem; padding-bottom:1.2rem; border-bottom:1px solid var(--line); }
@@ -167,10 +169,15 @@
     padding:.5rem .7rem; border-radius:8px; transition:background .15s; }
   .share-menu a:hover{ background:var(--paper); color:var(--lapis); }
 
-  .comments{ margin-top:.85rem; border-top:1px dashed var(--line); padding-top:.8rem; }
-  .clist-preview{ margin-bottom:.5rem; }
-  .show-all-comments{ font-family:"Tajawal",sans-serif; font-size:.82rem; font-weight:500; color:var(--lapis); background:none; border:none; cursor:pointer; padding:.35rem 0; }
-  .show-all-comments:hover{ text-decoration:underline; }
+  .comments{ margin-top:.85rem; border-top:1px dashed var(--line); padding-top:.8rem; display:none; }
+  .cpreview{ margin-top:.6rem; }
+  .cpreview .cprev-item{ background:var(--paper); border-radius:10px; padding:.5rem .7rem; font-size:.9rem; }
+  .cpreview .cprev-item .cname{ font-weight:700; font-size:.82rem; color:var(--ochre); }
+  .cpreview .cprev-more{ display:inline-block; margin-top:.4rem; font-size:.82rem; color:var(--lapis); cursor:pointer; }
+  .cpreview .cprev-more:hover{ text-decoration:underline; }
+  .cpreview .cprev-empty{ font-size:.82rem; color:var(--muted); cursor:pointer; }
+  .cpreview .cprev-empty:hover{ color:var(--ochre); }
+  .comments.open{ display:block; }
   .clist{ display:flex; flex-direction:column; gap:.55rem; margin-bottom:.7rem; max-height:220px; overflow-y:auto; }
   .citem{ background:var(--paper); border-radius:10px; padding:.5rem .7rem; font-size:.9rem; }
   .citem .cname{ font-weight:700; font-size:.82rem; color:var(--lapis); }
@@ -557,38 +564,39 @@
     const shareTextEnc=encodeURIComponent(`"${q.text}" — ${q.author}`);
     const shareTextUrl=encodeURIComponent(`"${q.text}" — ${q.author}\n${location.href}`);
     const delay=Math.min((i||0)*45,450);
-    return `<article class="qcard" id="card-${q.id}" style="animation-delay:${delay}ms">
-      <div class="qhead" style="${headBg(q)}">
-        <div class="qmark" aria-hidden="true">&rdquo;</div>
-        <p class="qtext">${esc(q.text)}</p>
-        <div class="qmeta">
-          <span class="author" onclick="openAuthor('${esc(q.author)}')">${esc(q.author)}</span>
-          <span class="cat"><span class="dot"></span>${q.cat}</span>
+    const avatar = q.img
+      ? `<span class="pavatar" style="background-image:url('${q.img}')" onclick="openAuthor('${esc(q.author)}')"></span>`
+      : `<span class="pavatar pavatar-mono" style="background:${catHex[q.cat]||'#3f6ea5'}" onclick="openAuthor('${esc(q.author)}')">${esc((q.author||'?').trim().charAt(0))}</span>`;
+    return `<article class="qcard post" id="card-${q.id}" style="animation-delay:${delay}ms">
+      <div class="post-head">
+        ${avatar}
+        <div class="post-id">
+          <span class="post-author" onclick="openAuthor('${esc(q.author)}')">${esc(q.author)}</span>
+          <span class="post-cat"><span class="dot" style="background:${catHex[q.cat]||'#3f6ea5'}"></span>${q.cat}${q.community?' · مساهمة مجتمع':''}</span>
         </div>
       </div>
-      <div class="qbody">
-        <div class="qtopics">${q.community?`<span class="qtag" style="color:var(--c-hayat);background:rgba(111,160,138,.14)">مساهمة مجتمع</span>`:""}${(q.topics||[]).slice(0,2).map(t=>`<span class="qtag" onclick="filterTopic('${esc(t)}')">${esc(t)}</span>`).join("")}</div>
-        <div class="actions">
-          <button class="act${liked}" onclick="toggleLike('${q.id}')" aria-label="إعجاب"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9.3C.4 8 2 4.5 5.2 4.5c2 0 3.3 1.2 4.1 2.4C10.5 5.7 11.8 4.5 13.8 4.5 17 4.5 18.6 8 17 11.7 14.5 16.4 12 21 12 21z"/></svg><span id="lc-${q.id}">${likes}</span></button>
-          <button class="act" onclick="focusComments('${q.id}')">💬 <span id="cc-${q.id}">تعليق</span></button>
-          <div class="share-wrap">
-            <button class="act" onclick="toggleShare(event,'${q.id}')">🔗 مشاركة</button>
-            <div class="share-menu" id="sh-${q.id}">
-              <a href="https://wa.me/?text=${shareTextUrl}" target="_blank" rel="noopener">واتساب</a>
-              <a href="https://twitter.com/intent/tweet?text=${shareTextUrl}" target="_blank" rel="noopener">تويتر / X</a>
-              <a href="https://t.me/share/url?url=${shareUrl}&text=${shareTextEnc}" target="_blank" rel="noopener">تيليغرام</a>
-              <a href="https://www.facebook.com/sharer/sharer.php?u=${shareUrl}" target="_blank" rel="noopener">فيسبوك</a>
-            </div>
+      <p class="post-text">${esc(q.text)}</p>
+      <div class="qtopics">${(q.topics||[]).slice(0,3).map(t=>`<span class="qtag" onclick="filterTopic('${esc(t)}')">#${esc(t)}</span>`).join("")}</div>
+      <div class="actions post-actions">
+        <button class="act${liked}" onclick="toggleLike('${q.id}')" aria-label="إعجاب"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9.3C.4 8 2 4.5 5.2 4.5c2 0 3.3 1.2 4.1 2.4C10.5 5.7 11.8 4.5 13.8 4.5 17 4.5 18.6 8 17 11.7 14.5 16.4 12 21 12 21z"/></svg><span id="lc-${q.id}">${likes}</span></button>
+        <button class="act" onclick="toggleComments('${q.id}')">💬 <span id="cc-${q.id}">تعليق</span></button>
+        <div class="share-wrap">
+          <button class="act" onclick="toggleShare(event,'${q.id}')">🔗</button>
+          <div class="share-menu" id="sh-${q.id}">
+            <a href="https://wa.me/?text=${shareTextUrl}" target="_blank" rel="noopener">واتساب</a>
+            <a href="https://twitter.com/intent/tweet?text=${shareTextUrl}" target="_blank" rel="noopener">تويتر / X</a>
+            <a href="https://t.me/share/url?url=${shareUrl}&text=${shareTextEnc}" target="_blank" rel="noopener">تيليغرام</a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=${shareUrl}" target="_blank" rel="noopener">فيسبوك</a>
           </div>
-          <button class="act" onclick="copyQuote('${q.id}')">📋 نسخ</button>
-          <button class="act" onclick="downloadCard('${q.id}')">🖼️ صورة</button>
-          ${context[q.id]?`<button class="act ctx" onclick="openContext('${q.id}')">📖 القصة والسياق</button>`:""}
         </div>
-        <div class="comments" id="cm-${q.id}">
-          <div class="clist-preview" id="cp-${q.id}"><div class="cempty">جارِ التحميل…</div></div>
-          <div class="clist" id="cl-${q.id}" style="display:none"></div>
-          <div class="cform-wrap" id="cw-${q.id}"></div>
-        </div>
+        <button class="act" onclick="copyQuote('${q.id}')">📋</button>
+        <button class="act" onclick="downloadCard('${q.id}')">🖼️</button>
+        ${context[q.id]?`<button class="act ctx" onclick="openContext('${q.id}')">📖 القصة</button>`:""}
+      </div>
+      <div class="cpreview" id="cp-${q.id}"></div>
+      <div class="comments" id="cm-${q.id}">
+        <div class="clist" id="cl-${q.id}"><div class="cempty">جارِ التحميل…</div></div>
+        <div class="cform-wrap" id="cw-${q.id}"></div>
       </div>
     </article>`;
   }
@@ -601,10 +609,9 @@
     if(!list.length){ grid.innerHTML='<p class="empty">لا توجد اقتباساتٌ مطابقة… جرّب كلمةً أخرى.</p>'; countEl.textContent=""; if(btnBox) btnBox.innerHTML=""; return; }
     const slice=list.slice(0,shown);
     grid.innerHTML=slice.map((q,i)=>card(q,i)).join("");
+    loadPreviews(slice.map(q=>q.id));
     countEl.textContent="عرض "+slice.length+" من "+list.length+" اقتباس";
     if(btnBox){ btnBox.innerHTML = list.length>shown ? '<button class="discover-btn" onclick="loadMore()">تحميل المزيد ↓</button>' : ""; }
-    slice.forEach(q=>renderCommentForm(q.id));
-    setupCardObserver();
   }
   function loadMore(){ shown+=PAGE; render(); }
   function resetPage(){ shown=PAGE; }
@@ -646,58 +653,10 @@
       const btn=el&&el.closest(".act"); if(btn) btn.classList.toggle("liked",likedByMe[id]);
     }catch(e){ console.warn("like:",e); showToast("تعذّر الحفظ"); }
   }
-
-  /* ═══════════ تعليقات: معاينة كسولة + عرض كامل عند الطلب ═══════════ */
-  let previewLoaded={}, commentCountCache={};
-
-  function ensureExpanded(id){
-    const full=document.getElementById("cl-"+id); if(!full) return;
-    if(full.style.display==="none"){
-      full.style.display="";
-      const prev=document.getElementById("cp-"+id); if(prev) prev.style.display="none";
-    }
-  }
-  function expandComments(id){ ensureExpanded(id); loadComments(id); }
-  function focusComments(id){
-    expandComments(id);
-    setTimeout(()=>{ const ta=document.getElementById("cb-"+id); if(ta) ta.focus(); },250);
-  }
-
-  async function loadPreviewComment(id){
-    if(previewLoaded[id]) return; previewLoaded[id]=true;
-    const box=document.getElementById("cp-"+id); if(!box) return;
-    try{
-      const {data,error}=await db.from("comments").select("id,name,body,created_at,parent_id,user_id")
-        .eq("quote_id",id).is("parent_id",null).order("created_at",{ascending:true}).limit(1);
-      if(error) throw error;
-      let count=0;
-      try{ const r=await db.from("comments").select("id",{count:"exact",head:true}).eq("quote_id",id); count=r.count||0; }catch(e){}
-      commentCountCache[id]=count;
-      const cc=document.getElementById("cc-"+id); if(cc) cc.textContent = count ? count+" تعليق" : "تعليق";
-      if(!data||!data.length){ box.innerHTML='<div class="cempty">لا توجد تعليقات بعد — كن أوّل من يعلّق</div>'; return; }
-      const c=data[0];
-      box.innerHTML = `<div class="citem">
-          <div class="cname">${esc(c.name||"زائر")}</div>
-          <div class="cbody">${esc(c.body)}</div>
-        </div>` + (count>1 ? `<button class="show-all-comments" onclick="expandComments('${id}')">عرض كل التعليقات (${count})</button>` : "");
-    }catch(e){ console.warn("preview:",e); box.innerHTML=""; }
-  }
-
-  let cardObserver=null;
-  function setupCardObserver(){
-    if(cardObserver){ cardObserver.disconnect(); }
-    const cards=document.querySelectorAll(".qcard");
-    if(!("IntersectionObserver" in window)){ cards.forEach(el=>loadPreviewComment(el.id.replace("card-",""))); return; }
-    cardObserver=new IntersectionObserver(entries=>{
-      entries.forEach(en=>{
-        if(en.isIntersecting){
-          loadPreviewComment(en.target.id.replace("card-",""));
-          cardObserver.unobserve(en.target);
-        }
-      });
-    },{rootMargin:"250px 0px"});
-    cards.forEach(el=>cardObserver.observe(el));
-  }
+  async function toggleComments(id){ const box=document.getElementById("cm-"+id); box.classList.toggle("open");
+    const prev=document.getElementById("cp-"+id);
+    if(box.classList.contains("open")){ if(prev) prev.style.display="none"; renderCommentForm(id); loadComments(id); }
+    else { if(prev) prev.style.display=""; } }
 
   function renderCommentForm(id){
     const w=document.getElementById("cw-"+id); if(!w) return;
@@ -709,7 +668,29 @@
       w.innerHTML=`<div class="comment-gate"><a onclick="openAuth()">سجّل الدخول</a> لتتمكّن من التعليق</div>`;
     }
   }
-  async function loadComments(id){ const list=document.getElementById("cl-"+id); if(!list) return;
+  /* معاينة أوّل تعليق تلقائياً (استعلام واحد لكل البطاقات الظاهرة) */
+  async function loadPreviews(ids){
+    if(!ids||!ids.length) return;
+    try{
+      const {data,error}=await db.from("comments").select("name,body,quote_id,parent_id,created_at").in("quote_id",ids).order("created_at",{ascending:true});
+      if(error) throw error;
+      const byQuote={};
+      (data||[]).forEach(r=>{ (byQuote[r.quote_id]=byQuote[r.quote_id]||[]).push(r); });
+      ids.forEach(id=>{
+        const box=document.getElementById("cp-"+id); if(!box) return;
+        const rows=byQuote[id]||[]; const total=rows.length;
+        const cc=document.getElementById("cc-"+id); if(cc) cc.textContent = total? total+" تعليق" : "تعليق";
+        if(!total){ box.innerHTML=`<div class="cprev-empty" onclick="toggleComments('${id}')">لا تعليقات بعد — كن أوّل من يعلّق</div>`; return; }
+        const first=rows[0];
+        let html=`<div class="cprev-item"><span class="cname">${esc(first.name||"زائر")}</span> ${esc(first.body)}</div>`;
+        if(total>1){ html+=`<span class="cprev-more" onclick="toggleComments('${id}')">عرض كل التعليقات (${total}) ↓</span>`; }
+        else { html+=`<span class="cprev-more" onclick="toggleComments('${id}')">أضف تعليقاً ↓</span>`; }
+        box.innerHTML=html;
+      });
+    }catch(e){ console.warn("previews:",e); }
+  }
+
+  async function loadComments(id){ const list=document.getElementById("cl-"+id);
     try{
       const {data,error}=await db.from("comments").select("id,name,body,created_at,parent_id,user_id").eq("quote_id",id).order("created_at",{ascending:true});
       if(error) throw error;
@@ -777,7 +758,7 @@
       showToast("حُذف التعليق 🗑"); loadComments(qid);
     }catch(e){ console.warn("delete:",e); showToast("تعذّر الحذف"); }
   }
-  function findQuoteOfOpenComments(){ const open=document.querySelector('.clist[id^="cl-"]:not([style*="display: none"])'); return open?open.id.replace("cl-",""):null; }
+  function findQuoteOfOpenComments(){ const open=document.querySelector(".comments.open"); return open?open.id.replace("cm-",""):null; }
   async function reportComment(commentId){
     if(!currentUser){ showToast("سجّل الدخول للإبلاغ"); openAuth(); return; }
     const reason=prompt("سبب الإبلاغ (اختياري): إساءة، سبام، محتوى غير لائق…");
@@ -788,13 +769,12 @@
       showToast("شكراً، وصل بلاغك للمشرف 🚩");
     }catch(e){ console.warn("report:",e); showToast("تعذّر إرسال البلاغ"); }
   }
-  function renderComments(id,rows){ const list=document.getElementById("cl-"+id); if(!list) return;
+  function renderComments(id,rows){ const list=document.getElementById("cl-"+id);
     if(!rows.length){ list.innerHTML='<div class="cempty">لا توجد تعليقات بعد — كن أوّل من يعلّق</div>'; const cc0=document.getElementById("cc-"+id); if(cc0) cc0.textContent="تعليق"; return; }
     const byParent={}; rows.forEach(r=>{ const p=r.parent_id||0; (byParent[p]=byParent[p]||[]).push(r); });
     function build(parent){ return (byParent[parent]||[]).map(c=>commentNode(id,c,build(c.id))).join(""); }
     list.innerHTML=build(0);
     const cc=document.getElementById("cc-"+id); if(cc) cc.textContent=rows.length+" تعليق";
-    commentCountCache[id]=rows.length;
   }
   function showReplyForm(qid,parentId){
     if(!currentUser){ showToast("سجّل الدخول للردّ"); openAuth(); return; }
@@ -821,7 +801,7 @@
     const el=document.getElementById("rb-"+parentId); const body=(el.value||"").trim();
     if(!body){ showToast("اكتب ردّك أولاً"); return; }
     if(!throttleOk()) return;
-    try{ const {error}=await db.from("comments").insert({name:currentName,body,quote_id:qid,user_id:currentUser.id,parent_id:parentId}); if(error) throw error; ensureExpanded(qid); loadComments(qid); showToast("تمّ نشر ردّك ✔"); }
+    try{ const {error}=await db.from("comments").insert({name:currentName,body,quote_id:qid,user_id:currentUser.id,parent_id:parentId}); if(error) throw error; loadComments(qid); showToast("تمّ نشر ردّك ✔"); }
     catch(e){ console.warn("reply:",e); postError(e); }
   }
   async function toggleCommentLike(commentId,quoteId){
@@ -838,7 +818,7 @@
     if(!body){ showToast("اكتب تعليقاً أولاً"); return; }
     if(!throttleOk()) return;
     bodyEl.value="";
-    try{ const {error}=await db.from("comments").insert({name:currentName,body,quote_id:id,user_id:currentUser.id,parent_id:null}); if(error) throw error; ensureExpanded(id); loadComments(id); showToast("تمّ نشر تعليقك ✔"); }
+    try{ const {error}=await db.from("comments").insert({name:currentName,body,quote_id:id,user_id:currentUser.id,parent_id:null}); if(error) throw error; loadComments(id); showToast("تمّ نشر تعليقك ✔"); }
     catch(e){ console.warn("comment:",e); postError(e); bodyEl.value=body; }
   }
   function copyQuote(id){ const q=allQuotes().find(x=>x.id===id); if(!q) return; navigator.clipboard.writeText(`"${q.text}" — ${q.author}`).then(()=>showToast("نُسخ الاقتباس 📋")).catch(()=>showToast("تعذّر النسخ")); }

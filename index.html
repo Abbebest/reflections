@@ -775,7 +775,6 @@
       const {data}=await db.from("user_likes").select("quote_id,user_id");
       (data||[]).forEach(r=>{ likeCounts[r.quote_id]=(likeCounts[r.quote_id]||0)+1; if(currentUser&&r.user_id===currentUser.id) likedByMe[r.quote_id]=true; });
     }catch(e){ console.warn("likes:",e); }
-    // إعجابات الزوّار (عدّاد)
     try{
       const {data}=await db.from("anon_likes").select("quote_id,count");
       (data||[]).forEach(r=>{ likeCounts[r.quote_id]=(likeCounts[r.quote_id]||0)+(r.count||0); });
@@ -793,7 +792,6 @@
       }catch(e){ console.warn("like:",e); showToast("تعذّر الحفظ"); }
       return;
     }
-    // زائر غير مسجّل: إعجاب واحد لكل متصفّح (لا إلغاء)
     const al=anonLiked();
     if(al[id]){ showToast("أعجبك هذا مسبقاً"); return; }
     try{
@@ -983,15 +981,16 @@
   }
   function copyQuote(id){ const q=allQuotes().find(x=>x.id===id); if(!q) return; navigator.clipboard.writeText(`"${q.text}" — ${q.author}`).then(()=>showToast("نُسخ الاقتباس 📋")).catch(()=>showToast("تعذّر النسخ")); }
 
-  /* ═══════════ Google Books — كتب الكاتب ═══════════ */
+  /* ═══════════ Google Books — كتب الكاتب (بحث مرن) ═══════════ */
   let currentAuthorForBooks="";
   async function loadAuthorBooks(){
     const name=currentAuthorForBooks; if(!name) return;
     const box=document.getElementById("mBooks"); const btn=document.getElementById("mBooksBtn");
     btn.disabled=true; btn.textContent="جارِ البحث في Google Books…";
     try{
-      const q=encodeURIComponent('inauthor:"'+name+'"');
-      const url="https://www.googleapis.com/books/v1/volumes?q="+q+"&maxResults=10&langRestrict=ar&printType=books";
+      // بحث مرن في الاسم (عنوان + مؤلف)
+      const q=encodeURIComponent(name);
+      const url="https://www.googleapis.com/books/v1/volumes?q="+q+"&maxResults=12&langRestrict=ar&printType=books";
       const r=await fetch(url); const j=await r.json();
       const items=(j.items||[]).filter(it=>it.volumeInfo);
       if(!items.length){ box.innerHTML='<div class="fav-empty" style="padding:1rem">لم أجد كتباً للكاتب في Google Books.</div>'; btn.style.display="none"; return; }
@@ -1017,7 +1016,6 @@
   function openReader(volumeId,title){
     document.getElementById("readerTitle").textContent=title||"";
     document.getElementById("readerModal").classList.add("open");
-    // نحمّل الـ Viewer عند أوّل فتح
     try{
       google.books.load();
       google.books.setOnLoadCallback(()=>{ const v=new google.books.DefaultViewer(document.getElementById("gbViewer")); v.load(volumeId, null, ()=>{ document.getElementById("gbViewer").innerHTML='<div style="padding:2rem;text-align:center;color:var(--muted)">لا معاينة متاحة لهذا الكتاب.</div>'; }); });
@@ -1118,29 +1116,21 @@
     const W=1080,H=1350, hex=catHex[q.cat]||"#275c86";
     const canvas=document.createElement("canvas"); canvas.width=W; canvas.height=H;
     const ctx=canvas.getContext("2d");
-    // خلفية متدرّجة
     const g=ctx.createLinearGradient(0,0,0,H);
     g.addColorStop(0,"#14100a"); g.addColorStop(.5,shade(hex,-35)); g.addColorStop(1,"#14100a");
     ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
     drawPattern(ctx,W,H);
-    // إطار ذهبي
     ctx.strokeStyle="rgba(200,164,77,.55)"; ctx.lineWidth=3; ctx.strokeRect(48,48,W-96,H-96);
     ctx.direction="rtl"; ctx.textAlign="center";
-    // علامة اقتباس
     ctx.fillStyle="rgba(200,164,77,.55)"; ctx.font="700 190px Amiri"; ctx.fillText("\u201D",W/2,300);
-    // نصّ الاقتباس
     const lines=wrapText(ctx,q.text,"500 58px Amiri",W-260);
     ctx.fillStyle="#f3ecdd"; ctx.font="500 58px Amiri";
     let y=H/2-(lines.length*90)/2+30;
     lines.forEach(l=>{ ctx.fillText(l,W/2,y); y+=90; });
-    // فاصل
     ctx.strokeStyle="rgba(200,164,77,.7)"; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(W/2-45,y+8); ctx.lineTo(W/2+45,y+8); ctx.stroke();
-    // الكاتب
     ctx.fillStyle="#c8a44d"; ctx.font="700 46px Tajawal"; ctx.fillText(q.author,W/2,y+80);
-    // اسم الموقع
     ctx.fillStyle="rgba(243,236,221,.6)"; ctx.font="400 34px Tajawal";
     ctx.fillText("حِكَم وأشعار · "+location.host,W/2,H-95);
-    // تنزيل
     try{
       const url=canvas.toDataURL("image/png");
       const a=document.createElement("a"); a.href=url; a.download="moqtabas-"+id+".png"; document.body.appendChild(a); a.click(); a.remove();
@@ -1320,14 +1310,12 @@
     document.getElementById("pfName").textContent=currentName;
     document.getElementById("pfEmail").textContent=currentUser.email||"";
 
-    // المفضّلة
     const favIds=Object.keys(likedByMe).filter(k=>likedByMe[k]);
     const favs=allQuotes().filter(q=>favIds.includes(q.id));
     document.getElementById("pfFavs").innerHTML = favs.length
       ? favs.map(q=>`<div class="fav-item">${esc(q.text)}<span class="fa">— ${esc(q.author)}</span></div>`).join("")
       : `<div class="fav-empty" style="padding:1rem">لا مفضّلة بعد.</div>`;
 
-    // آخر تعليقاتي (جلب من قاعدة البيانات)
     const cbox=document.getElementById("pfComments");
     cbox.innerHTML=`<div class="fav-empty" style="padding:1rem">جارِ التحميل…</div>`;
     let myComments=[];

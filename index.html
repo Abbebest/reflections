@@ -268,6 +268,21 @@
   .modal-bio{ color:var(--ink); font-size:1rem; line-height:1.9; margin-bottom:1.4rem; padding-bottom:1.2rem; border-bottom:1px solid var(--line); }
   .modal-sub{ font-weight:700; margin-bottom:.7rem; color:var(--lapis); }
   .modal-q{ font-family:"Amiri",serif; font-size:1.15rem; line-height:1.8; padding:.7rem .9rem; background:var(--paper); border-radius:10px; margin-bottom:.6rem; border-inline-start:3px solid var(--ochre); }
+  .books-btn{ font-family:"Tajawal",sans-serif; font-size:.9rem; font-weight:500; color:var(--ochre); background:transparent; border:1px solid var(--ochre); border-radius:999px; padding:.5rem 1.2rem; cursor:pointer; margin:0 0 1rem; transition:all .18s; }
+  .books-btn:hover{ background:var(--ochre); color:#0f1322; }
+  .books-btn:disabled{ opacity:.5; cursor:default; }
+  .books-list{ display:flex; flex-direction:column; gap:.5rem; margin-bottom:1.2rem; }
+  .book-item{ display:flex; gap:.75rem; background:var(--paper); border-radius:10px; padding:.6rem .7rem; cursor:pointer; transition:background .15s; }
+  .book-item:hover{ background:rgba(212,175,55,.12); }
+  .book-thumb{ width:44px; height:60px; background-size:cover; background-position:center; background-color:#2a2038; border-radius:4px; flex-shrink:0; }
+  .book-info{ flex:1; min-width:0; }
+  .book-title{ font-weight:700; font-size:.95rem; color:var(--ink); line-height:1.4; }
+  .book-meta{ font-size:.78rem; color:var(--muted); margin-top:.15rem; }
+  .book-avail{ font-size:.72rem; padding:.1rem .5rem; border-radius:999px; margin-top:.25rem; display:inline-block; }
+  .book-avail.pd{ background:rgba(111,160,138,.2); color:var(--c-hayat); }
+  .book-avail.prev{ background:rgba(212,175,55,.15); color:var(--ochre); }
+  .book-avail.none{ background:rgba(154,155,176,.15); color:var(--muted); }
+  .reader-note{ text-align:center; color:var(--muted); font-size:.78rem; margin-top:.6rem; }
 
   @media (prefers-reduced-motion:reduce){ .qcard{ transition:none; animation:none; } .qcard:hover .qhead{ transform:none; } .presence .live{ animation:none; } }
 </style>
@@ -430,8 +445,20 @@
       <h2 class="modal-name" id="mName"></h2>
       <div class="modal-era" id="mEra"></div>
       <p class="modal-bio" id="mBio"></p>
+      <button class="books-btn" id="mBooksBtn" onclick="loadAuthorBooks()">📖 كتب الكاتب على Google Books</button>
+      <div id="mBooks" class="books-list"></div>
       <div class="modal-sub">من أقواله في هذا الموقع:</div>
       <div id="mQuotes"></div>
+    </div>
+  </div>
+
+  <!-- عارض كتاب Google Books -->
+  <div class="modal" id="readerModal">
+    <div class="modal-box" style="max-width:900px;padding:1rem">
+      <button class="modal-close" onclick="closeReader()" aria-label="إغلاق">&times;</button>
+      <div class="modal-name" id="readerTitle" style="font-size:1.3rem;margin-bottom:.7rem"></div>
+      <div id="gbViewer" style="width:100%;height:70vh;background:#0f1322;border-radius:12px"></div>
+      <div class="reader-note">يعرض Google Books معاينةً حسب توفّرها؛ للكتب في الملكية العامة عادةً متاحة كاملة.</div>
     </div>
   </div>
 
@@ -498,6 +525,7 @@
   <div class="toast" id="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://www.google.com/books/jsapi.js"></script>
 <script>
   /* ═══ Supabase ═══ */
   const SUPABASE_URL = "https://felzsezfkdtnvvdbqwbr.supabase.co";
@@ -725,9 +753,12 @@
   /* نافذة الكاتب */
   function openAuthor(name){
     const a=authors[name]; const modal=document.getElementById("authorModal");
+    currentAuthorForBooks=name;
     document.getElementById("mName").textContent=name;
     document.getElementById("mEra").textContent=a?a.era:"";
     document.getElementById("mBio").textContent=a?a.bio:"لا تتوفّر سيرة بعد.";
+    document.getElementById("mBooks").innerHTML="";
+    const btn=document.getElementById("mBooksBtn"); btn.disabled=false; btn.style.display=""; btn.textContent="📖 كتب الكاتب على Google Books";
     const his=allQuotes().filter(q=>q.author===name);
     document.getElementById("mQuotes").innerHTML=his.map(q=>`<div class="modal-q">${esc(q.text)}</div>`).join("");
     modal.classList.add("open");
@@ -951,6 +982,49 @@
     catch(e){ console.warn("comment:",e); postError(e); bodyEl.value=body; }
   }
   function copyQuote(id){ const q=allQuotes().find(x=>x.id===id); if(!q) return; navigator.clipboard.writeText(`"${q.text}" — ${q.author}`).then(()=>showToast("نُسخ الاقتباس 📋")).catch(()=>showToast("تعذّر النسخ")); }
+
+  /* ═══════════ Google Books — كتب الكاتب ═══════════ */
+  let currentAuthorForBooks="";
+  async function loadAuthorBooks(){
+    const name=currentAuthorForBooks; if(!name) return;
+    const box=document.getElementById("mBooks"); const btn=document.getElementById("mBooksBtn");
+    btn.disabled=true; btn.textContent="جارِ البحث في Google Books…";
+    try{
+      const q=encodeURIComponent('inauthor:"'+name+'"');
+      const url="https://www.googleapis.com/books/v1/volumes?q="+q+"&maxResults=10&langRestrict=ar&printType=books";
+      const r=await fetch(url); const j=await r.json();
+      const items=(j.items||[]).filter(it=>it.volumeInfo);
+      if(!items.length){ box.innerHTML='<div class="fav-empty" style="padding:1rem">لم أجد كتباً للكاتب في Google Books.</div>'; btn.style.display="none"; return; }
+      box.innerHTML=items.map(it=>{
+        const v=it.volumeInfo, ai=it.accessInfo||{};
+        const thumb=(v.imageLinks&&(v.imageLinks.thumbnail||v.imageLinks.smallThumbnail))||"";
+        const authors=(v.authors||[]).join("، ");
+        let avail='<span class="book-avail none">غير متاح للقراءة</span>';
+        if(ai.viewability==="ALL_PAGES") avail='<span class="book-avail pd">قراءة كاملة</span>';
+        else if(ai.viewability==="PARTIAL") avail='<span class="book-avail prev">معاينة</span>';
+        return `<div class="book-item" onclick="openReader('${it.id}','${esc(v.title||"").replace(/'/g,"\\'")}')">
+          <div class="book-thumb" style="background-image:url('${thumb}')"></div>
+          <div class="book-info">
+            <div class="book-title">${esc(v.title||"")}</div>
+            <div class="book-meta">${esc(authors)}${v.publishedDate?" · "+esc(v.publishedDate.slice(0,4)):""}</div>
+            ${avail}
+          </div>
+        </div>`;
+      }).join("");
+      btn.style.display="none";
+    }catch(e){ console.warn("gbooks:",e); box.innerHTML='<div class="fav-empty" style="padding:1rem">تعذّر البحث في Google Books.</div>'; btn.disabled=false; btn.textContent="📖 كتب الكاتب على Google Books"; }
+  }
+  function openReader(volumeId,title){
+    document.getElementById("readerTitle").textContent=title||"";
+    document.getElementById("readerModal").classList.add("open");
+    // نحمّل الـ Viewer عند أوّل فتح
+    try{
+      google.books.load();
+      google.books.setOnLoadCallback(()=>{ const v=new google.books.DefaultViewer(document.getElementById("gbViewer")); v.load(volumeId, null, ()=>{ document.getElementById("gbViewer").innerHTML='<div style="padding:2rem;text-align:center;color:var(--muted)">لا معاينة متاحة لهذا الكتاب.</div>'; }); });
+    }catch(e){ console.warn("viewer:",e); document.getElementById("gbViewer").innerHTML='<div style="padding:2rem;text-align:center;color:var(--muted)">تعذّر تحميل عارض Google Books.</div>'; }
+  }
+  function closeReader(){ document.getElementById("readerModal").classList.remove("open"); document.getElementById("gbViewer").innerHTML=""; }
+  document.getElementById("readerModal").addEventListener("click",e=>{ if(e.target.id==="readerModal") closeReader(); });
 
   /* ═══════════ القصة والسياق ═══════════ */
   function openContext(id){

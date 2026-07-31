@@ -78,6 +78,18 @@
   .lib-item .lm{ font-size:.8rem; color:var(--muted); margin:.35rem 0 .7rem; }
   .lib-item .lb{ display:flex; gap:.5rem; flex-wrap:wrap; }
   .lib-item .lb button{ font-family:"Tajawal",sans-serif; font-size:.82rem; font-weight:500; color:#fff; border:none; border-radius:8px; padding:.4rem 1rem; cursor:pointer; }
+  .wiki-box{ background:rgba(212,175,55,.06); border:1px solid var(--line); border-radius:12px; padding:1rem; margin:1rem 0; }
+  .wiki-box input, .wiki-box textarea{ width:100%; font-family:"Tajawal",sans-serif; font-size:.9rem; color:var(--ink); background:#0f1322; border:1px solid var(--line); border-radius:10px; padding:.6rem .75rem; margin-bottom:.55rem; }
+  .wiki-box input:focus, .wiki-box textarea:focus{ outline:none; border-color:var(--ochre); }
+  .wiki-box button{ font-family:"Tajawal",sans-serif; font-size:.88rem; font-weight:500; color:#0f1322; background:var(--ochre); border:none; border-radius:10px; padding:.55rem 1.2rem; cursor:pointer; flex:1; }
+  .wiki-box button:disabled{ opacity:.45; cursor:default; }
+  .ai-card{ background:var(--paper); border-radius:10px; padding:.8rem .9rem; margin-bottom:.6rem; border-inline-start:3px solid var(--c-hayat); }
+  .ai-card .aq{ font-family:"Amiri",serif; font-size:1.12rem; line-height:1.8; }
+  .ai-card .am{ font-size:.78rem; color:var(--muted); margin:.3rem 0 .6rem; }
+  .ai-card button{ font-family:"Tajawal",sans-serif; font-size:.8rem; font-weight:500; color:#fff; background:var(--c-hayat); border:none; border-radius:8px; padding:.35rem 1rem; cursor:pointer; }
+  .wiki-line{ display:flex; align-items:center; gap:.6rem; background:var(--paper); border-radius:9px; padding:.5rem .7rem; margin-bottom:.45rem; }
+  .wiki-line .wl-text{ flex:1; font-family:"Amiri",serif; font-size:1.05rem; line-height:1.7; }
+  .wiki-line button{ flex-shrink:0; font-family:"Tajawal",sans-serif; font-size:.78rem; font-weight:500; color:#0f1322; background:var(--ochre); border:none; border-radius:7px; padding:.3rem .8rem; cursor:pointer; }
   .auth-user .avatar{ width:30px; height:30px; border-radius:50%; background:var(--ochre); color:#0f1322; display:inline-flex;
     align-items:center; justify-content:center; font-weight:700; font-size:.9rem; }
   .auth-logout{ font-family:"Tajawal",sans-serif; font-size:.8rem; color:var(--muted); background:none; border:1px solid var(--line);
@@ -348,6 +360,17 @@
       <button class="modal-close" onclick="closeLibrary()" aria-label="إغلاق">&times;</button>
       <h2 class="modal-name">📚 مكتبة الاقتباسات</h2>
       <div class="modal-era">أضف، راجع، وانشر — أنت الحلقة الأخيرة قبل النشر</div>
+
+      <!-- جلب من Wikisource واختيار الأبيات -->
+      <div class="wiki-box">
+        <div class="modal-sub">🌐 جلب من Wikisource واختيار الأبيات</div>
+        <input id="wikiPage" type="text" placeholder="اسم صفحة Wikisource (مثال: ديوان المتنبي)">
+        <button id="wikiFetchBtn" onclick="wikiFetch()" style="width:100%">جلب النصّ وتقسيمه</button>
+        <div class="auth-msg" id="wikiMsg"></div>
+        <div id="wikiLines"></div>
+        <textarea id="wikiRaw" style="display:none"></textarea>
+        <div id="aiResults" style="display:none"></div>
+      </div>
 
       <div class="lib-form">
         <div class="modal-sub" style="margin-top:1rem">إضافة اقتباس جديد</div>
@@ -1092,6 +1115,55 @@
     try{ const {error}=await db.from("submissions").delete().eq("id",id); if(error) throw error;
       const el=document.getElementById("rev-"+id); if(el) el.remove(); showToast("رُفض الاقتباس ✕");
     }catch(e){ console.warn("reject:",e); showToast("تعذّر"); }
+  }
+
+  /* ═══════════ مكتبة الاقتباسات (المشرف) ═══════════ */
+
+  /* --- جلب النصّ من Wikisource وتقسيمه إلى أبيات قابلة للاختيار --- */
+  let wikiLinesArr=[];
+  function guessAuthor(page){
+    return page.replace(/^ديوان\s+/,"").replace(/^كتاب\s+/,"").replace(/\s*\(.*\)\s*$/,"").trim();
+  }
+  async function wikiFetch(){
+    const page=document.getElementById("wikiPage").value.trim();
+    const msg=document.getElementById("wikiMsg");
+    if(!page){ msg.className="auth-msg err"; msg.textContent="اكتب اسم صفحة أولاً"; return; }
+    msg.className="auth-msg"; msg.textContent="جارِ الجلب من Wikisource…";
+    const btn=document.getElementById("wikiFetchBtn"); btn.disabled=true;
+    try{
+      const url="https://ar.wikisource.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&origin=*&titles="+encodeURIComponent(page);
+      const r=await fetch(url); const j=await r.json();
+      const pages=j.query&&j.query.pages; const first=pages&&Object.values(pages)[0];
+      if(!first||first.missing!==undefined||!first.extract){ msg.className="auth-msg err"; msg.textContent="لم أجد هذه الصفحة — تأكّد من الاسم على ar.wikisource.org"; return; }
+      renderWikiLines(first.extract, guessAuthor(page));
+      msg.className="auth-msg ok"; msg.textContent="تمّ الجلب ✔ — اختر الأبيات التي تعجبك بالضغط على «أضِف».";
+    }catch(e){ console.warn("wiki:",e); msg.className="auth-msg err"; msg.textContent="تعذّر الجلب (مشكلة اتصال أو الصفحة غير متاحة)"; }
+    btn.disabled=false;
+  }
+  function renderWikiLines(text, author){
+    // تقسيم إلى أسطر، وتصفية القصير جداً والعناوين
+    let lines=text.split(/\n+/).map(l=>l.trim())
+      .filter(l=> l.length>=20 && l.length<=220 && !/^=+.*=+$/.test(l) && !/^\[?\d+\]?$/.test(l));
+    // إزالة التكرار
+    lines=[...new Set(lines)].slice(0,80);
+    wikiLinesArr=lines;
+    const box=document.getElementById("wikiLines");
+    if(!lines.length){ box.innerHTML='<div class="fav-empty">لم أستطع تقسيم النصّ إلى أبيات واضحة. جرّب صفحة أخرى.</div>'; return; }
+    box.innerHTML=`<div class="modal-sub" style="margin-top:.7rem">${lines.length} سطراً — اختر ما يعجبك:</div>`+
+      lines.map((l,i)=>`<div class="wiki-line" id="wl-${i}">
+        <span class="wl-text">${esc(l)}</span>
+        <button onclick="wikiPick(${i},'${esc(author).replace(/'/g,"\\'")}')">أضِف ✚</button>
+      </div>`).join("");
+  }
+  function wikiPick(i, author){
+    const line=wikiLinesArr[i]; if(line===undefined) return;
+    document.getElementById("libText").value=line;
+    const aEl=document.getElementById("libAuthor"); if(!aEl.value.trim() && author) aEl.value=author;
+    document.getElementById("libSource").value="Wikisource";
+    const el=document.getElementById("wl-"+i); if(el){ el.style.opacity=".45"; }
+    // مرّر إلى نموذج الإضافة
+    document.querySelector(".lib-form .modal-sub").scrollIntoView({behavior:"smooth",block:"center"});
+    showToast("نُقل إلى النموذج — اختر التصنيف واحفظ ✔");
   }
 
   async function loadApproved(){

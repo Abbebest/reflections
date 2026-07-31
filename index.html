@@ -361,17 +361,6 @@
       <h2 class="modal-name">📚 مكتبة الاقتباسات</h2>
       <div class="modal-era">أضف، راجع، وانشر — أنت الحلقة الأخيرة قبل النشر</div>
 
-      <!-- جلب من Wikisource واختيار الأبيات -->
-      <div class="wiki-box">
-        <div class="modal-sub">🌐 جلب من Wikisource واختيار الأبيات</div>
-        <input id="wikiPage" type="text" placeholder="اسم صفحة Wikisource (مثال: ديوان المتنبي)">
-        <button id="wikiFetchBtn" onclick="wikiFetch()" style="width:100%">جلب النصّ وتقسيمه</button>
-        <div class="auth-msg" id="wikiMsg"></div>
-        <div id="wikiLines"></div>
-        <textarea id="wikiRaw" style="display:none"></textarea>
-        <div id="aiResults" style="display:none"></div>
-      </div>
-
       <div class="lib-form">
         <div class="modal-sub" style="margin-top:1rem">إضافة اقتباس جديد</div>
         <textarea id="libText" rows="2" placeholder="نصّ الاقتباس…" maxlength="400"></textarea>
@@ -560,6 +549,23 @@
     { id:"q38", text:"الصبرُ مفتاحُ الفرَج.", author:"مثلٌ عربيّ", cat:"حكمة", topics:["الصبر","الأمل","الحكمة"] },
     { id:"q39", text:"في التأنّي السلامةُ، وفي العَجَلةِ الندامةُ.", author:"مثلٌ عربيّ", cat:"حكمة", topics:["التأنّي","الحكمة","الحياة"] },
     { id:"q40", text:"اطلبوا العلمَ من المهدِ إلى اللحدِ.", author:"حكمةٌ مأثورة", cat:"حكمة", topics:["العلم","المعرفة","الحياة"] },
+
+    /* ═══ دفعة منتقاة (ملكية عامة) — حكماء العرب والجاهلية ═══ */
+    { id:"q41", text:"ومهما تكنْ عند امرئٍ من خليقةٍ، وإن خالها تخفى على الناسِ تُعلَمِ.", author:"زهير بن أبي سُلمى", cat:"حكمة", topics:["الأخلاق","النفس","الحقيقة"] },
+    { id:"q42", text:"رأيتُ المنايا خبطَ عشواءَ من تُصِبْ، تُمِتْه، ومن تُخطئْ يُعمَّرْ فيهرَمِ.", author:"زهير بن أبي سُلمى", cat:"حياة", topics:["الموت","القدر","الحياة"] },
+    { id:"q43", text:"ومن يجعلِ المعروفَ في غيرِ أهلِه، يكنْ حمدُه ذمّاً عليه ويندَمِ.", author:"زهير بن أبي سُلمى", cat:"حكمة", topics:["المعروف","الحكمة","الندم"] },
+    { id:"q44", text:"وأعلمُ ما في اليومِ والأمسِ قبلَه، ولكنّني عن علمِ ما في غدٍ عَمِ.", author:"زهير بن أبي سُلمى", cat:"حكمة", topics:["الزمن","الغيب","المعرفة"] },
+    { id:"q45", text:"لا يمنعنَّك من بغاءِ الخيرِ تعقيدُ العَزائمِ.", author:"أكثم بن صيفي", cat:"حكمة", topics:["العزيمة","الخير","الإقدام"] },
+    { id:"q46", text:"إذا لم تستطعْ شيئاً فدعْه، وجاوزْه إلى ما تستطيعُ.", author:"عمرو بن معدي كرب", cat:"حكمة", topics:["الحكمة","الواقعية","النفس"] },
+    { id:"q47", text:"وكائنْ ترى من صامتٍ لك مُعجِبٍ، زيادتُه أو نقصُه في التكلّمِ.", author:"لبيد بن ربيعة", cat:"أدب", topics:["الكلام","الحكمة","النفس"] },
+    { id:"q48", text:"وما المرءُ إلا كالشهابِ وضوئِه، يحورُ رماداً بعد إذ هو ساطعُ.", author:"لبيد بن ربيعة", cat:"حياة", topics:["الحياة","الفناء","الزمن"] },
+    { id:"q49", text:"ستُبدي لك الأيامُ ما كنتَ جاهلاً، ويأتيك بالأخبارِ من لم تُزوِّدِ.", author:"طرفة بن العبد", cat:"حكمة", topics:["الزمن","التجربة","المعرفة"] },
+    { id:"q50", text:"وظلمُ ذوي القربى أشدُّ مضاضةً، على المرءِ من وقعِ الحسامِ المهنّدِ.", author:"طرفة بن العبد", cat:"حياة", topics:["الظلم","القرابة","الألم"] },
+    { id:"q51", text:"إذا المرءُ لم يدنسْ من اللؤمِ عرضُه، فكلُّ رداءٍ يرتديه جميلُ.", author:"السموأل", cat:"حكمة", topics:["الكرامة","الأخلاق","النفس"] },
+    { id:"q52", text:"وما وُجِدَ الإحسانُ إلا لأهلِه، ولا الجودُ إلا للكريمِ المُمجَّدِ.", author:"حاتم الطائي", cat:"حكمة", topics:["الكرم","الإحسان","الأخلاق"] },
+    { id:"q53", text:"لا خيرَ في حِلمٍ إذا لم تكنْ له بوادرُ تحمي صفوَه أن يُكدَّرا.", author:"النابغة الذبياني", cat:"حكمة", topics:["الحلم","القوة","النفس"] },
+    { id:"q54", text:"وليس الذئبُ يأكلُ لحمَ ذئبٍ، ويأكلُ بعضَنا بعضاً عِيانا.", author:"الفرزدق", cat:"حياة", topics:["الناس","الظلم","الحياة"] },
+    { id:"q55", text:"إنّ الذي سمكَ السماءَ بنى لنا بيتاً دعائمُه أعزُّ وأطولُ.", author:"الفرزدق", cat:"أدب", topics:["الفخر","العزّة","الأدب"] },
   ];
 
   /* سِيَر موجزة — راجعها وعدّلها كما تشاء */
@@ -730,60 +736,44 @@
   document.getElementById("authorModal").addEventListener("click",e=>{ if(e.target.id==="authorModal") closeAuthor(); });
   document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeAuthor(); });
 
-  // --- الإعجابات: دمج الإعجابات المسجّلة والزوار (anon_likes) ---
+  function anonLiked(){ try{ return JSON.parse(localStorage.getItem("anonLiked")||"{}"); }catch(e){ return {}; } }
+  function setAnonLiked(o){ try{ localStorage.setItem("anonLiked",JSON.stringify(o)); }catch(e){} }
   async function loadLikes(){
     likeCounts={}; likedByMe={};
     try{
-      // 1) الإعجابات المسجّلة من user_likes
-      const {data:userLikes}=await db.from("user_likes").select("quote_id,user_id");
-      (userLikes||[]).forEach(r=>{ likeCounts[r.quote_id]=(likeCounts[r.quote_id]||0)+1; if(currentUser&&r.user_id===currentUser.id) likedByMe[r.quote_id]=true; });
-      // 2) إعجابات الزوار من anon_likes
-      const {data:anonLikes}=await db.from("anon_likes").select("quote_id,count");
-      (anonLikes||[]).forEach(r=>{ likeCounts[r.quote_id]=(likeCounts[r.quote_id]||0)+(r.count||0); });
+      const {data}=await db.from("user_likes").select("quote_id,user_id");
+      (data||[]).forEach(r=>{ likeCounts[r.quote_id]=(likeCounts[r.quote_id]||0)+1; if(currentUser&&r.user_id===currentUser.id) likedByMe[r.quote_id]=true; });
     }catch(e){ console.warn("likes:",e); }
-  }
-
-  // تحديث الإعجاب: تدعم المستخدمين المسجّلين والزوار معاً
-  async function toggleLike(id){
-    // إذا كان الزائر يستخدم معرّفاً ثابتاً للتخزين في anon_likes
-    const anonId = "anonymous";
+    // إعجابات الزوّار (عدّاد)
     try{
-      // التحقق من وجود الإعجاب في anon_likes
-      const {data:existing, error:fetchErr} = await db.from("anon_likes").select("count").eq("quote_id",id).maybeSingle();
-      if(fetchErr) throw fetchErr;
-      
-      const currentCount = existing ? existing.count : 0;
-      const alreadyLiked = likedByMe[id] || false; // مستخدم مسجّل أو زائر
-
-      if(alreadyLiked){
-        // إلغاء الإعجاب: إنقاص العدد
-        if(currentCount > 0){
-          await db.from("anon_likes").upsert({ quote_id: id, count: currentCount - 1 });
-          likeCounts[id] = Math.max(0, (likeCounts[id]||0) - 1);
-          likedByMe[id] = false;
-        } else {
-          // إذا كان العدد صفراً، حذف السجل للحفاظ على النظافة
-          await db.from("anon_likes").delete().eq("quote_id", id);
-          likeCounts[id] = 0;
-          likedByMe[id] = false;
-        }
-      } else {
-        // إضافة الإعجاب: زيادة العدد
-        await db.from("anon_likes").upsert({ quote_id: id, count: currentCount + 1 });
-        likeCounts[id] = (likeCounts[id]||0) + 1;
-        likedByMe[id] = true;
-      }
-      
-      // تحديث الواجهة
-      const el=document.getElementById("lc-"+id); if(el) el.textContent=likeCounts[id]||0;
-      const btn=el&&el.closest(".act"); if(btn) btn.classList.toggle("liked",likedByMe[id]);
-    }catch(e){ console.warn("like:",e); showToast("تعذّر حفظ الإعجاب"); }
+      const {data}=await db.from("anon_likes").select("quote_id,count");
+      (data||[]).forEach(r=>{ likeCounts[r.quote_id]=(likeCounts[r.quote_id]||0)+(r.count||0); });
+    }catch(e){ console.warn("anonlikes:",e); }
+    if(!currentUser){ const al=anonLiked(); Object.keys(al).forEach(k=>{ if(al[k]) likedByMe[k]=true; }); }
   }
-
-  // إضافة زر إعجاب للزوار مع انعكاس فوري بعد تحميل الصفحة
-  // نقوم بتحميل الإعجابات عند كل عرض
-  // تم تعديل دالة render لتشمل loadLikes() قبل العرض
-
+  async function toggleLike(id){
+    if(currentUser){
+      const already=likedByMe[id];
+      try{
+        if(already){ await db.from("user_likes").delete().eq("user_id",currentUser.id).eq("quote_id",id); likedByMe[id]=false; likeCounts[id]=Math.max(0,(likeCounts[id]||1)-1); }
+        else { await db.from("user_likes").insert({user_id:currentUser.id,quote_id:id}); likedByMe[id]=true; likeCounts[id]=(likeCounts[id]||0)+1; }
+        const el=document.getElementById("lc-"+id); if(el) el.textContent=likeCounts[id];
+        const btn=el&&el.closest(".act"); if(btn) btn.classList.toggle("liked",likedByMe[id]);
+      }catch(e){ console.warn("like:",e); showToast("تعذّر الحفظ"); }
+      return;
+    }
+    // زائر غير مسجّل: إعجاب واحد لكل متصفّح (لا إلغاء)
+    const al=anonLiked();
+    if(al[id]){ showToast("أعجبك هذا مسبقاً"); return; }
+    try{
+      const cur=(likeCounts[id]||0);
+      const {error}=await db.from("anon_likes").upsert({quote_id:id,count:cur+1},{onConflict:"quote_id"});
+      if(error) throw error;
+      al[id]=true; setAnonLiked(al); likedByMe[id]=true; likeCounts[id]=cur+1;
+      const el=document.getElementById("lc-"+id); if(el) el.textContent=likeCounts[id];
+      const btn=el&&el.closest(".act"); if(btn) btn.classList.add("liked");
+    }catch(e){ console.warn("anonlike:",e); showToast("تعذّر الحفظ"); }
+  }
   async function toggleComments(id){ const box=document.getElementById("cm-"+id); box.classList.toggle("open");
     const prev=document.getElementById("cp-"+id);
     if(box.classList.contains("open")){ if(prev) prev.style.display="none"; renderCommentForm(id); loadComments(id); }
@@ -791,11 +781,17 @@
 
   function renderCommentForm(id){
     const w=document.getElementById("cw-"+id); if(!w) return;
-    // تعليق الزوار: تظهر حقل اسم الزائر اختياري
-    w.innerHTML=`<div class="cform">
-      <input id="cn-${id}" type="text" placeholder="اسمك (اختياري)" maxlength="40" value="${currentUser?esc(currentName):''}">
-      <textarea id="cb-${id}" rows="2" placeholder="اكتب تعليقك${currentUser?' باسم '+esc(currentName):' (الاسم اختياري)'}…" maxlength="300"></textarea>
-      <button onclick="addComment('${id}')">أضف تعليقاً</button></div>`;
+    if(currentUser){
+      w.innerHTML=`<div class="cform">
+        <textarea id="cb-${id}" rows="2" placeholder="اكتب تعليقك باسم ${esc(currentName)}…" maxlength="300"></textarea>
+        <button onclick="addComment('${id}')">أضف تعليقاً</button></div>`;
+    } else {
+      w.innerHTML=`<div class="cform">
+        <input id="cn-${id}" type="text" placeholder="اسمك (اختياري)" maxlength="40">
+        <textarea id="cb-${id}" rows="2" placeholder="اكتب تعليقك… (أو سجّل الدخول لاسمٍ ثابت)" maxlength="300"></textarea>
+        <button onclick="addComment('${id}')">أضف تعليقاً</button>
+        <div class="comment-gate" style="margin-top:.3rem"><a onclick="openAuth()">سجّل الدخول</a> لاسمٍ ثابت ومزايا الأعضاء</div></div>`;
+    }
   }
   /* معاينة أوّل تعليق تلقائياً (استعلام واحد لكل البطاقات الظاهرة) */
   async function loadPreviews(ids){
@@ -906,12 +902,14 @@
     const cc=document.getElementById("cc-"+id); if(cc) cc.textContent=rows.length+" تعليق";
   }
   function showReplyForm(qid,parentId){
-    if(!currentUser){ showToast("سجّل الدخول للردّ"); openAuth(); return; }
     const box=document.getElementById("rf-"+parentId); if(!box) return;
     if(box.dataset.open==="1"){ box.innerHTML=""; box.dataset.open=""; return; }
     box.dataset.open="1";
+    const nameField=currentUser?"":`<input id="rn-${parentId}" type="text" placeholder="اسمك (اختياري)" maxlength="40">`;
+    const ph=currentUser?`ردّك باسم ${esc(currentName)}…`:"اكتب ردّك…";
     box.innerHTML=`<div class="cform">
-      <textarea id="rb-${parentId}" rows="2" placeholder="ردّك باسم ${esc(currentName)}…" maxlength="300"></textarea>
+      ${nameField}
+      <textarea id="rb-${parentId}" rows="2" placeholder="${ph}" maxlength="300"></textarea>
       <button onclick="addReply('${qid}',${parentId})">إرسال الردّ</button></div>`;
   }
   let lastPostAt=0;
@@ -941,23 +939,16 @@
       loadComments(quoteId);
     }catch(e){ console.warn("clike:",e); showToast("تعذّر الحفظ"); }
   }
-  // تعديل دالة addComment: تسمح للزوار بالتعليق مع اسم اختياري
   async function addComment(id){
-    // الحصول على الاسم من الحقل أو استخدام "زائر"
-    const nameEl = document.getElementById("cn-"+id);
-    const name = nameEl ? (nameEl.value.trim() || "زائر") : (currentUser ? currentName : "زائر");
     const bodyEl=document.getElementById("cb-"+id); const body=(bodyEl.value||"").trim();
     if(!body){ showToast("اكتب تعليقاً أولاً"); return; }
     if(!throttleOk()) return;
+    let name, uid;
+    if(currentUser){ name=currentName; uid=currentUser.id; }
+    else { const nEl=document.getElementById("cn-"+id); name=(nEl&&nEl.value.trim())||"زائر"; uid=null; }
     bodyEl.value="";
-    if(nameEl) nameEl.value="";
-    try{
-      // إدراج التعليق، user_id يكون null للزوار
-      const userId = currentUser ? currentUser.id : null;
-      const {error}=await db.from("comments").insert({name, body, quote_id:id, user_id:userId, parent_id:null});
-      if(error) throw error;
-      loadComments(id); showToast("تمّ نشر تعليقك ✔");
-    }catch(e){ console.warn("comment:",e); postError(e); bodyEl.value=body; }
+    try{ const {error}=await db.from("comments").insert({name,body,quote_id:id,user_id:uid,parent_id:null}); if(error) throw error; loadComments(id); showToast("تمّ نشر تعليقك ✔"); }
+    catch(e){ console.warn("comment:",e); postError(e); bodyEl.value=body; }
   }
   function copyQuote(id){ const q=allQuotes().find(x=>x.id===id); if(!q) return; navigator.clipboard.writeText(`"${q.text}" — ${q.author}`).then(()=>showToast("نُسخ الاقتباس 📋")).catch(()=>showToast("تعذّر النسخ")); }
 
@@ -1157,57 +1148,6 @@
   }
 
   /* ═══════════ مكتبة الاقتباسات (المشرف) ═══════════ */
-
-  /* --- جلب النصّ من Wikisource وتقسيمه إلى أبيات قابلة للاختيار --- */
-  let wikiLinesArr=[];
-  function guessAuthor(page){
-    return page.replace(/^ديوان\s+/,"").replace(/^كتاب\s+/,"").replace(/\s*\(.*\)\s*$/,"").trim();
-  }
-  async function wikiFetch(){
-    const page=document.getElementById("wikiPage").value.trim();
-    const msg=document.getElementById("wikiMsg");
-    if(!page){ msg.className="auth-msg err"; msg.textContent="اكتب اسم صفحة أولاً"; return; }
-    msg.className="auth-msg"; msg.textContent="جارِ الجلب من Wikisource…";
-    const btn=document.getElementById("wikiFetchBtn"); btn.disabled=true;
-    try{
-      // نستخدم parse لأنها تعمل مع القصائد والمعلقات (المبنيّة بقوالب)
-      const url="https://ar.wikisource.org/w/api.php?action=parse&prop=text&formatversion=2&format=json&origin=*&redirects=1&page="+encodeURIComponent(page);
-      const r=await fetch(url); const j=await r.json();
-      if(j.error || !j.parse || !j.parse.text){
-        msg.className="auth-msg err"; msg.textContent="لم أجد هذه الصفحة — تأكّد من الاسم على ar.wikisource.org"; return;
-      }
-      const tmp=document.createElement("div"); tmp.innerHTML=j.parse.text;
-      tmp.querySelectorAll("style,script,sup.reference,.mw-editsection,table.navbox,.noprint,#toc,.mw-references-wrap").forEach(el=>el.remove());
-      const text=(tmp.textContent||"").replace(/\[\d+\]/g,"");
-      renderWikiLines(text, guessAuthor(page));
-      msg.className="auth-msg ok"; msg.textContent="تمّ الجلب ✔ — اختر الأبيات التي تعجبك بالضغط على «أضِف».";
-    }catch(e){ console.warn("wiki:",e); msg.className="auth-msg err"; msg.textContent="تعذّر الجلب (مشكلة اتصال أو الصفحة غير متاحة)"; }
-    btn.disabled=false;
-  }
-  function renderWikiLines(text, author){
-    const junk=new Set(["عدل","بحث","انتقل إلى المحتوى","تنزيل","مؤلف","ويكي بيانات","المحتوى","اقرأ","تصفح"]);
-    let lines=text.split(/\n+/).map(l=>l.replace(/\s+/g," ").trim())
-      .filter(l=> l.length>=14 && l.length<=240 && !/^=+.*=+$/.test(l) && !/^\[?\d+\]?$/.test(l) && !junk.has(l) && !/^[A-Za-z\s.,]+$/.test(l));
-    lines=[...new Set(lines)].slice(0,100);
-    wikiLinesArr=lines;
-    const box=document.getElementById("wikiLines");
-    if(!lines.length){ box.innerHTML='<div class="fav-empty">لم أستطع تقسيم النصّ إلى أبيات واضحة. جرّب صفحة أخرى.</div>'; return; }
-    box.innerHTML=`<div class="modal-sub" style="margin-top:.7rem">${lines.length} سطراً — اختر ما يعجبك:</div>`+
-      lines.map((l,i)=>`<div class="wiki-line" id="wl-${i}">
-        <span class="wl-text">${esc(l)}</span>
-        <button onclick="wikiPick(${i},'${esc(author).replace(/'/g,"\\'")}')">أضِف ✚</button>
-      </div>`).join("");
-  }
-  function wikiPick(i, author){
-    const line=wikiLinesArr[i]; if(line===undefined) return;
-    document.getElementById("libText").value=line;
-    const aEl=document.getElementById("libAuthor"); if(!aEl.value.trim() && author) aEl.value=author;
-    document.getElementById("libSource").value="Wikisource";
-    const el=document.getElementById("wl-"+i); if(el){ el.style.opacity=".45"; }
-    // مرّر إلى نموذج الإضافة
-    document.querySelector(".lib-form .modal-sub").scrollIntoView({behavior:"smooth",block:"center"});
-    showToast("نُقل إلى النموذج — اختر التصنيف واحفظ ✔");
-  }
 
   async function loadApproved(){
     try{

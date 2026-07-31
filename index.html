@@ -610,7 +610,7 @@
   const catColors={ "حكمة":"var(--c-hikma)","فلسفة":"var(--c-falsafa)","أدب":"var(--c-adab)","حب":"var(--c-hob)","حياة":"var(--c-hayat)" };
   let extraQuotes=[]; // اقتباسات الأعضاء المعتمدة (من قاعدة البيانات)
   let libQuotes=[];   // اقتباسات المكتبة المنشورة (lib_quotes)
-  function allQuotes(){ return quotes.concat(extraQuotes).concat(libQuotes); }
+  function allQuotes(){ return libQuotes.concat(extraQuotes).concat(quotes); }
   const catHex={ "حكمة":"#275c86","فلسفة":"#6a4a73","أدب":"#b08842","حب":"#a85d57","حياة":"#5e7a5a" };
   const PATTERN="data:image/svg+xml,"+encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><g fill='none' stroke='#ffffff' stroke-opacity='0.18' stroke-width='1.3'><rect x='16' y='16' width='32' height='32'/><rect x='16' y='16' width='32' height='32' transform='rotate(45 32 32)'/><circle cx='32' cy='32' r='3'/></g></svg>");
 
@@ -1131,21 +1131,25 @@
     msg.className="auth-msg"; msg.textContent="جارِ الجلب من Wikisource…";
     const btn=document.getElementById("wikiFetchBtn"); btn.disabled=true;
     try{
-      const url="https://ar.wikisource.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&origin=*&titles="+encodeURIComponent(page);
+      // نستخدم parse لأنها تعمل مع القصائد والمعلقات (المبنيّة بقوالب)
+      const url="https://ar.wikisource.org/w/api.php?action=parse&prop=text&formatversion=2&format=json&origin=*&redirects=1&page="+encodeURIComponent(page);
       const r=await fetch(url); const j=await r.json();
-      const pages=j.query&&j.query.pages; const first=pages&&Object.values(pages)[0];
-      if(!first||first.missing!==undefined||!first.extract){ msg.className="auth-msg err"; msg.textContent="لم أجد هذه الصفحة — تأكّد من الاسم على ar.wikisource.org"; return; }
-      renderWikiLines(first.extract, guessAuthor(page));
+      if(j.error || !j.parse || !j.parse.text){
+        msg.className="auth-msg err"; msg.textContent="لم أجد هذه الصفحة — تأكّد من الاسم على ar.wikisource.org"; return;
+      }
+      const tmp=document.createElement("div"); tmp.innerHTML=j.parse.text;
+      tmp.querySelectorAll("style,script,sup.reference,.mw-editsection,table.navbox,.noprint,#toc,.mw-references-wrap").forEach(el=>el.remove());
+      const text=(tmp.textContent||"").replace(/\[\d+\]/g,"");
+      renderWikiLines(text, guessAuthor(page));
       msg.className="auth-msg ok"; msg.textContent="تمّ الجلب ✔ — اختر الأبيات التي تعجبك بالضغط على «أضِف».";
     }catch(e){ console.warn("wiki:",e); msg.className="auth-msg err"; msg.textContent="تعذّر الجلب (مشكلة اتصال أو الصفحة غير متاحة)"; }
     btn.disabled=false;
   }
   function renderWikiLines(text, author){
-    // تقسيم إلى أسطر، وتصفية القصير جداً والعناوين
-    let lines=text.split(/\n+/).map(l=>l.trim())
-      .filter(l=> l.length>=20 && l.length<=220 && !/^=+.*=+$/.test(l) && !/^\[?\d+\]?$/.test(l));
-    // إزالة التكرار
-    lines=[...new Set(lines)].slice(0,80);
+    const junk=new Set(["عدل","بحث","انتقل إلى المحتوى","تنزيل","مؤلف","ويكي بيانات","المحتوى","اقرأ","تصفح"]);
+    let lines=text.split(/\n+/).map(l=>l.replace(/\s+/g," ").trim())
+      .filter(l=> l.length>=14 && l.length<=240 && !/^=+.*=+$/.test(l) && !/^\[?\d+\]?$/.test(l) && !junk.has(l) && !/^[A-Za-z\s.,]+$/.test(l));
+    lines=[...new Set(lines)].slice(0,100);
     wikiLinesArr=lines;
     const box=document.getElementById("wikiLines");
     if(!lines.length){ box.innerHTML='<div class="fav-empty">لم أستطع تقسيم النصّ إلى أبيات واضحة. جرّب صفحة أخرى.</div>'; return; }

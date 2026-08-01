@@ -224,12 +224,11 @@
   /* نافذة الكاتب */
   function openAuthor(name){
     const a=authors[name]; const modal=document.getElementById("authorModal");
-    currentAuthorForBooks=name;
     document.getElementById("mName").textContent=name;
     document.getElementById("mEra").textContent=a?a.era:"";
     document.getElementById("mBio").textContent=a?a.bio:"لا تتوفّر سيرة بعد.";
     document.getElementById("mBooks").innerHTML="";
-    const btn=document.getElementById("mBooksBtn"); btn.disabled=false; btn.style.display=""; btn.textContent="📖 كتب الكاتب على Google Books";
+    updateBooksButton(name);
     const his=allQuotes().filter(q=>q.author===name);
     document.getElementById("mQuotes").innerHTML=his.map(q=>`<div class="modal-q">${esc(q.text)}</div>`).join("");
     modal.classList.add("open");
@@ -454,47 +453,52 @@
   }
   function copyQuote(id){ const q=allQuotes().find(x=>x.id===id); if(!q) return; navigator.clipboard.writeText(`"${q.text}" — ${q.author}`).then(()=>showToast("نُسخ الاقتباس 📋")).catch(()=>showToast("تعذّر النسخ")); }
 
-  /* ═══════════ Google Books — كتب الكاتب ═══════════ */
+  /* ═══════════ Archive.org — كتاب مختار لكل كاتب ═══════════ */
+  /* لكل كاتب: معرّف الكتاب على archive.org (details/<id>) وعنوانه.
+     إن لم يعمل رابط، غيّر المعرّف من صفحة archive.org للكتاب. */
+  const archiveBooks = {
+    "المتنبي":            { id:"waq0110",         title:"ديوان المتنبي" },
+    "الإمام الشافعي":     { id:"waq53759",        title:"ديوان الإمام الشافعي" },
+    "علي بن أبي طالب":    { id:"waq0037",         title:"نهج البلاغة" },
+    "جبران خليل جبران":   { id:"waq86923",        title:"النبي — جبران خليل جبران" },
+    "أبو تمّام":          { id:"waq54327",        title:"ديوان أبي تمام" },
+    "أبو العلاء المعرّي":  { id:"waq52548",        title:"ديوان أبي العلاء المعري (اللزوميات)" },
+    "زهير بن أبي سُلمى":  { id:"waq5334",         title:"ديوان زهير بن أبي سلمى" },
+    "طرفة بن العبد":      { id:"waq49985",        title:"ديوان طرفة بن العبد" },
+    "قيس بن الملوّح":     { id:"waq89547",        title:"ديوان مجنون ليلى — قيس بن الملوّح" },
+    "ابن رشد":            { id:"tahafutaltahafut", title:"تهافت التهافت — ابن رشد" },
+    "سقراط":              { id:"platoapology",    title:"دفاع سقراط — أفلاطون" },
+    "أفلاطون":            { id:"platorepublic",   title:"الجمهورية — أفلاطون" },
+    "أرسطو":              { id:"aristotle_nicomachean_ethics", title:"الأخلاق النيقوماخية — أرسطو" },
+    "نيتشه":              { id:"thusspokezarathustra", title:"هكذا تكلّم زرادشت — نيتشه" },
+    "ديكارت":             { id:"descartesmeditations", title:"تأمّلات — ديكارت" },
+    "سينيكا":             { id:"senecaletters",   title:"رسائل — سينيكا" },
+    "ماركوس أوريليوس":    { id:"meditationsmarcus", title:"التأمّلات — ماركوس أوريليوس" },
+    "إبكتيتوس":           { id:"epictetusdiscourses", title:"محادثات — إبكتيتوس" },
+    "كونفوشيوس":          { id:"confucius_analects", title:"المحاورات — كونفوشيوس" },
+    "لاو تزو":            { id:"taoteching",      title:"التاو تي تشينغ — لاو تزو" },
+  };
+
   let currentAuthorForBooks="";
-  async function loadAuthorBooks(){
-    const name=currentAuthorForBooks; if(!name) return;
-    const box=document.getElementById("mBooks"); const btn=document.getElementById("mBooksBtn");
-    btn.disabled=true; btn.textContent="جارِ البحث في Google Books…";
-    try{
-      const q=encodeURIComponent('inauthor:"'+name+'"');
-      const url="https://www.googleapis.com/books/v1/volumes?q="+q+"&maxResults=20&printType=books&orderBy=relevance";
-      const r=await fetch(url); const j=await r.json();
-      const items=(j.items||[]).filter(it=>it.volumeInfo);
-      if(!items.length){ box.innerHTML='<div class="fav-empty" style="padding:1rem">لم أجد كتباً للكاتب في Google Books.</div>'; btn.style.display="none"; return; }
-      box.innerHTML=items.map(it=>{
-        const v=it.volumeInfo, ai=it.accessInfo||{};
-        const thumb=(v.imageLinks&&(v.imageLinks.thumbnail||v.imageLinks.smallThumbnail))||"";
-        const authors=(v.authors||[]).join("، ");
-        let avail='<span class="book-avail none">غير متاح للقراءة</span>';
-        if(ai.viewability==="ALL_PAGES") avail='<span class="book-avail pd">قراءة كاملة</span>';
-        else if(ai.viewability==="PARTIAL") avail='<span class="book-avail prev">معاينة</span>';
-        return `<div class="book-item" onclick="openReader('${it.id}','${esc(v.title||"").replace(/'/g,"\\'")}')">
-          <div class="book-thumb" style="background-image:url('${thumb}')"></div>
-          <div class="book-info">
-            <div class="book-title">${esc(v.title||"")}</div>
-            <div class="book-meta">${esc(authors)}${v.publishedDate?" · "+esc(v.publishedDate.slice(0,4)):""}</div>
-            ${avail}
-          </div>
-        </div>`;
-      }).join("");
+  function updateBooksButton(name){
+    currentAuthorForBooks=name;
+    const btn=document.getElementById("mBooksBtn");
+    if(!btn) return;
+    if(archiveBooks[name]){
+      btn.style.display="";
+      btn.textContent="📖 اقرأ: "+archiveBooks[name].title;
+    } else {
       btn.style.display="none";
-    }catch(e){ console.warn("gbooks:",e); box.innerHTML='<div class="fav-empty" style="padding:1rem">تعذّر البحث في Google Books.</div>'; btn.disabled=false; btn.textContent="📖 كتب الكاتب على Google Books"; }
+    }
   }
-  function openReader(volumeId,title){
-    document.getElementById("readerTitle").textContent=title||"";
+  function openArchiveBook(){
+    const name=currentAuthorForBooks; const book=archiveBooks[name]; if(!book) return;
+    document.getElementById("readerTitle").textContent=book.title;
+    document.getElementById("archiveFrame").src="https://archive.org/embed/"+encodeURIComponent(book.id);
+    document.getElementById("archiveLink").href="https://archive.org/details/"+encodeURIComponent(book.id);
     document.getElementById("readerModal").classList.add("open");
-    // نحمّل الـ Viewer عند أوّل فتح
-    try{
-      google.books.load();
-      google.books.setOnLoadCallback(()=>{ const v=new google.books.DefaultViewer(document.getElementById("gbViewer")); v.load(volumeId, null, ()=>{ document.getElementById("gbViewer").innerHTML='<div style="padding:2rem;text-align:center;color:var(--muted)">لا معاينة متاحة لهذا الكتاب.</div>'; }); });
-    }catch(e){ console.warn("viewer:",e); document.getElementById("gbViewer").innerHTML='<div style="padding:2rem;text-align:center;color:var(--muted)">تعذّر تحميل عارض Google Books.</div>'; }
   }
-  function closeReader(){ document.getElementById("readerModal").classList.remove("open"); document.getElementById("gbViewer").innerHTML=""; }
+  function closeReader(){ document.getElementById("readerModal").classList.remove("open"); document.getElementById("archiveFrame").src=""; }
   document.getElementById("readerModal").addEventListener("click",e=>{ if(e.target.id==="readerModal") closeReader(); });
 
   /* ═══════════ القصة والسياق ═══════════ */

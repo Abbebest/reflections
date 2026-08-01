@@ -167,20 +167,20 @@
       <h2 class="modal-name" id="mName"></h2>
       <div class="modal-era" id="mEra"></div>
       <p class="modal-bio" id="mBio"></p>
-      <button class="books-btn" id="mBooksBtn" onclick="loadAuthorBooks()">📖 كتب الكاتب على Google Books</button>
+      <button class="books-btn" id="mBooksBtn" onclick="openArchiveBook()" style="display:none">📖 اقرأ كتاباً من مكتبته</button>
       <div id="mBooks" class="books-list"></div>
       <div class="modal-sub">من أقواله في هذا الموقع:</div>
       <div id="mQuotes"></div>
     </div>
   </div>
 
-  <!-- عارض كتاب Google Books -->
+  <!-- عارض كتاب Archive.org -->
   <div class="modal" id="readerModal">
-    <div class="modal-box" style="max-width:900px;padding:1rem">
+    <div class="modal-box" style="max-width:960px;padding:1rem">
       <button class="modal-close" onclick="closeReader()" aria-label="إغلاق">&times;</button>
       <div class="modal-name" id="readerTitle" style="font-size:1.3rem;margin-bottom:.7rem"></div>
-      <div id="gbViewer" style="width:100%;height:70vh;background:#0f1322;border-radius:12px"></div>
-      <div class="reader-note">يعرض Google Books معاينةً حسب توفّرها؛ للكتب في الملكية العامة عادةً متاحة كاملة.</div>
+      <iframe id="archiveFrame" src="" style="width:100%;height:75vh;border:0;background:#0f1322;border-radius:12px" allowfullscreen></iframe>
+      <div class="reader-note">من مكتبة Internet Archive (ملكية عامة) · <a id="archiveLink" href="#" target="_blank" rel="noopener" style="color:var(--ochre)">افتح على archive.org</a></div>
     </div>
   </div>
 
@@ -247,7 +247,6 @@
   <div class="toast" id="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://www.google.com/books/jsapi.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

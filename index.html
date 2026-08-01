@@ -167,7 +167,11 @@
       <h2 class="modal-name" id="mName"></h2>
       <div class="modal-era" id="mEra"></div>
       <p class="modal-bio" id="mBio"></p>
-      <button class="books-btn" id="mBooksBtn" onclick="openArchiveBook()" style="display:none">📖 اقرأ كتاباً من مكتبته</button>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem">
+        <button class="books-btn" id="mBooksBtn" onclick="openArchiveBook()" style="display:none;margin:0"></button>
+        <button class="books-btn" id="mSearchBtn" style="display:none;margin:0">🔍 ابحث في Archive.org</button>
+        <button class="books-btn" id="mAdminBookBtn" onclick="adminAddBook()" style="display:none;margin:0;border-color:var(--c-hob);color:var(--c-hob)">⚙️ اربط كتاباً</button>
+      </div>
       <div id="mBooks" class="books-list"></div>
       <div class="modal-sub">من أقواله في هذا الموقع:</div>
       <div id="mQuotes"></div>

@@ -453,46 +453,41 @@
   }
   function copyQuote(id){ const q=allQuotes().find(x=>x.id===id); if(!q) return; navigator.clipboard.writeText(`"${q.text}" — ${q.author}`).then(()=>showToast("نُسخ الاقتباس 📋")).catch(()=>showToast("تعذّر النسخ")); }
 
-  /* ═══════════ Archive.org — كتاب مختار لكل كاتب ═══════════ */
-  /* لكل كاتب: معرّف الكتاب على archive.org (details/<id>) وعنوانه.
-     إن لم يعمل رابط، غيّر المعرّف من صفحة archive.org للكتاب. */
-  const archiveBooks = {
-    "المتنبي":            { id:"waq0110",         title:"ديوان المتنبي" },
-    "الإمام الشافعي":     { id:"waq53759",        title:"ديوان الإمام الشافعي" },
-    "علي بن أبي طالب":    { id:"waq0037",         title:"نهج البلاغة" },
-    "جبران خليل جبران":   { id:"waq86923",        title:"النبي — جبران خليل جبران" },
-    "أبو تمّام":          { id:"waq54327",        title:"ديوان أبي تمام" },
-    "أبو العلاء المعرّي":  { id:"waq52548",        title:"ديوان أبي العلاء المعري (اللزوميات)" },
-    "زهير بن أبي سُلمى":  { id:"waq5334",         title:"ديوان زهير بن أبي سلمى" },
-    "طرفة بن العبد":      { id:"waq49985",        title:"ديوان طرفة بن العبد" },
-    "قيس بن الملوّح":     { id:"waq89547",        title:"ديوان مجنون ليلى — قيس بن الملوّح" },
-    "ابن رشد":            { id:"tahafutaltahafut", title:"تهافت التهافت — ابن رشد" },
-    "سقراط":              { id:"platoapology",    title:"دفاع سقراط — أفلاطون" },
-    "أفلاطون":            { id:"platorepublic",   title:"الجمهورية — أفلاطون" },
-    "أرسطو":              { id:"aristotle_nicomachean_ethics", title:"الأخلاق النيقوماخية — أرسطو" },
-    "نيتشه":              { id:"thusspokezarathustra", title:"هكذا تكلّم زرادشت — نيتشه" },
-    "ديكارت":             { id:"descartesmeditations", title:"تأمّلات — ديكارت" },
-    "سينيكا":             { id:"senecaletters",   title:"رسائل — سينيكا" },
-    "ماركوس أوريليوس":    { id:"meditationsmarcus", title:"التأمّلات — ماركوس أوريليوس" },
-    "إبكتيتوس":           { id:"epictetusdiscourses", title:"محادثات — إبكتيتوس" },
-    "كونفوشيوس":          { id:"confucius_analects", title:"المحاورات — كونفوشيوس" },
-    "لاو تزو":            { id:"taoteching",      title:"التاو تي تشينغ — لاو تزو" },
-  };
-
+  /* ═══════════ Archive.org — نظام هجين ═══════════ */
+  /* authorBooks تُحمَّل من قاعدة البيانات (author_books) — يُدخلها المشرف من لوحة المكتبة. */
+  let authorBooks={}; // { "المتنبي": {id:"...", title:"..."} }
   let currentAuthorForBooks="";
+
+  async function loadAuthorBooks(){
+    try{
+      const {data}=await db.from("author_books").select("author,archive_id,book_title");
+      authorBooks={};
+      (data||[]).forEach(r=>{ authorBooks[r.author]={ id:r.archive_id, title:r.book_title }; });
+    }catch(e){ console.warn("author_books:",e); authorBooks={}; }
+  }
+
   function updateBooksButton(name){
     currentAuthorForBooks=name;
-    const btn=document.getElementById("mBooksBtn");
-    if(!btn) return;
-    if(archiveBooks[name]){
-      btn.style.display="";
-      btn.textContent="📖 اقرأ: "+archiveBooks[name].title;
-    } else {
-      btn.style.display="none";
+    const btnRead=document.getElementById("mBooksBtn");
+    const btnSearch=document.getElementById("mSearchBtn");
+    const btnAdmin=document.getElementById("mAdminBookBtn");
+    // زرّ القراءة يظهر فقط إن كان للكاتب كتاب موثّق في قاعدة البيانات
+    if(btnRead){
+      if(authorBooks[name]){ btnRead.style.display=""; btnRead.textContent="📖 اقرأ: "+authorBooks[name].title; }
+      else { btnRead.style.display="none"; }
+    }
+    // زرّ البحث يظهر دائماً (يفتح archive.org في تبويب جديد)
+    if(btnSearch){
+      btnSearch.style.display="";
+      btnSearch.onclick=()=>window.open("https://archive.org/search?query="+encodeURIComponent(name),"_blank","noopener");
+    }
+    // زرّ إضافة كتاب (للمشرف فقط)
+    if(btnAdmin){
+      btnAdmin.style.display=isAdmin()?"":"none";
     }
   }
   function openArchiveBook(){
-    const name=currentAuthorForBooks; const book=archiveBooks[name]; if(!book) return;
+    const name=currentAuthorForBooks; const book=authorBooks[name]; if(!book) return;
     document.getElementById("readerTitle").textContent=book.title;
     document.getElementById("archiveFrame").src="https://archive.org/embed/"+encodeURIComponent(book.id);
     document.getElementById("archiveLink").href="https://archive.org/details/"+encodeURIComponent(book.id);
@@ -500,6 +495,35 @@
   }
   function closeReader(){ document.getElementById("readerModal").classList.remove("open"); document.getElementById("archiveFrame").src=""; }
   document.getElementById("readerModal").addEventListener("click",e=>{ if(e.target.id==="readerModal") closeReader(); });
+
+  /* --- إدارة كتب الأعلام (للمشرف): ربط كاتب بمعرّف archive.org --- */
+  async function adminAddBook(){
+    if(!isAdmin()) return;
+    const name=currentAuthorForBooks; if(!name){ showToast("افتح كاتباً أولاً"); return; }
+    const idRaw=prompt("معرّف الكتاب على archive.org (الجزء بعد archive.org/details/) لـ«"+name+"»:", (authorBooks[name]&&authorBooks[name].id)||"");
+    if(idRaw===null) return; const id=idRaw.trim(); if(!id){ showToast("لم تُدخل معرّفاً"); return; }
+    const titleRaw=prompt("عنوان الكتاب (مثلاً: ديوان المتنبي):", (authorBooks[name]&&authorBooks[name].title)||("كتاب "+name));
+    if(titleRaw===null) return; const title=titleRaw.trim()||("كتاب "+name);
+    try{
+      const {error}=await db.from("author_books").upsert({author:name,archive_id:id,book_title:title,added_by:currentUser.id},{onConflict:"author"});
+      if(error) throw error;
+      authorBooks[name]={id,title};
+      updateBooksButton(name);
+      showToast("رُبِط الكتاب ✔ — جرّب زرّ «اقرأ»");
+    }catch(e){ console.warn("addbook:",e); showToast("تعذّر الحفظ"); }
+  }
+  async function adminRemoveBook(){
+    if(!isAdmin()) return;
+    const name=currentAuthorForBooks; if(!name||!authorBooks[name]){ showToast("لا كتاب لحذفه"); return; }
+    if(!confirm("حذف ربط الكتاب لـ«"+name+"»؟")) return;
+    try{
+      const {error}=await db.from("author_books").delete().eq("author",name);
+      if(error) throw error;
+      delete authorBooks[name];
+      updateBooksButton(name);
+      showToast("حُذف الربط 🗑");
+    }catch(e){ console.warn("delbook:",e); showToast("تعذّر الحذف"); }
+  }
 
   /* ═══════════ القصة والسياق ═══════════ */
   function openContext(id){
@@ -932,6 +956,7 @@
       await loadSession();
       await loadApproved();
       await loadLibrary();
+      await loadAuthorBooks();
       await loadLikes(); render();
       startPresence();
     } else { document.getElementById("presence").style.display="none"; }

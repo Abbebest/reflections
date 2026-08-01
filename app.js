@@ -171,12 +171,19 @@
     const avatar = q.img
       ? `<span class="pavatar" style="background-image:url('${q.img}')" onclick="openAuthor('${esc(q.author)}')"></span>`
       : `<span class="pavatar pavatar-mono" style="background:${catHex[q.cat]||'#3f6ea5'}" onclick="openAuthor('${esc(q.author)}')">${esc((q.author||'?').trim().charAt(0))}</span>`;
+    const hasBio = !!(authors[q.author] && authors[q.author].bio);
+    const hasBook = !!authorBooks[q.author];
+    const hints = [];
+    if(hasBio) hints.push(`<span class="ah-item ah-bio" onclick="openAuthor('${esc(q.author)}')">ℹ️ سيرة</span>`);
+    if(hasBook) hints.push(`<span class="ah-item ah-book" onclick="openAuthorAndReadBook('${esc(q.author)}')">📖 ${esc(authorBooks[q.author].title)}</span>`);
+    hints.push(`<span class="ah-item ah-more" onclick="openAuthor('${esc(q.author)}')">↗ المزيد</span>`);
     return `<article class="qcard post" id="card-${q.id}" style="animation-delay:${delay}ms">
       <div class="post-head">
         ${avatar}
         <div class="post-id">
           <span class="post-author" onclick="openAuthor('${esc(q.author)}')">${esc(q.author)}</span>
           <span class="post-cat"><span class="dot" style="background:${catHex[q.cat]||'#3f6ea5'}"></span>${q.cat}${q.community?' · مساهمة مجتمع':''}</span>
+          <div class="author-hints">${hints.join('<span class="ah-sep">·</span>')}</div>
         </div>
       </div>
       <p class="post-text">${esc(q.text)}</p>
@@ -493,6 +500,7 @@
     document.getElementById("archiveLink").href="https://archive.org/details/"+encodeURIComponent(book.id);
     document.getElementById("readerModal").classList.add("open");
   }
+  function openAuthorAndReadBook(name){ openAuthor(name); setTimeout(openArchiveBook,180); }
   function closeReader(){ document.getElementById("readerModal").classList.remove("open"); document.getElementById("archiveFrame").src=""; }
   document.getElementById("readerModal").addEventListener("click",e=>{ if(e.target.id==="readerModal") closeReader(); });
 
